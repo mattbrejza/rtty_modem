@@ -485,7 +485,7 @@ public class rtty_receiver implements StringRxEvent {
 		boolean[] bits = decoder.processBlock_2bits(samples,50);
 		String str ="";
 		
-		boolean valid7 = false,valid8 = false;
+		boolean valid7 = false,valid8 = false; 
 		
 		
 		
