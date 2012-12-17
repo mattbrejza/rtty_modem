@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/jmathplot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/jtransforms-2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/workspace/jfreechart/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/workspace/jfreechart/jfreechart-1.0.14.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
