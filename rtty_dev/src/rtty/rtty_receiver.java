@@ -493,9 +493,9 @@ public class rtty_receiver implements StringRxEvent {
 	}
 */
 	
-	public String processBlock (double[] samples)
+	public String processBlock (double[] samples, int baud)
 	{
-		boolean[] bits = decoder.processBlock_2bits(samples,50);
+		boolean[] bits = decoder.processBlock_2bits(samples,baud);
 		String str ="";
 		
 		boolean valid7 = false,valid8 = false;  

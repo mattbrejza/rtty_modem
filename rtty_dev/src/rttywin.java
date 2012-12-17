@@ -78,6 +78,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	  JScrollPane scrollPane;
 	  JCheckBox ckFreeze;
 	  JComboBox cbSoundCard;
+	  JCheckBox ck300b;
 	  private JCheckBox ckPause;
 	  
 	 // graph_line grtty = new graph_line();
@@ -158,6 +159,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		
 		
 		JButton btnStart = new JButton("New button");
+		btnStart.setEnabled(false);
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -167,6 +169,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		contentPane.add(btnStart);
 		
 		JButton btnStop = new JButton("New button");
+		btnStop.setEnabled(false);
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		          targetDataLine.stop();
@@ -186,6 +189,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		contentPane.add(btnStartst);
 		
 		JButton btnStopst = new JButton("New button");
+		btnStopst.setEnabled(false);
 		btnStopst.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				stopCapture = true;
@@ -195,6 +199,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		contentPane.add(btnStopst);
 		
 		JButton btnNewButton = new JButton("New button");
+		btnNewButton.setEnabled(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -227,8 +232,13 @@ public class rttywin extends JFrame implements StringRxEvent {
 		contentPane.add(ckFreeze);
 		
 		ckPause = new JCheckBox("Pause");
-		ckPause.setBounds(141, 73, 97, 23);
+		ckPause.setBounds(133, 73, 69, 23);
 		contentPane.add(ckPause);
+		
+		ck300b = new JCheckBox("300?");
+		ck300b.setSelected(true);
+		ck300b.setBounds(216, 73, 137, 23);
+		contentPane.add(ck300b);
 		
 		
 	}
@@ -347,7 +357,14 @@ public class rttywin extends JFrame implements StringRxEvent {
 		          /*System.out.println(*/ //rcv.processBlock(a); //);
 		          //txtDecode.setText("MOO");
 		          if (!ckPause.isSelected())
-		        	  txtDecode.append(rcv.processBlock(a));
+		          {
+		        	  if (ck300b.isSelected())
+		        		  txtDecode.append(rcv.processBlock(a,300));
+		        	  else
+		        		  txtDecode.append(rcv.processBlock(a,50));
+		        	 
+		          }
+		        	  
 		          
 		          if (ckFreeze.isSelected())
 		          {
