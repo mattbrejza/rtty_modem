@@ -23,7 +23,7 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class rtty_receiver implements StringRxEvent {
 	
-	int FFT_find_half_len = 256;
+	int FFT_find_half_len = 256;  //TODO change back to 256
     private DoubleFFT_1D ft_find = new DoubleFFT_1D(FFT_find_half_len*2);
     
     int FFT_follow_half_len = 512;
@@ -90,8 +90,7 @@ public class rtty_receiver implements StringRxEvent {
 	public double[] findRTTY(double[] samples,boolean update)
 	{
 		//returns array where [0] is f1 and [1] is f2
-		//TODO remove below
-		//fireStringReceived("moo");
+
 		
 		double[] out = new double[] {0,0};
 		
@@ -119,15 +118,29 @@ public class rtty_receiver implements StringRxEvent {
         //double[] peak_val = new double[windows];
         int peak_count = 0;
         
-        // TODO each peak should be y dB higher than the min in the window
+        // TODO each peak should be y dB higher than the min in the window (kinda done)
         //peak search
+        double win_min_c=1e20;     //current minimum
+        double win_min_p=1e20;	   //previous minimum
+        int min_win_cnt = 0;
         for (int i = 1; i < FFT_find_half_len-1; i++)
         {
-        	if ((c[i-1] < c[i]) && (c[i] > c[i+1]))		//if found window
+        	//used to get minimum values for 2 windows in advance
+        	if (c[i] < win_min_c)
+        		win_min_c = c[i];
+        	min_win_cnt++;
+        	if (min_win_cnt >= win_size)
+        	{
+        		win_min_p = win_min_c;
+        		win_min_c = 1e20;
+        		min_win_cnt=0;
+        	}
+        	
+        	if ((c[i-1] < c[i]) && (c[i] > c[i+1]) && (c[i] > win_min_c*10 ||  c[i] > win_min_p*10))		//if found peak
         	{
         		if (i < peak[peak_count][0]+win_size)   //if another peak in the same window
         		{
-        			if (peak[peak_count][1] < c[i])
+        			if (peak[peak_count][1] < c[i] )
         			{
         				peak[peak_count][0] = i;
         				peak[peak_count][1] = c[i];
@@ -154,7 +167,7 @@ public class rtty_receiver implements StringRxEvent {
         	}
         });
         
-        int bb_len = Math.max(1000, samples.length);
+        int bb_len = Math.max(2000, samples.length);
         double bb[][] =  new double [peak_count][bb_len];
         double maxs[] =  new double [peak_count];
         double mins[] =  new double [peak_count];
@@ -163,7 +176,7 @@ public class rtty_receiver implements StringRxEvent {
         double lothre[] = new double [peak_count];
         
         // TODO demod and check in order of highest amplitude to reduce the need to demod every signal
-        
+            
         
         
         //demodulate at each peak
@@ -182,7 +195,7 @@ public class rtty_receiver implements StringRxEvent {
         	double[] loc = new double[bb_len];
         	double[] ir = new double[bb_len];
         	double[] qr = new double[bb_len];*/
-        	
+
         	for (int j = 0; j< bb_len;j++)
         	{
         		
@@ -199,14 +212,18 @@ public class rtty_receiver implements StringRxEvent {
         		lo_phase = lo_phase + freq;
         		if (j >= 30)
         		{
-	        		maxs[i] = Math.max(maxs[i], bb[i][j]);
+	        		//maxs[i] = Math.max(maxs[i], bb[i][j]);
+	        		if (bb[i][j]> maxs[i] && j > 60)
+	        		{
+	        			maxs[i] = bb[i][j];
+	        		}
 	        		mins[i] = Math.min(mins[i], bb[i][j]);
 	        		means[i] = means[i] + bb[i][j];
         		}
         	}
         	means[i] = means[i] / (bb_len-30);
-        	upthre[i] = (maxs[i]-means[i])*0.3 + means[i];
-        	lothre[i] = -(maxs[i]-means[i])*0.3 + means[i];
+        	upthre[i] = means[i]*1.2;  //(maxs[i]-means[i])*0.3 + means[i];
+        	lothre[i] = means[i]*0.8; //-(maxs[i]-means[i])*0.3 + means[i];
         	
         }
         
@@ -214,13 +231,13 @@ public class rtty_receiver implements StringRxEvent {
        // grtty.clearlines();
         System.out.println();
         System.out.println();
-        
+        peak_count=Math.min(4, peak_count);
         //iterate through all combinations of peaks to find a signal
         for (int i = 0; i < peak_count-1; i++)
         {
         	for (int j=i+1; j< peak_count; j++)
         	{        		
-        		if ((peak[i][1] > peak[j][1]*.5 ) && (peak[i][1] < peak[j][1]*2 ))
+        		if ((peak[i][1] > peak[j][1]*.16 ) && (peak[i][1] < peak[j][1]*7 ))
         		{
         			if ((means[i] > mins[j]) && (means[j] > mins[i]))
         			{
@@ -260,7 +277,14 @@ public class rtty_receiver implements StringRxEvent {
         					
         					//both not high at same time check
         					if (!(bb[j][k]>maxs[j]/4) && !(bb[i][k]>maxs[i]/4))
-        						highs++;
+        					{
+        						if (!(bb[j][k+5]>maxs[j]/4) && !(bb[i][k+5]>maxs[i]/4))
+        						{
+        							if (!(bb[j][k-5]>maxs[j]/4) && !(bb[i][k-5]>maxs[i]/4))
+        								highs++;
+        						}
+        					}
+        					
         					
         				}
         				
@@ -268,8 +292,8 @@ public class rtty_receiver implements StringRxEvent {
         				
         				
         				
-        				
-        				if ( (transitionsh+transitionsl > 2)  && (transitionsh >0) && (transitionsl > 0) && (highs < 12))        					
+        				//TODO: look at reinstating this
+        				if ( /*(transitionsh+transitionsl > 2)  && (transitionsh >0) && (transitionsl > 0) && */(highs < 12))        					
         				{
         					       					
         				
@@ -496,7 +520,7 @@ public class rtty_receiver implements StringRxEvent {
 	public String processBlock (double[] samples, int baud)
 	{
 		boolean[] bits = decoder.processBlock_2bits(samples,baud);
-		String str ="";
+		String str = "";
 		
 		boolean valid7 = false,valid8 = false;  
 		

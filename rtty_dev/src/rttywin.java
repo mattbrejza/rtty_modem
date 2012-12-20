@@ -337,7 +337,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	// and write it to an output audio file.
 	 class CaptureThread extends Thread{
 		  //An arbitrary-size temporary holding buffer
-		  byte tempBuffer[] = new byte[10000];
+		  byte tempBuffer[] = new byte[20000];
 		  public void run(){
 		    byteArrayOutputStream = new ByteArrayOutputStream();
 		    stopCapture = false;
