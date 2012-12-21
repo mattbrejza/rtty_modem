@@ -79,6 +79,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	  JCheckBox ckFreeze;
 	  JComboBox cbSoundCard;
 	  JCheckBox ck300b;
+	  JLabel lbStatus;
 	  private JCheckBox ckPause;
 	  
 	 // graph_line grtty = new graph_line();
@@ -240,6 +241,14 @@ public class rttywin extends JFrame implements StringRxEvent {
 		ck300b.setBounds(216, 73, 137, 23);
 		contentPane.add(ck300b);
 		
+		JLabel lblStatus = new JLabel("Status:");
+		lblStatus.setBounds(254, 107, 40, 14);
+		contentPane.add(lblStatus);
+		
+		lbStatus = new JLabel("New label");
+		lbStatus.setBounds(307, 107, 137, 14);
+		contentPane.add(lbStatus);
+		
 		
 	}
 
@@ -366,24 +375,24 @@ public class rttywin extends JFrame implements StringRxEvent {
 		          }
 		        	  
 		          
-		          if (ckFreeze.isSelected())
-		          {
-		        	  rcv.followRTTY(a);
-		          }
-		          else
-		          {
-		        	  double[] fqs = rcv.findRTTY(a,!ckFreeze.isSelected());
-		        	  if (fqs[1] > 0)
-			          {
+		          //if (ckFreeze.isSelected())
+		          //{
+		        //	  rcv.followRTTY(a);
+		         // }
+		         // else
+		         // {
+		        	//  double[] fqs = rcv.findRTTY(a,!ckFreeze.isSelected());
+		        	//  if (fqs[1] > 0)
+			        //  {
 			        	 // lb_freqs = new JLabel("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
 			        	 // System.out.println("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
-			        	  lbfreq.setText("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
+			        //	  lbfreq.setText("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
 			        	  //lb_freqs.setBounds(50, 28, 46, 14);
 			    		//contentPane.add(lb_freqs);
-			          }
-		          }
+			         // }
+		         // }
 		          scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());//getHeight());
-		          
+		          lbStatus.setText(rcv.current_state.toString());
 		         
 	
 		          //System.arraycopy(a, 0, b, 0, 512);

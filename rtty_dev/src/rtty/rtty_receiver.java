@@ -50,6 +50,8 @@ public class rtty_receiver implements StringRxEvent {
     public int current_data_bits = 7;
     public int current_stop_bits = 1;
     public int current_baud = 300;
+    public boolean auto_rtty_finding = true;
+    public boolean enable_afc = true;
     
     private Bits_to_chars bit2char_7 = new Bits_to_chars(7,Bits_to_chars.Method.WAIT_FOR_START_BIT);
     private Bits_to_chars bit2char_8 = new Bits_to_chars(8,Bits_to_chars.Method.WAIT_FOR_START_BIT);
@@ -349,7 +351,7 @@ public class rtty_receiver implements StringRxEvent {
 	{
 		//calls follow RTTY, then updates the demod by first making sure the shift is averaged.
 	
-		double[] new_pos = followRTTY_getpos(samples, search_range_rtty,false);
+		double[] new_pos = followRTTY_getpos(samples, search_range_rtty);
 	
 		if (av_shift.getMA() == 0)
 		{
@@ -382,7 +384,7 @@ public class rtty_receiver implements StringRxEvent {
 		
 	}
 	
-	private double[] followRTTY_getpos(double[] samples, int search_range, boolean update)
+	private double[] followRTTY_getpos(double[] samples, int search_range)
 	{
 		//search range is number of fft bins each side of old_Fx
 		
@@ -486,17 +488,7 @@ public class rtty_receiver implements StringRxEvent {
 			out[1] = (double)-1;
 		else
 			out[1] = (double)(midbin_2)/(2*FFT_follow_half_len);
-		
-       
-        
-        if (update)
-        {
-        	decoder._f1=(double)(midbin_1)/(2*FFT_follow_half_len);
-        	decoder._f2=(double)(midbin_2)/(2*FFT_follow_half_len);
-        }
-        
-       
-        
+	
         return out;
 	}
 	
@@ -519,12 +511,33 @@ public class rtty_receiver implements StringRxEvent {
 	
 	public String processBlock (double[] samples, int baud)
 	{
+		
+		//TODO: consider writing samples as a class wide variable rather than passing to each method
+		
+		//step 1 : find rtty signal if needed
+		if (auto_rtty_finding && current_state == State.INACTIVE)
+		{
+			double[] loc = findRTTY(samples,true);
+			if (loc[0] > 0)
+				current_state = State.FOUND_SIG;
+		}
+		
+		
+		//step 2 : follow signal if afc is set
+		if (enable_afc)
+		{
+			followRTTY(samples);
+		}
+		
+		
+		//step 3 : demodulate the signal		
 		boolean[] bits = decoder.processBlock_2bits(samples,baud);
-		String str = "";
-		
-		boolean valid7 = false,valid8 = false;  
 		
 		
+		
+		//step 4 : convert a bitstream to telemetry		
+		String str = "";		
+		boolean valid7 = false,valid8 = false;  	
 		
 		if (current_state == State.IDLE)		//if data /stops are known then used fixed stops decoder too
 		{
@@ -558,7 +571,6 @@ public class rtty_receiver implements StringRxEvent {
 			valid8 = telem_hand_8.ExtractPacket(str);
 		}
 		
-		//System.out.println(bit2char_7.average_stop_bits());
 		
 		//at this stage, if valid7/8 is high, then the databits info is known, and the fixed extractor can be used
 		if (valid7)

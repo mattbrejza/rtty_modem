@@ -62,13 +62,14 @@ public class Telemetry_handler {
 				{
 					telem_buff = telem_buff + str.substring(j,str.length());
 				}
-				else        //found string, add to what we already have an send out
+				else        //found string, add to what we already have and send out
 				{
 					telem_buff = telem_buff + str.substring(j,i+1);
 					if (_listeners.getListenerList().length > 0)
 					{
-						fireStringReceived(telem_buff, check_checksum(telem_buff,0));
-						out = true;
+						boolean ck = check_checksum(telem_buff,0);
+						fireStringReceived(telem_buff, ck);
+						out = ck;
 					}
 						
 					telem_buff = "";
