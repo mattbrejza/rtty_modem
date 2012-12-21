@@ -69,6 +69,7 @@ public class Telemetry_handler {
 					{
 						boolean ck = check_checksum(telem_buff,0);
 						fireStringReceived(telem_buff, ck);
+						Telemetry_string ts = new Telemetry_string(telem_buff,ck);    //TODO: remove from here
 						out = ck;
 					}
 						
@@ -130,7 +131,7 @@ public class Telemetry_handler {
 		if (ckloc + 4 >= in.length())
 			return false;
 		
-		//now extract checkum based on its known location and compare
+		//now extract checksum based on its known location and compare
 		String crcstr = in.substring(ckloc+1, ckloc+5);
 		crcstr = crcstr.toLowerCase();
 		for (i = 0; i < crcstr.length(); i++)
