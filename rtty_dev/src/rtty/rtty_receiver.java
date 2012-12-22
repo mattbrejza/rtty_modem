@@ -23,7 +23,7 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class rtty_receiver implements StringRxEvent {
 	
-	int FFT_find_half_len = 256;  //TODO change back to 256
+	int FFT_find_half_len = 256; 
     private DoubleFFT_1D ft_find = new DoubleFFT_1D(FFT_find_half_len*2);
     
     int FFT_follow_half_len = 512;
@@ -37,7 +37,7 @@ public class rtty_receiver implements StringRxEvent {
     private Telemetry_handler telem_hand_8 = new Telemetry_handler();
     private Telemetry_handler telem_hand_f = new Telemetry_handler();
     
-    
+    private String last_sha = "";
     
     
     private moving_average av_shift = new moving_average(10);
@@ -80,7 +80,7 @@ public class rtty_receiver implements StringRxEvent {
 		_listeners.add(StringRxEvent.class, listener);
 	}
 	
-	protected void fireStringReceived(String str, boolean checksum)
+	protected void fireStringReceived(Telemetry_string str, boolean checksum)
 	{
 		Object[] listeners = _listeners.getListenerList();
 		for (int i =listeners.length-2; i>=0; i-=2)   //urgh, why does java have to make this so horrible
@@ -591,11 +591,16 @@ public class rtty_receiver implements StringRxEvent {
 	}
 
 	
-	public void StringRx(String str, boolean checksum)
+	public void StringRx(Telemetry_string str, boolean checksum)
 	{
-		if (_listeners.getListenerList().length > 0)
+
+		if (!last_sha.equals(str.toSha256()))
 		{
-			fireStringReceived(str, checksum);
+			last_sha = str.toSha256();		
+			if (_listeners.getListenerList().length > 0)
+			{
+				fireStringReceived(str, checksum);
+			}
 		}
 	}
 	

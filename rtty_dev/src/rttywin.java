@@ -41,10 +41,13 @@ import org.math.plot.*;
 
 import edu.emory.mathcs.jtransforms.fft.*;
 
+import rtty.Habitat_interface;
 import rtty.StringRxEvent;
+import rtty.Telemetry_string;
 import rtty.rtty_receiver;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 public class rttywin extends JFrame implements StringRxEvent {
 
@@ -82,6 +85,10 @@ public class rttywin extends JFrame implements StringRxEvent {
 	  JLabel lbStatus;
 	  private JCheckBox ckPause;
 	  
+	  
+	  Habitat_interface hi;// = new Habitat_interface("MATT");
+	  private JTextField txtcall = new JTextField();;
+	  
 	 // graph_line grtty = new graph_line();
 	  
 	  
@@ -116,9 +123,10 @@ public class rttywin extends JFrame implements StringRxEvent {
 		});
 	}
 
-	public void StringRx(String str, boolean checksum)
+	public void StringRx(Telemetry_string str, boolean checksum)
 	{
-		System.out.println(str + "   " + checksum);
+		System.out.println(str.getSentence() + "   " + checksum);
+		hi.upload_payload_telem(str);
 	}
 	
 	/**
@@ -150,6 +158,8 @@ public class rttywin extends JFrame implements StringRxEvent {
 			cbSoundCard = new JComboBox<Object>(devices);
 			cbSoundCard.setBounds(269, 27, 208, 20);
 			contentPane.add(cbSoundCard);
+			
+			
 	        
 	        
 		} catch (Exception e) {
@@ -180,9 +190,10 @@ public class rttywin extends JFrame implements StringRxEvent {
 		btnStop.setBounds(149, 103, 89, 23);
 		contentPane.add(btnStop);
 		
-		JButton btnStartst = new JButton("New button");
+		JButton btnStartst = new JButton("GO!");
 		btnStartst.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				hi = new Habitat_interface(txtcall.getText());
 				startDSP();
 			}
 		});
@@ -238,7 +249,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		
 		ck300b = new JCheckBox("300?");
 		ck300b.setSelected(true);
-		ck300b.setBounds(216, 73, 137, 23);
+		ck300b.setBounds(216, 73, 62, 23);
 		contentPane.add(ck300b);
 		
 		JLabel lblStatus = new JLabel("Status:");
@@ -248,6 +259,28 @@ public class rttywin extends JFrame implements StringRxEvent {
 		lbStatus = new JLabel("New label");
 		lbStatus.setBounds(307, 107, 137, 14);
 		contentPane.add(lbStatus);
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//Habitat_interface.test();
+				
+				hi.upload_payload_telem(new Telemetry_string("$$TEST,3324,435,32fdfdf,423,423,4,5*4334\n",false));
+				
+			}
+		});
+		btnNewButton_1.setBounds(264, 137, 89, 23);
+		contentPane.add(btnNewButton_1);
+		txtcall.setText("MATT");
+		
+		
+		txtcall.setBounds(350, 74, 137, 20);
+		contentPane.add(txtcall);
+		txtcall.setColumns(10);
+		
+		JLabel lblCallsign = new JLabel("callsign:");
+		lblCallsign.setBounds(284, 77, 46, 14);
+		contentPane.add(lblCallsign);
 		
 		
 	}

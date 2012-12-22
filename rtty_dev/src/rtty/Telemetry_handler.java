@@ -68,8 +68,9 @@ public class Telemetry_handler {
 					if (_listeners.getListenerList().length > 0)
 					{
 						boolean ck = check_checksum(telem_buff,0);
-						fireStringReceived(telem_buff, ck);
-						Telemetry_string ts = new Telemetry_string(telem_buff,ck);    //TODO: remove from here
+						Telemetry_string ts = new Telemetry_string(telem_buff,ck);    //TODO: consider remove from here
+						fireStringReceived(ts, ck);
+						
 						out = ck;
 					}
 						
@@ -93,7 +94,7 @@ public class Telemetry_handler {
 		return out;
 	}
 	
-	protected void fireStringReceived(String str, boolean checksum)
+	protected void fireStringReceived(Telemetry_string str, boolean checksum)
 	{
 		Object[] listeners = _listeners.getListenerList();
 		for (int i =listeners.length-2; i>=0; i-=2)   //urgh, why does java have to make this so horrible
