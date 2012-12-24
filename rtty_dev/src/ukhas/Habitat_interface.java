@@ -1,4 +1,4 @@
-package rtty;
+package ukhas;
 
 
 import java.text.SimpleDateFormat;
@@ -13,6 +13,7 @@ import com.fourspaces.couchdb.Database;
 import com.fourspaces.couchdb.Document;
 import com.fourspaces.couchdb.Session;
 
+import rtty.*;
 
 public class Habitat_interface {
 
@@ -25,6 +26,7 @@ public class Habitat_interface {
 	private Database db;
 	private Thread sdThread;
     
+	//TODO: if failed due to connection error, identify error and dont clear the list.
 	
 	private boolean _lock = false;
 	private Queue<Telemetry_string> out_buff = new LinkedList<Telemetry_string>();
@@ -37,6 +39,7 @@ public class Habitat_interface {
 	public Habitat_interface(String habitat_url, String habitat_db, Listener listener_info) {
 		_habitat_url = habitat_url;
 		_habitat_db = habitat_db;
+		_listener_info = listener_info;
 		
 	}
 	
@@ -68,7 +71,7 @@ public class Habitat_interface {
 		}
 		
 	}
-	
+	 /*
 	public static void test(){
 		
 		Telemetry_string test = new Telemetry_string("$$TEST,12,34,6,7fgfg5sd,3,56,4,3,444*4532\n",true);
@@ -82,12 +85,7 @@ public class Habitat_interface {
 		try
 		{
 		
-			//ViewResults result = db.view(test.toSha256());			
-			//if (result == null)
-			//{
-			//	
-			//}
-			//result.
+			
 			Document testdoc = new Document();
 			JSONObject data = new JSONObject();
 			JSONObject receivers = new JSONObject();
@@ -121,33 +119,19 @@ public class Habitat_interface {
 			Document newdoc = new Document();
 			newdoc.put("foo","baz");
 			db.saveDocument(newdoc); // auto-generated id given by the database
-*/
+*/  /*
 		}
 		catch (Exception e)
 		{
 			
 			
 		}
-		// Running a view
-/*
-		ViewResults result = db.getAllDocuments(); // same as db.view("_all_dbs");
-		for (Document d: result.getResults()) {
-			System.out.println(d.getId());
+		
+	} */
 
-			
-			//	ViewResults don't actually contain the full document, only what the view
-			//	returned.  So, in order to get the full document, you need to request a
-			//	new copy from the database.
-			
-			Document full = db.getDocument(d.getId());
-		}
-
-		// Ad-Hoc view
-
-		ViewResults resultAdHoc = db.adhoc("function (doc) { if (doc.foo=='bar') { emit(null, doc); }}");
-		*/
-	}
-
+	/* use this method to get lock. can release lock by direct manipulation
+	 * 
+	 */
 	private synchronized boolean _getLock()
 	{
 		if (_lock)
@@ -161,24 +145,46 @@ public class Habitat_interface {
 	
 	private boolean _upload(Telemetry_string input)
 	{
-		
-		if (_listener_info != null)
-		{
-			if (_listener_info.Data_changed())   //upload listeners location
-			{
-				
-			}
-		}
-		
-		//open DB connection
-		if (s == null)
-		{
-			 s = new Session(_habitat_url,80);
-			 db = s.getDatabase(_habitat_db);
-		}
-		
 		try
 		{
+			//open DB connection
+			if (s == null)
+			{
+				 s = new Session(_habitat_url,80);
+				 db = s.getDatabase(_habitat_db);
+			}
+			
+			if (_listener_info != null)
+			{
+				if (_listener_info.Data_changed())   //upload listeners location
+				{
+					Document doc = new Document ();
+					
+					//date uploaded
+					Date time = new Date();
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+					String t = dateFormat.format(time);
+					t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+					
+					doc.put("type","listener_telemetry");
+					doc.put("time_uploaded",t);
+					doc.put("time_created", _listener_info.get_time_created());
+					doc.put("data", _listener_info.getJSONDataField());
+					
+					String sha = _listener_info.toSha256();
+					
+					db.saveDocument(doc,sha);
+					CouchResponse cr = s.getLastResponse();
+					System.out.println(cr);
+					if (cr.isOk())
+						_listener_UUID = sha;
+					
+				}
+			}
+		
+		
+		
+		
 			Document doc = new Document();
 			JSONObject data = new JSONObject();
 			JSONObject receivers = new JSONObject();

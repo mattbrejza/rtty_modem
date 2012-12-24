@@ -1,6 +1,11 @@
 package rtty;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.commons.codec.binary.Base64;
 
 import net.sf.json.JSONObject;
 
@@ -75,5 +80,46 @@ public class Listener {
 		_coords = coords;
 		_changed = true;
 	}
+	
+	public String get_time_created()
+	{
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		String t = dateFormat.format(_time_created);
+		t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+		return t;
+	}
+	
+	public String toSha256()
+	{
+		String str = _callsign + get_time_created();
+		byte [] enc = Base64.encodeBase64(str.getBytes());
+		byte[] sha = null;
+		
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+			md.update(enc); 
+			sha = md.digest();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return bytesToHexStr(sha);
+	}
+	
+	//ref: http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+		public static String bytesToHexStr(byte[] bytes) {
+		    final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+		    char[] hexChars = new char[bytes.length * 2];
+		    int v;
+		    for ( int j = 0; j < bytes.length; j++ ) {
+		        v = bytes[j] & 0xFF;
+		        hexChars[j * 2] = hexArray[v >>> 4];
+		        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		    }
+		    return new String(hexChars);
+		}
 	
 }

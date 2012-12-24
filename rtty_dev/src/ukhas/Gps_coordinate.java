@@ -72,6 +72,11 @@ public class Gps_coordinate {
 		int offset_lat=0;
 		int offset_long=0;
 		
+		if (lat.length() < 3 || lat.length() < 3)
+		{
+			latlong_valid = false;
+		}
+		
 		if (lat.charAt(0) == '-')
 			offset_lat = 1;
 		
