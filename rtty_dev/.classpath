@@ -6,5 +6,16 @@
 	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/jtransforms-2.4.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Matt/workspace/jfreechart/jcommon-1.0.17.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Matt/workspace/jfreechart/jfreechart-1.0.14.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/JSON-java"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/commons-lang.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/ezmorph-1.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/httpclient-4.0-beta2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/httpcore-4.0-beta2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/json-lib-2.2.3-MODIFIED-jdk15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/jacob.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

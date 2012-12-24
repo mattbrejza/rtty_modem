@@ -13,6 +13,7 @@
 
 package rtty;
 
+import ukhas.*;
 import java.util.EventListener;
 
 public interface StringRxEvent extends EventListener

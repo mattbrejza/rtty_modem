@@ -11,6 +11,10 @@
 // GNU General Public License for more details.
 
 
+//currently assumes strings begin with $$ when looking for the start of string
+// -should be able to change the start sequence
+
+
 package rtty;
 
 public class Bits_to_chars {
@@ -31,6 +35,11 @@ public class Bits_to_chars {
 	private int _search_pattern;
 	private int _search_mask;
 	private int _search_len;
+	
+	private int _bit_grouping_total_50 = 0;
+	private int _bits_count = 0;
+	private int _this_grouping = 0;
+	private boolean _last_bit = false;
 	
 	public enum Method { WAIT_FOR_START_BIT, FIXED_POSITION };
 	
@@ -67,6 +76,14 @@ public class Bits_to_chars {
 	{
 		_stop_bits = stops;
 		_update_pattern();
+	}
+	
+	public double Average_bit_period()
+	{
+		if (_bits_count > 0)
+			return _bit_grouping_total_50/_bits_count;
+		else
+			return 0;
 	}
 	
 	private void _update_pattern()
@@ -208,6 +225,12 @@ public class Bits_to_chars {
 		if (_decoding_method == Method.FIXED_POSITION)
 			return bits2chars_fixed(input);
 		
+		//reset bit grouping counters
+		_bit_grouping_total_50 = 0;
+		_this_grouping = 0;
+		_bits_count = 0;
+		
+		
 		String out = "";
 		_average_stop_bits = 0;
 		_bits_since_last = 0;
@@ -237,7 +260,18 @@ public class Bits_to_chars {
 		{
 			if (_bitmask > 0)	//if currently processing a character, read next bit
 			{
-				if (input[i])  //if 1
+				
+				//this bit counts bit periods signal is high or low to work out incorrect baud rates
+				//looks for 50 bauds when demodulated as 300 baud
+				_this_grouping++;
+				if (input[i] != _last_bit)
+				{
+					_bit_grouping_total_50 += _this_grouping;
+					_bits_count++;
+					_this_grouping = 0;
+				}				
+				
+				if (input[i])   //if 1
 					_current_char = _current_char + _bitmask;
 				
 				_bitmask = _bitmask << 1;		//increment pointers and mask
@@ -270,6 +304,7 @@ public class Bits_to_chars {
 				else if (first_start_found)
 					_bits_since_last++;
 			}
+			_last_bit = input[i];
 		}
 		
 		_bit2char_last_bit = input[input.length-1];

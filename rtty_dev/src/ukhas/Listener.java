@@ -1,4 +1,4 @@
-package rtty;
+package ukhas;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -214,8 +214,9 @@ public class rtty_decode {
 		// TODO increment values more than just 1/-1;
 		// TODO remember that data is already squared coming into this block
 		//debug
-		double[] gin = new double[400];
-		System.arraycopy(input,0,gin,0,400);
+		int le = Math.min(400, input.length);
+		double[] gin = new double[le];
+		System.arraycopy(input,0,gin,0,le);
 		//System.arraycopy(prev_win,0,gin,0,200);
 		gbb.drawsingle(gin);
 		gbb.clearMarkers();

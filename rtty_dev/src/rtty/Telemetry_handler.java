@@ -10,10 +10,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+//takes a string and looks for a sentence in the string,
+//sending back a telemetry_string object when one is found
+
+//can be expanded to include multiple string formats 
 
 package rtty;
 
 import javax.swing.event.EventListenerList;
+import ukhas.*;
+import ukhas.Telemetry_string;
 
 public class Telemetry_handler {
 

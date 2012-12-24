@@ -11,7 +11,7 @@
 // GNU General Public License for more details.
 
 
-package rtty;
+package ukhas;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

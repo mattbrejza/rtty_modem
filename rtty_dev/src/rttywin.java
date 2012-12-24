@@ -41,13 +41,17 @@ import org.math.plot.*;
 
 import edu.emory.mathcs.jtransforms.fft.*;
 
-import rtty.Habitat_interface;
+import ukhas.Gps_coordinate;
+import ukhas.Habitat_interface;
+import ukhas.Listener;
+import rtty.Mappoint_interface;
 import rtty.StringRxEvent;
-import rtty.Telemetry_string;
+import ukhas.Telemetry_string;
 import rtty.rtty_receiver;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class rttywin extends JFrame implements StringRxEvent {
 
@@ -58,6 +62,9 @@ public class rttywin extends JFrame implements StringRxEvent {
 	private JPanel contentPane;
 	AudioFormat audioFormat;
 	TargetDataLine targetDataLine;
+	
+	private String _habitat_url = "habitat.habhub.org";
+	private String _habitat_db = "habitat";
 	
 	  boolean stopCapture = false;
 	  ByteArrayOutputStream byteArrayOutputStream;
@@ -87,7 +94,9 @@ public class rttywin extends JFrame implements StringRxEvent {
 	  
 	  
 	  Habitat_interface hi;// = new Habitat_interface("MATT");
-	  private JTextField txtcall = new JTextField();;
+	  private JTextField txtcall = new JTextField();
+	  private JTextField txtLat;
+	  private JTextField txtLong;;
 	  
 	 // graph_line grtty = new graph_line();
 	  
@@ -193,7 +202,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		JButton btnStartst = new JButton("GO!");
 		btnStartst.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				hi = new Habitat_interface(txtcall.getText());
+				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
 				startDSP();
 			}
 		});
@@ -265,8 +274,9 @@ public class rttywin extends JFrame implements StringRxEvent {
 			public void actionPerformed(ActionEvent arg0) {
 				//Habitat_interface.test();
 				
-				hi.upload_payload_telem(new Telemetry_string("$$TEST,3324,435,32fdfdf,423,423,4,5*4334\n",false));
-				
+				//hi.upload_payload_telem(new Telemetry_string("$$TEST,3324,435,32fdfdf,423,423,4,5*4334\n",false));
+				Mappoint_interface mi = new Mappoint_interface();
+				mi.test();
 			}
 		});
 		btnNewButton_1.setBounds(264, 137, 89, 23);
@@ -281,6 +291,19 @@ public class rttywin extends JFrame implements StringRxEvent {
 		JLabel lblCallsign = new JLabel("callsign:");
 		lblCallsign.setBounds(284, 77, 46, 14);
 		contentPane.add(lblCallsign);
+		
+		txtLat = new JTextField();
+		txtLat.setText("52.1");
+		txtLat.setHorizontalAlignment(SwingConstants.LEFT);
+		txtLat.setBounds(401, 104, 86, 20);
+		contentPane.add(txtLat);
+		txtLat.setColumns(10);
+		
+		txtLong = new JTextField();
+		txtLong.setText("-0.3");
+		txtLong.setBounds(401, 132, 86, 20);
+		contentPane.add(txtLong);
+		txtLong.setColumns(10);
 		
 		
 	}

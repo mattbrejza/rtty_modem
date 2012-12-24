@@ -12,7 +12,7 @@
 
 
 package rtty;
-
+import ukhas.*;
 
 
 import javax.swing.event.EventListenerList;
@@ -52,6 +52,12 @@ public class rtty_receiver implements StringRxEvent {
     public int current_baud = 300;
     public boolean auto_rtty_finding = true;
     public boolean enable_afc = true;
+    
+    public int afc_update_freq = 8000;
+    private int samples_since_afc = 0;
+    
+    public int search_freq = 8000;
+    private int samples_since_search = 0;
     
     private Bits_to_chars bit2char_7 = new Bits_to_chars(7,Bits_to_chars.Method.WAIT_FOR_START_BIT);
     private Bits_to_chars bit2char_8 = new Bits_to_chars(8,Bits_to_chars.Method.WAIT_FOR_START_BIT);
@@ -347,13 +353,13 @@ public class rtty_receiver implements StringRxEvent {
 		return out;
 	}
 
-	public void followRTTY(double[] samples)
+	public void followRTTY(double[] samples, boolean initial_solution)
 	{
 		//calls follow RTTY, then updates the demod by first making sure the shift is averaged.
 	
 		double[] new_pos = followRTTY_getpos(samples, search_range_rtty);
 	
-		if (av_shift.getMA() == 0)
+		if (av_shift.getMA() == 0 || initial_solution)
 		{
 			av_shift.init(decoder._f2 - decoder._f1);
 		}
@@ -513,21 +519,32 @@ public class rtty_receiver implements StringRxEvent {
 	{
 		
 		//TODO: consider writing samples as a class wide variable rather than passing to each method
+		//TODO: search and afc both fft but dont share results
+		
+		samples_since_afc += samples.length;
+		samples_since_search += samples.length;
 		
 		//step 1 : find rtty signal if needed
-		if (auto_rtty_finding && current_state == State.INACTIVE)
+		if (auto_rtty_finding && current_state == State.INACTIVE && samples_since_search > search_freq)
 		{
+			samples_since_search = 0;
 			double[] loc = findRTTY(samples,true);
 			if (loc[0] > 0)
+			{
 				current_state = State.FOUND_SIG;
+				followRTTY(samples,true);
+			}
 		}
-		
-		
-		//step 2 : follow signal if afc is set
-		if (enable_afc)
+		else if (enable_afc && samples_since_afc > afc_update_freq)  //step 2 : follow signal if afc is set
 		{
-			followRTTY(samples);
+			samples_since_afc = 0;
+			followRTTY(samples,false);
 		}
+			
+		
+		
+		
+		
 		
 		
 		//step 3 : demodulate the signal		
@@ -570,7 +587,7 @@ public class rtty_receiver implements StringRxEvent {
 			str = bit2char_8.bits2chars(bits);
 			valid8 = telem_hand_8.ExtractPacket(str);
 		}
-		
+		System.out.println(bit2char_7.Average_bit_period());
 		
 		//at this stage, if valid7/8 is high, then the databits info is known, and the fixed extractor can be used
 		if (valid7)
