@@ -23,11 +23,11 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class rtty_receiver implements StringRxEvent {
 	
-	int FFT_find_half_len = 256; 
-    private DoubleFFT_1D ft_find = new DoubleFFT_1D(FFT_find_half_len*2);
+	public int FFT_half_len = 512; 
+    private DoubleFFT_1D ft_obj = new DoubleFFT_1D(FFT_half_len*2);
     
-    int FFT_follow_half_len = 512;
-    private DoubleFFT_1D ft_follow = new DoubleFFT_1D(FFT_follow_half_len*2);
+    //int FFT_follow_half_len = 512;
+    //private DoubleFFT_1D ft_follow = new DoubleFFT_1D(FFT_follow_half_len*2);
     
     private rtty_decode decoder = new rtty_decode(1200,1800,7);
     
@@ -59,20 +59,20 @@ public class rtty_receiver implements StringRxEvent {
     public int search_freq = 8000;
     private int samples_since_search = 0;
     
+    public int samples_since_last_valid = 0;
+    
+    private double[] _samples;
+    private double[] _fft;
+    private boolean _fft_updated = false;
+    
+    private int[] _peaklocs;
+    
     private Bits_to_chars bit2char_7 = new Bits_to_chars(7,Bits_to_chars.Method.WAIT_FOR_START_BIT);
     private Bits_to_chars bit2char_8 = new Bits_to_chars(8,Bits_to_chars.Method.WAIT_FOR_START_BIT);
     private Bits_to_chars bit2char_fixed = new Bits_to_chars(7,2,Bits_to_chars.Method.FIXED_POSITION);
     
     //used for 'string received' event
     protected EventListenerList  _listeners = new EventListenerList() ;
-
-    
-	/*Plot2DPanel plot = new Plot2DPanel();
-	int plotint = -100;
-	int plotint2 = -100;
-	int plotint3 = -100;*/
-    
-    private graph_line grtty = new graph_line();
 
 	public rtty_receiver() {
 		// TODO Auto-generated constructor stub
@@ -95,31 +95,53 @@ public class rtty_receiver implements StringRxEvent {
 		}
 	}
 	
-	public double[] findRTTY(double[] samples,boolean update)
+	public double[] findRTTY(double[] samples)
+	{
+		_samples = samples;
+		_fft_updated = false;
+		return findRTTY(false);
+	}
+	
+	//note: gives the square of the FFT
+	private boolean calcuate_FFT()
+	{
+		if (_fft_updated)
+			return true;
+		
+		
+		if (_samples.length < FFT_half_len*2)
+			return false;
+		
+		//get 256 (useful) FFT bins
+		double[] fftar = new double[_samples.length];
+		System.arraycopy(_samples,0,fftar,0,_samples.length);
+		ft_obj.realForward(fftar);
+		
+		_fft = (new double[FFT_half_len]);
+		
+		//calculate abs(.)
+        for (int i = 0; i < FFT_half_len; i++)
+        {
+        	_fft[i] = Math.pow(fftar[i*2], 2) + Math.pow(fftar[i*2 +1], 2);
+        }
+        
+        _fft_updated = true;
+        return true;
+	}
+	
+	private double[] findRTTY(boolean update)
 	{
 		//returns array where [0] is f1 and [1] is f2
 
 		
 		double[] out = new double[] {0,0};
 		
-		if (samples.length < FFT_find_half_len*2)
+		
+		if (!calcuate_FFT())
 			return out;
 		
-		//get 256 (useful) FFT bins
-		double[] fftar = new double[samples.length];
-		System.arraycopy(samples,0,fftar,0,samples.length);
-		ft_find.realForward(fftar);
-		
-		double c[] = new double[FFT_find_half_len];
-		
-		//calculate abs(.)
-        for (int i = 0; i < FFT_find_half_len; i++)
-        {
-        	c[i] = Math.pow(fftar[i*2], 2) + Math.pow(fftar[i*2 +1], 2);
-        }
-		
         int windows = 15;
-        int win_size = (int)FFT_find_half_len/windows;
+        int win_size = (int)FFT_half_len/windows;
         
         double[][] peak = new double[windows][2];	//0: loc; 1: val
         //int[] peak_loc = new int[windows];
@@ -131,11 +153,11 @@ public class rtty_receiver implements StringRxEvent {
         double win_min_c=1e20;     //current minimum
         double win_min_p=1e20;	   //previous minimum
         int min_win_cnt = 0;
-        for (int i = 1; i < FFT_find_half_len-1; i++)
+        for (int i = 1; i < FFT_half_len-1; i++)
         {
         	//used to get minimum values for 2 windows in advance
-        	if (c[i] < win_min_c)
-        		win_min_c = c[i];
+        	if (_fft[i] < win_min_c)
+        		win_min_c = _fft[i];
         	min_win_cnt++;
         	if (min_win_cnt >= win_size)
         	{
@@ -144,27 +166,29 @@ public class rtty_receiver implements StringRxEvent {
         		min_win_cnt=0;
         	}
         	
-        	if ((c[i-1] < c[i]) && (c[i] > c[i+1]) && (c[i] > win_min_c*10 ||  c[i] > win_min_p*10))		//if found peak
+        	if ((_fft[i-1] < _fft[i]) && (_fft[i] > _fft[i+1]) && (_fft[i] > win_min_c*10 ||  _fft[i] > win_min_p*10))		//if found peak
         	{
         		if (i < peak[peak_count][0]+win_size)   //if another peak in the same window
         		{
-        			if (peak[peak_count][1] < c[i] )
+        			if (peak[peak_count][1] < _fft[i] )
         			{
         				peak[peak_count][0] = i;
-        				peak[peak_count][1] = c[i];
+        				peak[peak_count][1] = _fft[i];
         			}
         		}
         		else
         		{
         			peak_count++;
     				peak[peak_count][0] = i;
-    				peak[peak_count][1] = c[i];
+    				peak[peak_count][1] = _fft[i];
         		}
         	}
         }
+        _peaklocs = (new int[peak_count]);
         for (int i = 0; i < peak_count; i++)
         {
-        	peak[peak_count][1] = Math.sqrt(peak[peak_count][1]);
+        	peak[peak_count][1] = Math.sqrt(peak[peak_count][1]);   //sqrt the peaks
+        	_peaklocs[i] = (int)peak[peak_count][0];					//copy to variable to allow for debug access
         }
         //now have a list of peaks in the fft
         //sort peaks by amplitude of peak
@@ -175,7 +199,7 @@ public class rtty_receiver implements StringRxEvent {
         	}
         });
         
-        int bb_len = Math.max(2000, samples.length);
+        int bb_len = Math.max(2000, _samples.length);
         double bb[][] =  new double [peak_count][bb_len];
         double maxs[] =  new double [peak_count];
         double mins[] =  new double [peak_count];
@@ -196,27 +220,14 @@ public class rtty_receiver implements StringRxEvent {
         	fir_filter filtc = new fir_filter(new double[] {0.0856108043700266,	0.0887368103506232,	0.0912267090885950,	0.0930370874042555,	0.0941362126682943,	0.0945047522364111,	0.0941362126682943,	0.0930370874042555,	0.0912267090885950,	0.0887368103506232,	0.0856108043700266});
 
         	double lo_phase = 0;
-        	double freq = ((double)peak[i][0])/((double)(FFT_find_half_len*2));
-        	/*
-        	double[] ph = new double[bb_len];
-        	double[] los = new double[bb_len];
-        	double[] loc = new double[bb_len];
-        	double[] ir = new double[bb_len];
-        	double[] qr = new double[bb_len];*/
+        	double freq = ((double)peak[i][0])/((double)(FFT_half_len*2));
+        
 
         	for (int j = 0; j< bb_len;j++)
         	{
-        		
         		//multiply, filter, square and add
-        		bb[i][j] = Math.pow(filts.step(samples[j] * Math.sin(2*Math.PI*lo_phase)),2) + Math.pow(filtc.step(samples[j] * Math.cos(2*Math.PI*lo_phase)),2);
-        		//bb[i][j] = Math.pow((samples[j] * Math.sin(2*Math.PI*lo_phase)),2) + Math.pow((samples[j] * Math.cos(2*Math.PI*lo_phase)),2);
-        	/*	ph[j]=lo_phase;
-        		los[j] = Math.sin(2*Math.PI*lo_phase);
-        		loc[j] = Math.cos(2*Math.PI*lo_phase);
-        		ir[j] = samples[j] * los[j];
-        		qr[j] = samples[j] * loc[j];
-        		bb[i][j] = Math.pow(filts.step(ir[j]), 2) + Math.pow(filtc.step(qr[j]), 2);
-        				*/
+        		bb[i][j] = Math.pow(filts.step(_samples[j] * Math.sin(2*Math.PI*lo_phase)),2) + Math.pow(filtc.step(_samples[j] * Math.cos(2*Math.PI*lo_phase)),2);
+
         		lo_phase = lo_phase + freq;
         		if (j >= 30)
         		{
@@ -232,11 +243,9 @@ public class rtty_receiver implements StringRxEvent {
         	means[i] = means[i] / (bb_len-30);
         	upthre[i] = means[i]*1.2;  //(maxs[i]-means[i])*0.3 + means[i];
         	lothre[i] = means[i]*0.8; //-(maxs[i]-means[i])*0.3 + means[i];
-        	
         }
         
-        grtty.clearMarkers();
-       // grtty.clearlines();
+ //       grtty.clearMarkers();
         System.out.println();
         System.out.println();
         peak_count=Math.min(4, peak_count);
@@ -291,9 +300,7 @@ public class rtty_receiver implements StringRxEvent {
         							if (!(bb[j][k-5]>maxs[j]/4) && !(bb[i][k-5]>maxs[i]/4))
         								highs++;
         						}
-        					}
-        					
-        					
+        					}  
         				}
         				
         				System.out.println(transitionsh + "  " + transitionsl + "  " + highs);
@@ -305,59 +312,47 @@ public class rtty_receiver implements StringRxEvent {
         				{
         					       					
         				
-	        				
 	        				//TODO check there are some transitions in the data
         					if (peak[i][0] > peak[j][0])
         					{
-        						out[1] = peak[i][0]*8000/(FFT_find_half_len*2);
-    	        				out[0] = peak[j][0]*8000/(FFT_find_half_len*2);
+        						out[1] = peak[i][0]*8000/(FFT_half_len*2);
+    	        				out[0] = peak[j][0]*8000/(FFT_half_len*2);
         					}
         					else
         					{
-        						out[0] = peak[i][0]*8000/(FFT_find_half_len*2);
-    	        				out[1] = peak[j][0]*8000/(FFT_find_half_len*2);
+        						out[0] = peak[i][0]*8000/(FFT_half_len*2);
+    	        				out[1] = peak[j][0]*8000/(FFT_half_len*2);
         					}
 	        				
 	        				
 	        			
-		    				grtty.drawfft(c);
-		    				grtty.addMarkers(peak[i][0],peak[j][0]);
-		    				//grtty.addMarkers(peak[][0]);
-		    				for (int z = 0; z < peak_count; z++)
-		    					grtty.addMarkers(peak[z][0]);
+	//	    				grtty.drawfft(_fft);
+	//	    				grtty.addMarkers(peak[i][0],peak[j][0]);
+	//	    				//grtty.addMarkers(peak[][0]);
+	//	    				for (int z = 0; z < peak_count; z++)
+	//	    					grtty.addMarkers(peak[z][0]);
 		    				
 		    				if (update)
 		    				{
 			    				decoder._f1=out[0]/8000;
 			    				decoder._f2=out[1]/8000;
 		    				}
-		    				
-		    				//grtty.drawlinedual(bb[i],bb[j],100);
-		    				
-		    					  
+		    						    					  
 	        				return out;
         				}
         			}
         		}        		
         	}        	
         }
-        
-        
-       
-        //plotint = plot.addLinePlot("my plot", c);
-		
-        grtty.drawfft(c);
-		grtty.clearMarkers();
-		for (int z = 0; z < peak_count; z++)
-			grtty.addMarkers(peak[z][0]);
 		return out;
 	}
 
-	public void followRTTY(double[] samples, boolean initial_solution)
+	private void followRTTY(boolean initial_solution)
 	{
 		//calls follow RTTY, then updates the demod by first making sure the shift is averaged.
+		//if initial solution, the update is applied without any averaging
 	
-		double[] new_pos = followRTTY_getpos(samples, search_range_rtty);
+		double[] new_pos = followRTTY_getpos( search_range_rtty);
 	
 		if (av_shift.getMA() == 0 || initial_solution)
 		{
@@ -384,13 +379,10 @@ public class rtty_receiver implements StringRxEvent {
 			double centre = (new_pos[1]-new_pos[0])/2 + new_pos[0];
 			decoder._f1 = centre - av_shift.getMA()/2;
 			decoder._f2 = centre + av_shift.getMA()/2;
-		}
-		
-		grtty.addMarkers(decoder._f1*(2*FFT_follow_half_len),decoder._f2*(2*FFT_follow_half_len));
-		
+		}		
 	}
 	
-	private double[] followRTTY_getpos(double[] samples, int search_range)
+	private double[] followRTTY_getpos(int search_range)
 	{
 		//search range is number of fft bins each side of old_Fx
 		
@@ -401,21 +393,8 @@ public class rtty_receiver implements StringRxEvent {
 		double old_f2=decoder._f2;
 		
 		
-		if (samples.length < FFT_follow_half_len*2)
+		if (!calcuate_FFT())
 			return out;
-		
-		//get 512 (useful) FFT bins
-		double[] fftar = new double[samples.length];
-		System.arraycopy(samples,0,fftar,0,samples.length);
-		ft_follow.realForward(fftar);
-		
-		double c[] = new double[FFT_follow_half_len];
-		
-		//calculate abs(.)
-        for (int i = 0; i < FFT_follow_half_len; i++)
-        {
-        	c[i] = Math.pow(fftar[i*2], 2) + Math.pow(fftar[i*2 +1], 2);
-        }
         
         double[] int_f1 = new double[2*search_range -1];
         double[] int_f2 = new double[2*search_range -1];
@@ -426,12 +405,12 @@ public class rtty_receiver implements StringRxEvent {
         //now integrate the FFT plot around each old freq
         for (int i = bin_f1-search_range+1; i < bin_f1+search_range; i++)
         {
-        	if ((i  >= 0) && (i < FFT_follow_half_len))
+        	if ((i  >= 0) && (i < FFT_half_len))
         	{
         		if (j==0)
-        			int_f1[0]=Math.sqrt(c[i]);
+        			int_f1[0]=Math.sqrt(_fft[i]);
         		else
-        			int_f1[j]=int_f1[j-1]+Math.sqrt(c[i]);
+        			int_f1[j]=int_f1[j-1]+Math.sqrt(_fft[i]);
         	}
         	else
         	{
@@ -445,12 +424,12 @@ public class rtty_receiver implements StringRxEvent {
         j=0;
         for (int i = bin_f2-search_range+1; i < bin_f2+search_range; i++)
         {
-        	if ((i  >= 0) && (i < FFT_follow_half_len))
+        	if ((i  >= 0) && (i < FFT_half_len))
         	{
         		if (j==0)
-        			int_f2[0]=Math.sqrt(c[i]);
+        			int_f2[0]=Math.sqrt(_fft[i]);
         		else
-        			int_f2[j]=int_f2[j-1]+Math.sqrt(c[i]);
+        			int_f2[j]=int_f2[j-1]+Math.sqrt(_fft[i]);
         	}
         	else
         	{
@@ -476,11 +455,7 @@ public class rtty_receiver implements StringRxEvent {
         		midbin_2=i+bin_f2-search_range+1;
         	}
         }
-        grtty.clearMarkers();
-        grtty.drawfft(c);
-        //grtty.addMarkers(new double[] {midbin_1,midbin_2});
-        
-		
+
 		//return -1 if one peak is somewhat less then the other
 		//this indicates that carrier wasnt present in the fft range
 		double peak = Math.max(int_f1[2*search_range -2], int_f2[2*search_range -2]);
@@ -488,63 +463,45 @@ public class rtty_receiver implements StringRxEvent {
 		if ( int_f1[2*search_range -2] < peak/3 )
 			out[0] = (double)-1;
 		else
-			out[0] = (double)(midbin_1)/(2*FFT_follow_half_len);
+			out[0] = (double)(midbin_1)/(2*FFT_half_len);
 		
 		if ( int_f2[2*search_range -2] < peak/3 )
 			out[1] = (double)-1;
 		else
-			out[1] = (double)(midbin_2)/(2*FFT_follow_half_len);
+			out[1] = (double)(midbin_2)/(2*FFT_half_len);
 	
         return out;
 	}
-	
-	/*
-	public String extractTelem (String input)
-	{
-		if (!(telem_buff == ""))   //if in middle of a string
-		{
-			telem_buff = telem_buff + input;
-		}
-		else //search for start
-		{
-			
-		}
 		
-		
-		return "";
-	}
-*/
-	
 	public String processBlock (double[] samples, int baud)
 	{
 		
 		//TODO: consider writing samples as a class wide variable rather than passing to each method
 		//TODO: search and afc both fft but dont share results
 		
-		samples_since_afc += samples.length;
-		samples_since_search += samples.length;
+		_samples = samples;
+		_fft_updated = false;
+		
+		samples_since_afc += _samples.length;
+		samples_since_search += _samples.length;
 		
 		//step 1 : find rtty signal if needed
 		if (auto_rtty_finding && current_state == State.INACTIVE && samples_since_search > search_freq)
 		{
 			samples_since_search = 0;
-			double[] loc = findRTTY(samples,true);
+			double[] loc = findRTTY(true);
 			if (loc[0] > 0)
 			{
 				current_state = State.FOUND_SIG;
-				followRTTY(samples,true);
+				followRTTY(true);
 			}
 		}
 		else if (enable_afc && samples_since_afc > afc_update_freq)  //step 2 : follow signal if afc is set
 		{
 			samples_since_afc = 0;
-			followRTTY(samples,false);
+			followRTTY(false);
 		}
 			
-		
-		
-		
-		
 		
 		
 		//step 3 : demodulate the signal		
@@ -619,6 +576,24 @@ public class rtty_receiver implements StringRxEvent {
 				fireStringReceived(str, checksum);
 			}
 		}
+	}
+
+	
+	public double[] get_fft() {
+		return _fft;
+	}
+
+	public int[] get_peaklocs() {
+		return _peaklocs;
+	}
+
+
+	public double get_f1() {
+		return decoder._f1;
+	}
+	
+	public double get_f2() {
+		return decoder._f2;
 	}
 	
 	

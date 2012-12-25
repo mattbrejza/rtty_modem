@@ -223,7 +223,7 @@ public class Habitat_interface {
 			if (cr.isOk())
 				return true;
 			
-			if (cr.getErrorId() != "conflict")
+			if (!cr.getErrorId().equals("conflict"))
 			{
 				//throw error but continue
 			}
@@ -266,7 +266,7 @@ public class Habitat_interface {
 				//System.out.println(cr.statusCode);
 				if (cr.isOk())
 					return true;
-				if (cr.getErrorId() != "conflict")
+				if (!cr.getErrorId().equals("conflict"))
 				{
 					//throw error but continue
 					its += 9;

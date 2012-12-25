@@ -46,6 +46,7 @@ import ukhas.Habitat_interface;
 import ukhas.Listener;
 import rtty.Mappoint_interface;
 import rtty.StringRxEvent;
+import rtty.graph_line;
 import ukhas.Telemetry_string;
 import rtty.rtty_receiver;
 import javax.swing.JCheckBox;
@@ -66,37 +67,41 @@ public class rttywin extends JFrame implements StringRxEvent {
 	private String _habitat_url = "habitat.habhub.org";
 	private String _habitat_db = "habitat";
 	
-	  boolean stopCapture = false;
-	  ByteArrayOutputStream byteArrayOutputStream;
+	boolean stopCapture = false;
+	ByteArrayOutputStream byteArrayOutputStream;
 	
 	
-	  AudioInputStream audioInputStream;
-	  SourceDataLine sourceDataLine;
+	AudioInputStream audioInputStream;
+	SourceDataLine sourceDataLine;
 	  
 	  //rtty_decode decoder = new rtty_decode(1200,1800,7);
-	  rtty_receiver rcv = new rtty_receiver();
+	rtty_receiver rcv = new rtty_receiver();
 	  
-	  DoubleFFT_1D ft = new DoubleFFT_1D(512);
+	DoubleFFT_1D ft = new DoubleFFT_1D(512);
 	  
-	  Plot2DPanel plot = new Plot2DPanel();
-	  int plotint;
+	private graph_line grtty = new graph_line();
+
 	  
-	  JLabel lb_freqs;
+	Plot2DPanel plot = new Plot2DPanel();
+	int plotint;
 	  
-	  JTextArea txtDecode;
-	  JLabel lbfreq;
-	  JScrollPane scrollPane;
-	  JCheckBox ckFreeze;
-	  JComboBox cbSoundCard;
-	  JCheckBox ck300b;
-	  JLabel lbStatus;
-	  private JCheckBox ckPause;
+	JLabel lb_freqs;
+	  
+	JTextArea txtDecode;
+	JLabel lbfreq;
+	JScrollPane scrollPane;
+	JCheckBox ckFreeze;
+	@SuppressWarnings("rawtypes")
+	JComboBox cbSoundCard;
+	JCheckBox ck300b;
+	JLabel lbStatus;
+	private JCheckBox ckPause;
 	  
 	  
-	  Habitat_interface hi;// = new Habitat_interface("MATT");
-	  private JTextField txtcall = new JTextField();
-	  private JTextField txtLat;
-	  private JTextField txtLong;;
+	Habitat_interface hi;// = new Habitat_interface("MATT");
+	private JTextField txtcall = new JTextField();
+	private JTextField txtLat;
+	private JTextField txtLong;;
 	  
 	 // graph_line grtty = new graph_line();
 	  
@@ -113,7 +118,6 @@ public class rttywin extends JFrame implements StringRxEvent {
 					rttywin frame = new rttywin();
 					frame.setVisible(true);
 					
-					
 			        Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();  
 			          
 			        //Output Available Mixers  
@@ -123,8 +127,6 @@ public class rttywin extends JFrame implements StringRxEvent {
 			          System.out.println(cnt + ": " + mixerInfo[cnt].getName());  
 			        }  
 			        
-			        
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -429,35 +431,22 @@ public class rttywin extends JFrame implements StringRxEvent {
 		        		  txtDecode.append(rcv.processBlock(a,50));
 		        	 
 		          }
+		          
+		          
+		          //plotting graph bit
+		          grtty.clearMarkers();
+		          grtty.drawfft(rcv.get_fft());
+		          
+		          for (int z = 0; z < rcv.get_peaklocs().length; z++)
+  					grtty.addMarkers(rcv.get_peaklocs()[z]);
+		          
+		          grtty.addMarkers(rcv.get_f1()*(2*rcv.FFT_half_len),rcv.get_f2()*(2*rcv.FFT_half_len));
 		        	  
 		          
-		          //if (ckFreeze.isSelected())
-		          //{
-		        //	  rcv.followRTTY(a);
-		         // }
-		         // else
-		         // {
-		        	//  double[] fqs = rcv.findRTTY(a,!ckFreeze.isSelected());
-		        	//  if (fqs[1] > 0)
-			        //  {
-			        	 // lb_freqs = new JLabel("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
-			        	 // System.out.println("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
-			        //	  lbfreq.setText("f1: " + Double.toString(fqs[0]) + "  f2:  " + Double.toString(fqs[1]));
-			        	  //lb_freqs.setBounds(50, 28, 46, 14);
-			    		//contentPane.add(lb_freqs);
-			         // }
-		         // }
 		          scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());//getHeight());
 		          lbStatus.setText(rcv.current_state.toString());
 		         
 	
-		          //System.arraycopy(a, 0, b, 0, 512);
-		         /* ft.realForward(a);
-		          double c[] = new double[256];
-		          for (int i = 0; i < 256; i++)
-		          {
-		        	  c[i] = Math.pow(a[i*2], 2) + Math.pow(a[i*2 +1], 2);
-		          }*/
 		         // plotint = plot.addLinePlot("my plot", c);
 		        }//end if
 		      }//end while
