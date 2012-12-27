@@ -17,16 +17,16 @@
 
 package rtty;
 
-import javax.swing.event.EventListenerList;
+import java.util.ArrayList;
+
 import ukhas.*;
-import ukhas.Telemetry_string;
 
 public class Telemetry_handler {
 
 	private boolean in_str=false;
 	private String telem_buff = "";
 	
-    protected EventListenerList  _listeners = new EventListenerList() ;
+    protected ArrayList<StringRxEvent>  _listeners = new ArrayList<StringRxEvent>() ;
 	
 	public Telemetry_handler() {
 		// TODO Auto-generated constructor stub
@@ -34,7 +34,7 @@ public class Telemetry_handler {
 	
 	public void addStringRecievedListener(StringRxEvent listener)
 	{	
-		_listeners.add(StringRxEvent.class, listener);
+		_listeners.add(listener);
 	}
 
 	public void clearBuff()
@@ -71,7 +71,7 @@ public class Telemetry_handler {
 				else        //found string, add to what we already have and send out
 				{
 					telem_buff = telem_buff + str.substring(j,i+1);
-					if (_listeners.getListenerList().length > 0)
+					if (_listeners.size() > 0)
 					{
 						boolean ck = check_checksum(telem_buff,0);
 						Telemetry_string ts = new Telemetry_string(telem_buff,ck);    //TODO: consider remove from here
@@ -102,10 +102,15 @@ public class Telemetry_handler {
 	
 	protected void fireStringReceived(Telemetry_string str, boolean checksum)
 	{
-		Object[] listeners = _listeners.getListenerList();
+		/*Object[] listeners = _listeners.getListenerList();
 		for (int i =listeners.length-2; i>=0; i-=2)   //urgh, why does java have to make this so horrible
 		{			
 			((StringRxEvent)listeners[i+1]).StringRx(str,checksum);
+		}*/
+		
+		for (int i = 0; i < _listeners.size(); i++)
+		{
+			_listeners.get(i).StringRx(str,checksum);
 		}
 	}
 	

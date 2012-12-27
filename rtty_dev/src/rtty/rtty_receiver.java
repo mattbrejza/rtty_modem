@@ -12,10 +12,9 @@
 
 
 package rtty;
+import java.util.ArrayList;
+
 import ukhas.*;
-
-
-import javax.swing.event.EventListenerList;
 
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
@@ -72,7 +71,7 @@ public class rtty_receiver implements StringRxEvent {
     private Bits_to_chars bit2char_fixed = new Bits_to_chars(7,2,Bits_to_chars.Method.FIXED_POSITION);
     
     //used for 'string received' event
-    protected EventListenerList  _listeners = new EventListenerList() ;
+    protected ArrayList<StringRxEvent> _listeners = new ArrayList<StringRxEvent>();
 
 	public rtty_receiver() {
 		// TODO Auto-generated constructor stub
@@ -83,15 +82,14 @@ public class rtty_receiver implements StringRxEvent {
 	
 	public void addStringRecievedListener(StringRxEvent listener)
 	{	
-		_listeners.add(StringRxEvent.class, listener);
+		_listeners.add(listener);
 	}
 	
 	protected void fireStringReceived(Telemetry_string str, boolean checksum)
 	{
-		Object[] listeners = _listeners.getListenerList();
-		for (int i =listeners.length-2; i>=0; i-=2)   //urgh, why does java have to make this so horrible
-		{			
-			((StringRxEvent)listeners[i+1]).StringRx(str,checksum);
+		for (int i = 0; i < _listeners.size(); i++)
+		{
+			_listeners.get(i).StringRx(str,checksum);
 		}
 	}
 	
@@ -571,7 +569,7 @@ public class rtty_receiver implements StringRxEvent {
 		if (!last_sha.equals(str.toSha256()))
 		{
 			last_sha = str.toSha256();		
-			if (_listeners.getListenerList().length > 0)
+			if (_listeners.size() > 0)
 			{
 				fireStringReceived(str, checksum);
 			}

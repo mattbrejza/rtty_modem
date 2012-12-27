@@ -13,17 +13,19 @@
 
 package rtty;
 
-import java.awt.Color;
+//import java.awt.Color;
 
 
 public class rtty_decode {
 	//MUST give sample rate of 8000
 	
+	//private static final boolean DEBUG = false;
+	
 	int _data_bits=7;
-	double _f1;         //low LO
-	double _f2;         //high LO
-	private double _LO2_phase;  //high LO
-	private double _LO1_phase;  //low LO
+	double _f1;                  //low LO
+	double _f2;                  //high LO
+	private double _LO2_phase;   //high LO
+	private double _LO1_phase;   //low LO
 	
 	//demod 
 	int resample_counter = 0;
@@ -52,10 +54,14 @@ public class rtty_decode {
     
     //previous window for debug
     //private double[] prev_win = new double[200];
-    private graph_baseband gbb = new graph_baseband();
+
+   // private graph_baseband gbb;
 
 
 	public rtty_decode(double f1, double f2, int data_bits) {
+		
+		//if (DEBUG)
+		//	gbb = new graph_baseband();
 		
 		_f1 =  f1 /8000;
 		_f2 =  f2 /8000;
@@ -193,7 +199,7 @@ public class rtty_decode {
 				j++;
 			}
 			
-			//TODO FILTER THEN SQUARE!!! NEEDS CHANGING
+			//TODO FILTER THEN SQUARE!!! NEEDS CHANGING  (done)
 			//TODO for science compare performance of each arrangement
 			
 
@@ -218,8 +224,11 @@ public class rtty_decode {
 		double[] gin = new double[le];
 		System.arraycopy(input,0,gin,0,le);
 		//System.arraycopy(prev_win,0,gin,0,200);
-		gbb.drawsingle(gin);
-		gbb.clearMarkers();
+		//if (DEBUG)
+		//{
+		//	gbb.drawsingle(gin);
+		//	gbb.clearMarkers();
+		//}
 		//System.arraycopy(input,input.length-200,prev_win,0,200);
 		//
 		double[] out = new double[input.length/14];
@@ -234,9 +243,9 @@ public class rtty_decode {
 					{
 						_sync_error = _sync_error + Math.pow(input[i],2) - _sync_late;							
 					}
-					if (i < 400)
-						gbb.addMarkers(i, Color.RED);
-					break;
+					//if (i < 400)
+					//	if (DEBUG) {gbb.addMarkers(i, Color.RED); }
+					//break;
 				case 6:		//skip or add a cycle
 					if (_sync_error > _sync_thres.getMA())		//skip
 					{
@@ -254,13 +263,13 @@ public class rtty_decode {
 					out_count++;
 					_last_bit = input[i];
 					_sync_thres.update(Math.pow(input[i],2));
-					if (i < 400)
-						gbb.addMarkers(i, Color.BLUE);
+					//if (i < 400)
+					//	if (DEBUG) { gbb.addMarkers(i, Color.BLUE); }
 					break;					
 				case 12:  //late gate
 					_sync_late = Math.pow(input[i],2);
-					if (i < 400)
-						gbb.addMarkers(i, Color.GREEN);
+					//if (i < 400)
+					//	if (DEBUG) { gbb.addMarkers(i, Color.GREEN); }
 					break;
 											
 			}
