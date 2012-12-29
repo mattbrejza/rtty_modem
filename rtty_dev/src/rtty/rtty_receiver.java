@@ -186,7 +186,7 @@ public class rtty_receiver implements StringRxEvent {
         for (int i = 0; i < peak_count; i++)
         {
         	peak[peak_count][1] = Math.sqrt(peak[peak_count][1]);   //sqrt the peaks
-        	_peaklocs[i] = (int)peak[peak_count][0];					//copy to variable to allow for debug access
+        	_peaklocs[i] = (int)peak[i][0];					//copy to variable to allow for debug access
         }
         //now have a list of peaks in the fft
         //sort peaks by amplitude of peak
@@ -197,7 +197,7 @@ public class rtty_receiver implements StringRxEvent {
         	}
         });
         
-        int bb_len = Math.max(2000, _samples.length);
+        int bb_len = Math.min(2000, _samples.length);
         double bb[][] =  new double [peak_count][bb_len];
         double maxs[] =  new double [peak_count];
         double mins[] =  new double [peak_count];
@@ -287,7 +287,7 @@ public class rtty_receiver implements StringRxEvent {
         							}        							
         						}
 							}
-        					last_state1 = last_state;
+        					last_state1 = last_state; //test c 
         					last_state = current_state;
         					
         					//both not high at same time check
@@ -542,7 +542,7 @@ public class rtty_receiver implements StringRxEvent {
 			str = bit2char_8.bits2chars(bits);
 			valid8 = telem_hand_8.ExtractPacket(str);
 		}
-		System.out.println(bit2char_7.Average_bit_period());
+		//System.out.println(bit2char_7.Average_bit_period());
 		
 		//at this stage, if valid7/8 is high, then the databits info is known, and the fixed extractor can be used
 		if (valid7)
@@ -579,6 +579,17 @@ public class rtty_receiver implements StringRxEvent {
 	
 	public double[] get_fft() {
 		return _fft;
+	}
+	
+	public double get_fft(int i)
+	{
+		if (_fft == null)
+			return 0;
+		if (i < _fft.length)
+			return _fft[i];
+		else
+			return 0;
+		
 	}
 
 	public int[] get_peaklocs() {

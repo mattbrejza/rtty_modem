@@ -44,7 +44,7 @@ import edu.emory.mathcs.jtransforms.fft.*;
 import ukhas.Gps_coordinate;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
-import rtty.Mappoint_interface;
+//import rtty.Mappoint_interface;
 import rtty.StringRxEvent;
 import ukhas.Telemetry_string;
 import rtty.rtty_receiver;
@@ -276,8 +276,8 @@ public class rttywin extends JFrame implements StringRxEvent {
 				//Habitat_interface.test();
 				
 				//hi.upload_payload_telem(new Telemetry_string("$$TEST,3324,435,32fdfdf,423,423,4,5*4334\n",false));
-				Mappoint_interface mi = new Mappoint_interface();
-				mi.test();
+				//Mappoint_interface mi = new Mappoint_interface();
+				//mi.test();
 			}
 		});
 		btnNewButton_1.setBounds(264, 137, 89, 23);

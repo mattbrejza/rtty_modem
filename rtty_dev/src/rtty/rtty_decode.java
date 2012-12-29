@@ -231,7 +231,7 @@ public class rtty_decode {
 		//}
 		//System.arraycopy(input,input.length-200,prev_win,0,200);
 		//
-		double[] out = new double[input.length/14];
+		double[] out = new double[input.length/10];
 		int out_count = 0;
 		
 		for (int i = 0; i < input.length; i++)

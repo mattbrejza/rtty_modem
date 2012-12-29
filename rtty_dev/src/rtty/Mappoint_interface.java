@@ -1,4 +1,4 @@
-package rtty;
+/*package rtty;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.*;
@@ -29,3 +29,4 @@ public class Mappoint_interface {
 	}
 
 }
+*/
