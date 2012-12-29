@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/status_screen"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/status_screen" />
+     <item android:id="@+id/map_screen"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/map_screen" />
+    <item android:id="@+id/fft_screen"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/fft_screen" />
+    
+   
+          
+
+</menu>
