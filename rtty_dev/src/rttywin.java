@@ -11,8 +11,16 @@
 // GNU General Public License for more details.
 
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Paint;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,6 +29,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 
@@ -34,6 +44,7 @@ import javax.sound.sampled.TargetDataLine;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 
 
 
@@ -69,6 +80,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	boolean stopCapture = false;
 	ByteArrayOutputStream byteArrayOutputStream;
 	
+	Waterfall wf;
 	
 	AudioInputStream audioInputStream;
 	SourceDataLine sourceDataLine;
@@ -94,6 +106,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	JComboBox cbSoundCard;
 	JCheckBox ck300b;
 	JLabel lbStatus;
+	JLabel lbimage;
 	private JCheckBox ckPause;
 	  
 	  
@@ -144,7 +157,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	 */
 	public rttywin() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 546, 428);
+		setBounds(100, 100, 546, 628);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -170,7 +183,13 @@ public class rttywin extends JFrame implements StringRxEvent {
 			contentPane.add(cbSoundCard);
 			
 			
-	        
+			BufferedImage grad;
+			
+			grad = ImageIO.read(new File("C:/grad.png"));
+			wf = new Waterfall(grad,200);
+				
+				
+			
 	        
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -220,13 +239,12 @@ public class rttywin extends JFrame implements StringRxEvent {
 		btnStopst.setBounds(149, 137, 89, 23);
 		contentPane.add(btnStopst);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setEnabled(false);
+		JButton btnNewButton = new JButton("Newfbutton");
+		btnNewButton.setEnabled(true);
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				  
-				
+			public void actionPerformed(ActionEvent e) {
+				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
+				hi.Test();
 			}
 		});
 		btnNewButton.setBounds(152, 24, 89, 23);
@@ -278,6 +296,8 @@ public class rttywin extends JFrame implements StringRxEvent {
 				//hi.upload_payload_telem(new Telemetry_string("$$TEST,3324,435,32fdfdf,423,423,4,5*4334\n",false));
 				//Mappoint_interface mi = new Mappoint_interface();
 				//mi.test();
+			
+				
 			}
 		});
 		btnNewButton_1.setBounds(264, 137, 89, 23);
@@ -305,6 +325,33 @@ public class rttywin extends JFrame implements StringRxEvent {
 		txtLong.setBounds(401, 132, 86, 20);
 		contentPane.add(txtLong);
 		txtLong.setColumns(10);
+		
+	
+		
+		BufferedImage myPicture;
+		try {
+			myPicture = ImageIO.read(new File("C:/grad.png"));
+			//myPicture.setRGB(3, 100, 0xFFFFFF);
+			lbimage = new JLabel(new ImageIcon( myPicture ));
+			
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		lbimage.setBounds(10, 388, 510, 190);
+		contentPane.add(lbimage);
+		
+         
+
+		
+		
+			
+			
+			
 		
 		
 	}
@@ -403,7 +450,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	// and write it to an output audio file.
 	 class CaptureThread extends Thread{
 		  //An arbitrary-size temporary holding buffer
-		  byte tempBuffer[] = new byte[20000];
+		  byte tempBuffer[] = new byte[4000];
 		  public void run(){
 		    byteArrayOutputStream = new ByteArrayOutputStream();
 		    stopCapture = false;
@@ -431,20 +478,26 @@ public class rttywin extends JFrame implements StringRxEvent {
 		        	 
 		          }
 		          
-		          
-		          //plotting graph bit
-		          grtty.clearMarkers();
-		          grtty.drawfft(rcv.get_fft());
-		          
-		          for (int z = 0; z < rcv.get_peaklocs().length; z++)
-  					grtty.addMarkers(rcv.get_peaklocs()[z]);
-		          
-		          grtty.addMarkers(rcv.get_f1()*(2*rcv.FFT_half_len),rcv.get_f2()*(2*rcv.FFT_half_len));
-		        	  
-		          
-		          scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());//getHeight());
-		          lbStatus.setText(rcv.current_state.toString());
-		         
+		          if (rcv.get_fft_updated())
+		          {
+			          //plotting graph bit
+			          grtty.clearMarkers();
+			          grtty.drawfft(rcv.get_fft());
+			          
+			          if (rcv.get_peaklocs() != null)
+			          {
+				          for (int z = 0; z < rcv.get_peaklocs().length; z++)
+		  					grtty.addMarkers(rcv.get_peaklocs()[z]);
+				      }
+			          
+			          grtty.addMarkers(rcv.get_f1()*(2*rcv.FFT_half_len),rcv.get_f2()*(2*rcv.FFT_half_len));
+			        	  
+			          
+			          scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());//getHeight());
+			          lbStatus.setText(rcv.current_state.toString());
+		          }
+		          if (rcv.get_fft_updated())
+		        	  lbimage.setIcon(new ImageIcon(wf.UpdateLine(rcv.get_fft())));
 	
 		         // plotint = plot.addLinePlot("my plot", c);
 		        }//end if

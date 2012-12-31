@@ -58,6 +58,9 @@ public class rtty_receiver implements StringRxEvent {
     public int search_freq = 8000;
     private int samples_since_search = 0;
     
+    public int fft_update_freq = 2000;
+    private int samples_since_fft = 0;
+    
     public int samples_since_last_valid = 0;
     
     private double[] _samples;
@@ -482,10 +485,12 @@ public class rtty_receiver implements StringRxEvent {
 		
 		samples_since_afc += _samples.length;
 		samples_since_search += _samples.length;
+		samples_since_fft += _samples.length;
 		
 		//step 1 : find rtty signal if needed
-		if (auto_rtty_finding && current_state == State.INACTIVE && samples_since_search > search_freq)
+		if (auto_rtty_finding && current_state == State.INACTIVE && samples_since_search >= search_freq)
 		{
+			samples_since_fft = 0;
 			samples_since_search = 0;
 			double[] loc = findRTTY(true);
 			if (loc[0] > 0)
@@ -494,12 +499,18 @@ public class rtty_receiver implements StringRxEvent {
 				followRTTY(true);
 			}
 		}
-		else if (enable_afc && samples_since_afc > afc_update_freq)  //step 2 : follow signal if afc is set
+		else if (enable_afc && samples_since_afc >= afc_update_freq)  //step 2 : follow signal if afc is set
 		{
+			samples_since_fft = 0;
 			samples_since_afc = 0;
 			followRTTY(false);
 		}
-			
+		
+		if (samples_since_fft >= fft_update_freq)
+		{
+			calcuate_FFT();
+			samples_since_fft = 0;
+		}
 		
 		
 		//step 3 : demodulate the signal		
@@ -605,6 +616,10 @@ public class rtty_receiver implements StringRxEvent {
 		return decoder._f2;
 	}
 	
+	public boolean get_fft_updated()
+	{
+		return _fft_updated;
+	}
 	
 	
 	

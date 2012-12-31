@@ -105,6 +105,10 @@ public class Gps_coordinate {
 					double la2 = Double.parseDouble(lat.substring(offset_lat+2,lat.length()));       //get the MM.mmmm part
 					double lo2 = Double.parseDouble(longi.substring(offset_long+3,longi.length()));  //get the MM.mmmm part
 	
+					if (la1 < 0)
+						la2 = -1 * la2;
+					if (lo1 < 0)
+						lo2 = -1 * lo2;
 					
 					Set_decimal((double)la1 + la2/60,(double)lo1 + lo2/60);
 				}

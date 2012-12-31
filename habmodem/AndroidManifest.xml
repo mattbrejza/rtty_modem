@@ -26,9 +26,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>       
         <activity
-            android:name=".MapActivity"
+            android:name=".Map_Activity"
             android:label="@string/title_activity_map" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -37,6 +37,13 @@
         <activity
             android:name=".FFTActivity"
             android:label="@string/title_activity_fft" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.brejza.matt.habmodem.StatusScreen" />
+        </activity>
+        <activity
+            android:name=".Preferences_activity"
+            android:label="@string/title_activity_prefs" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.brejza.matt.habmodem.StatusScreen" />

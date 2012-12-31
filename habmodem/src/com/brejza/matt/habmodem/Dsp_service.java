@@ -13,7 +13,12 @@
 
 package com.brejza.matt.habmodem;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import rtty.StringRxEvent;
+import rtty.moving_average;
 import rtty.rtty_receiver;
 import ukhas.Telemetry_string;
 import android.app.Service;
@@ -22,17 +27,29 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 
 public class Dsp_service extends Service implements StringRxEvent {
 
+	public final static String TELEM_RX = "com.brejza.matt.habmodem.TELEM_RX";
+	public final static String CHAR_RX = "com.brejza.matt.habmodem.CHAR_RX";
+	public final static String CHARS = "com.brejza.matt.habmodem.CHARS";
+	public final static String FFT_UPDATED = "com.brejza.matt.habmodem.FFT_UPDATED";
+	
 	 // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     rtty_receiver rcv = new rtty_receiver();
     private AudioRecord mRecorder;
 	int buffsize;
 	boolean isRecording = false;
+	
+	Telemetry_string last_str;
 
+	moving_average ascent_rates;
+	
+	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
+	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>()); 
 	
 	public Dsp_service() {
 		// TODO Auto-generated constructor stub
@@ -85,14 +102,29 @@ public class Dsp_service extends Service implements StringRxEvent {
 	
 	public void StringRx(Telemetry_string str, boolean checksum)
 	{
-		sendBroadcast(new Intent(Intent.ACTION_VIEW));
+		if (!checksum) return;
+		last_str = str;
+		listRxStr.add(str.getSentence());
+		if (!listActivePayloads.contains(str.callsign))
+		{
+			listActivePayloads.add(str.callsign);
+		}
+		sendBroadcast(new Intent(TELEM_RX));
 	}
 	
-
+	public Telemetry_string getLastString()
+	{
+		return last_str;
+	}
 	
 	public double[] getFFT()
 	{
 		return rcv.get_fft();
+	}
+	
+	public double getFFT(int i)
+	{
+		return rcv.get_fft(i);
 	}
 	
 	class captureThread extends Thread
@@ -117,8 +149,15 @@ public class Dsp_service extends Service implements StringRxEvent {
 	                double[] s = new double [buffsize];
 	                for (int i = 0; i < buffsize; i++)
 	            	    s[i] = (double) buffer[i];
-	                rcv.processBlock(s,300);
-	               
+	                String rxchar =  rcv.processBlock(s,300);
+	                Intent i = new Intent(CHAR_RX);
+	                i.putExtra(CHARS, rxchar);
+	                sendBroadcast(i);
+	                
+	                if (rcv.get_fft_updated())
+	                	sendBroadcast(new Intent(FFT_UPDATED));
+	                
+	                
 	               /*
 	               handler.post(new Runnable() {
 	                   @Override

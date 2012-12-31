@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="pref_callsign"
+        android:title="@string/pref_callsign"
+        android:summary="@string/pref_callsign_summ"
+        android:defaultValue="CALLSIGN123" />
+    
+   
+    <PreferenceScreen
+        android:key="button_advanced_settings"
+        android:title="@string/pref_advanced"
+        android:persistent="false">
+        
+        <EditTextPreference
+        android:key="pref_habitat_server"
+        android:title="@string/pref_habitat_server"
+        android:summary="@string/pref_habitat_server_summ"
+        android:defaultValue="habitat.habhub.org" />
+        
+        <EditTextPreference
+        android:key="pref_habitat_db"
+        android:title="@string/pref_habitat_db"
+        android:summary="@string/pref_habitat_db_summ"
+        android:defaultValue="habitat" />
+        
+        
+    </PreferenceScreen>
+    
+</PreferenceScreen>

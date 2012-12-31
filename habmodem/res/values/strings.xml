@@ -6,8 +6,17 @@
     <string name="title_activity_status_screen">StatusScreen</string>
     <string name="status_screen">Status</string>
     <string name="fft_screen">FFT</string>
+    <string name="title_activity_prefs">Settings</string>
     <string name="map_screen">Map</string>
+    <string name="settings_screen">Settings</string>
     <string name="title_activity_map">Map</string>
     <string name="title_activity_fft">FFTActivity</string>
+    <string name="pref_callsign">Callsign</string>
+    <string name="pref_callsign_summ">Enter a callsign to identify your receiver</string>
+    <string name="pref_habitat_server">Habitat Server URL</string>
+    <string name="pref_habitat_db">Habitat Database Name</string>
+    <string name="pref_habitat_server_summ">Enter the address for the habitat server</string>
+    <string name="pref_habitat_db_summ">Enter the database name</string>
+    <string name="pref_advanced">Advanced Settings</string>
 
 </resources>

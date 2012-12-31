@@ -1,9 +1,11 @@
 package ukhas;
 
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import net.sf.json.*;
@@ -12,6 +14,8 @@ import com.fourspaces.couchdb.CouchResponse;
 import com.fourspaces.couchdb.Database;
 import com.fourspaces.couchdb.Document;
 import com.fourspaces.couchdb.Session;
+import com.fourspaces.couchdb.View;
+import com.fourspaces.couchdb.ViewResults;
 
 import rtty.*;
 
@@ -40,6 +44,24 @@ public class Habitat_interface {
 		_habitat_url = habitat_url;
 		_habitat_db = habitat_db;
 		_listener_info = listener_info;
+		
+	}
+	
+	public void Test()
+	{
+		
+		 s = new Session(_habitat_url,80);
+		 db = s.getDatabase(_habitat_db);
+		 List<Document> foodoc;
+		 View v = new View("payload_configuration/callsign_time_created_index");
+		 //View v = new View("payload_configuration/callsign_time_created_index&startkey%3D[%22APEX%22]");
+		// v.setKey("startkey=APEX");
+		 v.setStartKey("[%22APEX%22]");
+		 v.setLimit(1);
+		//foodoc = db.view("flight/end_start_including_payloads").getResults();
+		 foodoc = db.view(v).getResults();
+		foodoc.toString();
+		 
 		
 	}
 	

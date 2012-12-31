@@ -9,7 +9,8 @@
     <item android:id="@+id/fft_screen"
           android:showAsAction="ifRoom|withText"
           android:title="@string/fft_screen" />
-    
+    <item android:id="@+id/settings_screen"
+          android:title="@string/settings_screen" />
    
           
 

@@ -13,7 +13,7 @@
 
 package com.brejza.matt.habmodem;
 
-
+import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
@@ -23,6 +23,7 @@ import com.jjoe64.graphview.LineGraphView;
 
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -30,10 +31,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import rtty.*;
@@ -44,34 +51,37 @@ import ukhas.*;
 
 public class StatusScreen extends Activity  {
 	
+
+	
 //	private AudioRecord mRecorder;
 //	int buffsize;
 //	boolean isRecording = false;
 //	private Handler handler;
 //	rtty_receiver rcv = new rtty_receiver();
-	TextView t;
+//	TextView t;
+	ListView list;
+	EditText txtchars;
+	ImageView wfview;
+
 //	private GraphView graphView;
-	private GraphViewSeries viewseries;
+//	private GraphViewSeries viewseries;
 	
 	private int FFT_half_len = 512;
 
 	private StringRxReceiver strrxReceiver;
+	private CharRxReceiver charrxReceiver;
+	private FFTUpdateReceiver fftupdateReceiver;
 	
 	Dsp_service mService;
     boolean mBound = false;
     boolean isReg = false;
+    boolean initList = false;
+    
+    ArrayAdapter<String> adapter;
+    
+    Waterfall wf;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_status_screen);
-      //  rcv.addStringRecievedListener(this);
-      //  handler = new Handler();
-        t = (TextView)findViewById(R.id.txttest);
-        
-        initGraph();
-
-    }
+  
 
     /////////////////////
     //////// MENU ///////
@@ -93,7 +103,11 @@ public class StatusScreen extends Activity  {
             	startActivity(intent);
                 return true;
             case R.id.map_screen:
-            	intent = new Intent(this, MapActivity.class);
+            	intent = new Intent(this, Map_Activity.class);
+            	startActivity(intent);
+                return true;
+            case R.id.settings_screen:
+            	intent = new Intent(this,Preferences_activity.class);
             	startActivity(intent);
                 return true;
             default:
@@ -105,69 +119,51 @@ public class StatusScreen extends Activity  {
 	////// BUTTONS //////
 	/////////////////////
 
-    public void btnStartService(View view)
-	{
-		 if (mBound) {
-			// mService.addStringRecievedListener(this);
-	            // Call a method from the LocalService.
-	            // However, if this call were something that might hang, then this request should
-	            // occur in a separate thread to avoid slowing down the activity performance.
-	            Toast.makeText(this, "number: " + 7, Toast.LENGTH_SHORT).show();
-	        }
-	}
-    
-    /*
-	public void btnUpdate(View view)
-	{
-		handler.post(new Runnable() {
-            @Override
-            public void run() {
-             
-            
-		exampleSeries1.resetData(new GraphViewData[] {
-				new GraphViewData(1, getRandom())
-				, new GraphViewData(2, getRandom())
-				, new GraphViewData(2.5, getRandom()) // another frequency
-				, new GraphViewData(3, getRandom())
-				, new GraphViewData(4, getRandom())
-				, new GraphViewData(5, getRandom())
-		});
-            }
-    	});
-	}
-	*/
+   
     
 
-    public void btnStart(View view)
-    {
-    	/*
-    	buffsize = AudioRecord.getMinBufferSize(8000,AudioFormat.CHANNEL_IN_MONO ,AudioFormat.ENCODING_PCM_16BIT);
-    	buffsize = Math.max(buffsize, 10000);
-    	
-    	mRecorder = new AudioRecord(AudioSource.MIC,8000,
-    			AudioFormat.CHANNEL_IN_MONO ,
-    			AudioFormat.ENCODING_PCM_16BIT,buffsize);
-    	
-    	mRecorder.startRecording();
-    	
-    	Thread ct = new captureThread();
-        ct.start();
-      */
-      
-        //test 
-       
-    }
     
 	/////////////////////
 	///// LIFECYCLE /////
 	/////////////////////
     
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_status_screen);
+        
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        
+        
+        
+        
+      //  rcv.addStringRecievedListener(this);
+      //  handler = new Handler();
+       // t = (TextView)findViewById(R.id.txttest);
+        wfview = (ImageView)findViewById(R.id.imgViWF);
+        list = (ListView)findViewById(R.id.listRxStrings);
+        txtchars = (EditText)findViewById(R.id.txtRawChars);
+        txtchars.setEnabled(false);
+        initGraph();
+        
+        
+        wf = new Waterfall(BitmapFactory.decodeResource(this.getResources(), R.drawable.grad), 200);
+        
+        
+       
+
+    }
+    
+    @Override
     protected void onStart() {
         super.onStart();
      //   // Bind to LocalService
-     //   Intent intent = new Intent(this, Dsp_service.class);
-     //   bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(this, Dsp_service.class);
+    
+        startService(intent);
+        
+
+      
        
     }
 
@@ -185,21 +181,43 @@ public class StatusScreen extends Activity  {
     @Override
    	public void onResume() {
    		super.onResume();
-   		//if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
-   		//IntentFilter intentFilter = new IntentFilter(Intent.ACTION_VIEW);
-   		//if (!isReg) { registerReceiver(strrxReceiver, intentFilter); }
-   		isReg = true;
+
    		
    	 // Bind to LocalService
         Intent intent = new Intent(this, Dsp_service.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        
+     
+      //string receiver
+   		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
+   		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
+   		if (!isReg) { registerReceiver(strrxReceiver, intentFilter1); }
+   		
+   	//char receiver
+   		if (charrxReceiver == null) charrxReceiver = new CharRxReceiver();
+   		IntentFilter intentFilter2 = new IntentFilter(Dsp_service.CHAR_RX);
+   		if (!isReg) { registerReceiver(charrxReceiver, intentFilter2); }
+   		
+   	//fftreceiver
+   		if (fftupdateReceiver == null) fftupdateReceiver = new FFTUpdateReceiver();
+   		IntentFilter intentFilter3 = new IntentFilter(Dsp_service.FFT_UPDATED);
+   		if (!isReg) { registerReceiver(fftupdateReceiver, intentFilter3); }
+   		
+   		isReg = true;
+        
    	}
+    
+   
        
     @Override
     public void onPause(){
        	super.onPause();
-       	//if (isReg)
-        	//   if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+       	if (isReg)
+       	{
+        	   if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+        	   if (charrxReceiver != null) unregisterReceiver(charrxReceiver);
+        	   if (fftupdateReceiver != null) unregisterReceiver(fftupdateReceiver);
+       	}
            
            isReg = false;
            
@@ -211,6 +229,32 @@ public class StatusScreen extends Activity  {
     
     ///////////////
 	
+    public void updateListView()
+    {
+    	if (!initList)
+    	{
+	    	 list = (ListView) findViewById(R.id.listRxStrings);
+	     
+	
+	         // First paramenter - Context
+	         // Second parameter - Layout for the row
+	         // Third parameter - ID of the TextView to which the data is written
+	         // Forth - the Array of data
+	         adapter = new ArrayAdapter<String>(this,
+	           android.R.layout.simple_list_item_1, android.R.id.text1, mService.listRxStr);
+	
+	         // Assign adapter to ListView
+	         list.setAdapter(adapter);
+	         list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+	         initList = true;
+    	}
+    	else
+    	{
+    		
+    		adapter.notifyDataSetChanged();
+    	}
+    }
+    
 	private void initGraph()
 	{
 		/*
@@ -263,17 +307,18 @@ public class StatusScreen extends Activity  {
         */
 	}
 	
+	/*
+	
 	private void showFFT()
 	{
 		 GraphViewData[] data = new GraphViewData[FFT_half_len];
 		 
 		 for (int i = 0; i < FFT_half_len; i++)
 		 {
-			 data[i] = new GraphViewData(i,10 * Math.log10(mService.rcv.get_fft(i)));
+			 data[i] = new GraphViewData(i,10 * Math.log10(mService.getFFT(i)));
 		 }
 		 
-		 viewseries.resetData(data); 
-	
+			
 		 LinearLayout layout = (LinearLayout) findViewById(R.id.llgraph);
 		 
 		 layout.removeAllViewsInLayout();
@@ -291,7 +336,7 @@ public class StatusScreen extends Activity  {
 	     
 	}
      
-    
+    */
     
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -315,18 +360,42 @@ public class StatusScreen extends Activity  {
     
     private class StringRxReceiver extends BroadcastReceiver {
 
-    	
     	@Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+            if (intent.getAction().equals(Dsp_service.TELEM_RX)) {
             //Do stuff
-            	System.out.println("GOT INTENTTTTTTTTTTTTTTTTT");
-            	showFFT();
+            	System.out.println("GOT INTENT telem");
+            //	list.add
+            	updateListView();
+            	
             }
         }
-        
+    }
     
-        
+    private class CharRxReceiver extends BroadcastReceiver {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Dsp_service.CHAR_RX)) {
+            //Do stuff
+            	String ch = intent.getStringExtra(Dsp_service.CHARS);
+            	System.out.println(ch);
+            	txtchars.append(ch);
+            }
+        }
+    }
+    
+    private class FFTUpdateReceiver extends BroadcastReceiver {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Dsp_service.FFT_UPDATED)) {
+            	//TODO: HERE
+            	wfview.setImageBitmap(wf.UpdateLine(mService.getFFT()));
+            	wfview.invalidate();
+            	
+            }
+        }
     }
     
 }

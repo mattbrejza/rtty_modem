@@ -27,7 +27,7 @@ public class FFTActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fft);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-    }
+    } 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -47,7 +47,7 @@ public class FFTActivity extends Activity {
             	startActivity(intent);
                 return true;
             case R.id.map_screen:
-            	intent = new Intent(this, MapActivity.class);
+            	intent = new Intent(this, Map_Activity.class);
             	startActivity(intent);
                 return true;
             default:
