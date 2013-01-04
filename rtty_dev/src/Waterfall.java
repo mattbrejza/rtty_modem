@@ -1,36 +1,37 @@
-package com.brejza.matt.habmodem;
+import java.awt.image.BufferedImage;
 
-import android.graphics.Bitmap;
 
 public class Waterfall {
 
 	private int[] _grad;
 	private int _grad_max;
 	
-	private Bitmap im1;
-	private Bitmap im2;
+	private BufferedImage im1;
+	private BufferedImage im2;
 	private boolean _active_image = true;
 	private int line1 = 399;
 	private int line2 = 199;
+	
 	private int _imageHeight = 200;
 	
-	public Waterfall(Bitmap gradient, int imageHeight) {
+	
+	public Waterfall(BufferedImage gradient, int imageHeight) {
 		
 		_imageHeight = imageHeight;
 		line1 = 2*imageHeight - 1;
 		line2 = line1 - imageHeight;
-		im1 = Bitmap.createBitmap(512, 2*imageHeight, Bitmap.Config.ARGB_8888);
-		im2 = Bitmap.createBitmap(512, 2*imageHeight, Bitmap.Config.ARGB_8888);
+		im1 = new BufferedImage(512,2*imageHeight,BufferedImage.TYPE_INT_RGB);
+		im2 = new BufferedImage(512,2*imageHeight,BufferedImage.TYPE_INT_RGB);
 		
 		_grad = new int[gradient.getWidth()];
 		for (int i = 0; i < gradient.getWidth(); i++)
 		{
-			_grad[i] = gradient.getPixel(i,0);
+			_grad[i] = gradient.getRGB(i,0);
 		}
 		_grad_max = gradient.getWidth();	
 	}
 	
-	public Bitmap UpdateLine(double[] fftin, int f1, int f2)
+	public BufferedImage UpdateLine(double[] fftin)
 	{
 		if (fftin.length != 512)
 			return null;
@@ -45,24 +46,18 @@ public class Waterfall {
 				currentpix = 0;
 			else if (currentpix >= _grad_max)
 				currentpix = _grad_max -1;
-			im1.setPixel(i, line1, _grad[currentpix]);
-			im2.setPixel(i, line2, _grad[currentpix]);
+			im1.setRGB(i, line1, _grad[currentpix]);
+			im2.setRGB(i, line2, _grad[currentpix]);
 			
 		}
 		
-		Bitmap output;
+		BufferedImage output;
 		
 		if (_active_image)
-			output = Bitmap.createBitmap(im2,0,line2,512,_imageHeight);		
+			output = im2.getSubimage(0, line2, 512, 200);
 		else
-			output = Bitmap.createBitmap(im1,0,line1,512,_imageHeight);
+			output = im1.getSubimage(0, line1, 512, 200);
 		
-		
-		for (int i = 0; i < _imageHeight; i++)
-		{
-			output.setPixel(f1, i, 0xFF00FF00);
-			output.setPixel(f2, i, 0xFF00FF00);
-		}
 		
 		line1--;
 		line2--;

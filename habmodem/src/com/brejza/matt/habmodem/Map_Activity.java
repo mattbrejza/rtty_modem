@@ -36,6 +36,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -77,7 +78,7 @@ public class Map_Activity extends MapActivity {
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(true);
         mapView.setMapFile(new File("/sdcard/england.map"));
-        
+
         
         
 
@@ -145,10 +146,7 @@ public class Map_Activity extends MapActivity {
 		 points = new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } };
 		 way1 = new OverlayWay(points);
         
-        //string receiver
-   		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
-   		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
-   		if (!isReg) { registerReceiver(strrxReceiver, intentFilter1); }
+
    		
    		
    		loc_han = new Location_handler(this);
@@ -205,13 +203,20 @@ public class Map_Activity extends MapActivity {
    	 // Bind to LocalService
         Intent intent = new Intent(this, Dsp_service.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        
+        //string receiver
+   		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
+   		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
+   		if (!isReg) { registerReceiver(strrxReceiver, intentFilter1); }
+   		
+   		
    	}
        
     @Override
     public void onPause(){
        	super.onPause();
-       	//if (isReg)
-        //	   if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+       	if (isReg)
+        	   if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
            
            isReg = false;
            
@@ -231,9 +236,20 @@ public class Map_Activity extends MapActivity {
             //	list.add
             	item.setPoint(new GeoPoint(mService.getLastString().coords.latitude,mService.getLastString().coords.longitude));
             	itemizedOverlay.requestRedraw();
+            	
+            	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
+            	fragment.updatePayload(mService.getLastString());
             }
         }
     }
+    
+    public void btnClose(View view)
+    {
+    	System.out.println("BUTTON PRESS  " +view.toString());
+    	//view.ge
+    	//view.getParent().
+    }
+
     
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {

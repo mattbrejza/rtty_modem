@@ -391,7 +391,7 @@ public class StatusScreen extends Activity  {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Dsp_service.FFT_UPDATED)) {
             	//TODO: HERE
-            	wfview.setImageBitmap(wf.UpdateLine(mService.getFFT()));
+            	wfview.setImageBitmap(wf.UpdateLine(mService.getFFT(),mService.get_f1_FFTbin(),mService.get_f2_FFTbin()));
             	wfview.invalidate();
             	
             }

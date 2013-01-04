@@ -18,5 +18,11 @@
     <string name="pref_habitat_server_summ">Enter the address for the habitat server</string>
     <string name="pref_habitat_db_summ">Enter the database name</string>
     <string name="pref_advanced">Advanced Settings</string>
+    <string name="time">TIME</string>
+    <string name="altitude">ALTITUDE</string>
+	<string name="latitude">LATITUDE</string>
+	<string name="longitude">LONGITUDE</string>
+	<string name="ascent_rate">ASCENT RATE</string>
+	<string name="add_button_description">Add Payload to be Tracked</string>
 
 </resources>

@@ -20,6 +20,9 @@ import java.util.List;
 import rtty.StringRxEvent;
 import rtty.moving_average;
 import rtty.rtty_receiver;
+import ukhas.Gps_coordinate;
+import ukhas.Habitat_interface;
+import ukhas.Listener;
 import ukhas.Telemetry_string;
 import android.app.Service;
 import android.content.Intent;
@@ -29,6 +32,7 @@ import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 
 public class Dsp_service extends Service implements StringRxEvent {
 
@@ -48,6 +52,8 @@ public class Dsp_service extends Service implements StringRxEvent {
 
 	moving_average ascent_rates;
 	
+	Habitat_interface hab_con;
+	
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
 	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>()); 
 	
@@ -60,6 +66,11 @@ public class Dsp_service extends Service implements StringRxEvent {
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		startAudio();
+		hab_con = new Habitat_interface(
+					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_server", "habitat.habhub.org"),
+					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_db", "habitat"),
+					 new Listener("MATT_XOOM", new Gps_coordinate(50.2,-0.6,0)));
+		hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
 		System.out.println("Starting audio");
 		return mBinder;
 	}
@@ -105,6 +116,10 @@ public class Dsp_service extends Service implements StringRxEvent {
 		if (!checksum) return;
 		last_str = str;
 		listRxStr.add(str.getSentence());
+		
+		if (checksum)
+			hab_con.upload_payload_telem(str);
+		
 		if (!listActivePayloads.contains(str.callsign))
 		{
 			listActivePayloads.add(str.callsign);
@@ -125,6 +140,16 @@ public class Dsp_service extends Service implements StringRxEvent {
 	public double getFFT(int i)
 	{
 		return rcv.get_fft(i);
+	}
+	
+	public int get_f1_FFTbin()
+	{
+		return (int) (rcv.get_f1()*(rcv.FFT_half_len*2));
+	}
+	
+	public int get_f2_FFTbin()
+	{
+		return (int) (rcv.get_f2()*(rcv.FFT_half_len*2));
 	}
 	
 	class captureThread extends Thread

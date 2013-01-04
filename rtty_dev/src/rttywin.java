@@ -244,7 +244,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
-				hi.Test();
+				hi.getActivePayloads();
 			}
 		});
 		btnNewButton.setBounds(152, 24, 89, 23);
@@ -296,7 +296,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 				//hi.upload_payload_telem(new Telemetry_string("$$TEST,3324,435,32fdfdf,423,423,4,5*4334\n",false));
 				//Mappoint_interface mi = new Mappoint_interface();
 				//mi.test();
-			
+				
 				
 			}
 		});
@@ -481,16 +481,16 @@ public class rttywin extends JFrame implements StringRxEvent {
 		          if (rcv.get_fft_updated())
 		          {
 			          //plotting graph bit
-			          grtty.clearMarkers();
-			          grtty.drawfft(rcv.get_fft());
+			         // grtty.clearMarkers();
+			         // grtty.drawfft(rcv.get_fft());
 			          
-			          if (rcv.get_peaklocs() != null)
-			          {
-				          for (int z = 0; z < rcv.get_peaklocs().length; z++)
-		  					grtty.addMarkers(rcv.get_peaklocs()[z]);
-				      }
+			         // if (rcv.get_peaklocs() != null)
+			         // {
+				     //     for (int z = 0; z < rcv.get_peaklocs().length; z++)
+		  			//		grtty.addMarkers(rcv.get_peaklocs()[z]);
+				     // }
 			          
-			          grtty.addMarkers(rcv.get_f1()*(2*rcv.FFT_half_len),rcv.get_f2()*(2*rcv.FFT_half_len));
+			         // grtty.addMarkers(rcv.get_f1()*(2*rcv.FFT_half_len),rcv.get_f2()*(2*rcv.FFT_half_len));
 			        	  
 			          
 			          scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());//getHeight());
