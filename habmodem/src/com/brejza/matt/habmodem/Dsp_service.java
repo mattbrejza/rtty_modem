@@ -21,6 +21,7 @@ import rtty.StringRxEvent;
 import rtty.moving_average;
 import rtty.rtty_receiver;
 import ukhas.Gps_coordinate;
+import ukhas.HabitatRxEvent;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
 import ukhas.Telemetry_string;
@@ -34,7 +35,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
-public class Dsp_service extends Service implements StringRxEvent {
+public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
 	public final static String TELEM_RX = "com.brejza.matt.habmodem.TELEM_RX";
 	public final static String CHAR_RX = "com.brejza.matt.habmodem.CHAR_RX";
@@ -215,5 +216,15 @@ public class Dsp_service extends Service implements StringRxEvent {
        }	
     	
     }
+
+
+
+
+	@Override
+	public void HabitatRx(List<String> data, boolean success, String callsign,
+			int startTime, int endTime) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

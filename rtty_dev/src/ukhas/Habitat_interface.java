@@ -2,11 +2,15 @@ package ukhas;
 
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+
 
 import net.sf.json.*;
 
@@ -24,19 +28,22 @@ public class Habitat_interface {
 	private Listener _listener_info;
 	private String _listener_UUID="";
 	
+	protected ArrayList<HabitatRxEvent> _listeners = new ArrayList<HabitatRxEvent>();
+	
 	public ConcurrentHashMap<String,String> payload_configs = new ConcurrentHashMap<String,String>();
+	public ConcurrentHashMap<String,String> flight_configs = new ConcurrentHashMap<String,String>();
 	
 	private Session s;
 	private Database db;
 	private Thread sdThread;
 	
 	private int _prev_query_time = 5 * 60 * 60;
+	
     
 	//TODO: if failed due to connection error, identify error and dont clear the list.
 	
-	private boolean _lock = false;
-	private Queue<Telemetry_string> out_buff = new LinkedList<Telemetry_string>();
-	private Queue<String> operations = new LinkedList<String>();
+	private Queue<Telemetry_string> out_buff = new LinkedBlockingQueue<Telemetry_string>();
+	private Queue<QueueItem> _operations = new LinkedBlockingQueue<QueueItem>();
 	
 	public Habitat_interface(String callsign) {		
 		_listener_info = new Listener(callsign);
@@ -75,6 +82,139 @@ public class Habitat_interface {
 		
 	}
 	
+	public void addDataFetchTask(String callsign, int startTime, int stopTime, int limit)
+	{
+		_operations.offer(new QueueItem(1,callsign, startTime, stopTime, limit));
+		StartThread();
+	}
+	
+	private String resolvePayloadID(String callsign)
+	{
+		if (payload_configs.contains(callsign))
+			return payload_configs.get(callsign);
+		else
+			return null;
+	}
+	
+	public boolean queryActiveFlights()
+	{
+		try
+		{
+			//open DB connection
+			if (s == null)
+			{
+				 s = new Session(_habitat_url,80);
+				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
+			}
+		
+			List<Document> docsout;
+			View v = new View("flight/launch_time_including_payloads");
+			
+			v.setStartKey("[" + Long.toString((System.currentTimeMillis() / 1000L)) + "]");
+			
+			v.setWithDocs(true);
+			v.setLimit(30);
+			
+			ViewResults r = db.view(v);
+			docsout = r.getResults();
+			
+			docsout.toString();
+ 
+
+			//docsout.get(0).getJSONObject().getJSONObject("doc").getString("tipe")
+			//docsout.get(1).getJSONObject().getJSONObject("doc").getJSONArray("sentences").getJSONObject(0).getString("callsign")
+			 
+			for (int i = 0; i < docsout.size(); i++)
+			{
+				
+				
+				JSONObject obj;
+				
+				obj = docsout.get(i).getJSONObject().getJSONObject("doc");
+				if (obj != null) {
+					if (obj.containsKey("type")) {
+						if (obj.getString("type").equals("payload_configuration")) {
+							if (obj.containsKey("sentences")){
+								JSONArray jar = obj.getJSONArray("sentences");
+								for (int j = 0; j < jar.size(); j++){
+									if (jar.getJSONObject(j).containsKey("callsign")){
+										String call = jar.getJSONObject(j).getString("callsign");
+										if (!flight_configs.containsKey(call))
+											flight_configs.put(call, docsout.get(i).getId());
+									}
+								}
+							}							
+						}
+					}
+				}				
+			}
+			
+			
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
+	private boolean getPayloadDataSince(int timestampStart, int timestampStop, int limit, String payloadID, String callsign)
+	{
+		try
+		{
+			//open DB connection
+			if (s == null)
+			{
+				 s = new Session(_habitat_url,80);
+				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
+			}
+		
+			 List<Document> docsout;
+			 View v = new View("payload_telemetry/payload_time");
+
+			 v.setStartKey("[%22" + payloadID + "%22," +Long.toString((System.currentTimeMillis() / 1000L)-_prev_query_time) + "]");
+			 v.setEndKey("[%22" + payloadID + "%22," +Long.toString(System.currentTimeMillis() / 1000L)+ "]");
+
+			 v.setWithDocs(true);
+			 v.setLimit(40);
+
+			 ViewResults r = db.view(v);
+			 docsout = r.getResults();
+
+			 docsout.toString();
+			 
+			 List<String> out = new LinkedList<String>();
+			 
+			 
+			for (int i = 0; i < docsout.size(); i++)
+			{
+				JSONObject obj;
+				if (docsout.get(i).containsKey("doc"))
+				{
+					obj = docsout.get(i).getJSONObject("doc");
+					if (obj.containsKey("data"))
+					{
+						obj = obj.getJSONObject("data");
+						if (obj.containsKey("_sentence"))
+						{
+							out.add(obj.getString("_sentence"));
+						}
+					}
+				}
+			}
+			
+			fireDataReceived(out,true,callsign,timestampStart, timestampStop);
+			return true;
+		}
+		catch (Exception e)
+		{
+			fireDataReceived(null,false,callsign,timestampStart, timestampStop);
+			return false;
+		}
+			
+		
+	}
+	
 	public void getActivePayloads()
 	{
 		
@@ -89,17 +229,18 @@ public class Habitat_interface {
 			
 			 List<Document> foodoc;
 			 View v = new View("payload_telemetry/time");
-			 //View v = new View("payload_configuration/callsign_time_created_index&startkey%3D[%22APEX%22]");
-			// v.setKey("startkey=APEX");
+	
 			 v.setStartKey(Long.toString((System.currentTimeMillis() / 1000L)-_prev_query_time));
 			 v.setWithDocs(true);
 			 v.setLimit(40);
-			//foodoc = db.view("flight/end_start_including_payloads").getResults();
+
 			 ViewResults r = db.view(v);
 			 foodoc = r.getResults();
 			// foodoc = db.view(v).getResults();
 			foodoc.toString();
 			//((JSONObject)((JSONObject)foodoc.get(1).getJSONObject().get("doc")).get("data")).get("payload")
+			
+	
 			
 		}
 		catch (Exception e)
@@ -112,19 +253,23 @@ public class Habitat_interface {
 	{
 		boolean added=false;
 		
-		//TODO: create a thread which can wait to have the telem added to the queue
-		if (!_getLock())
-		{
-			System.out.println("DROPPED STRING");
-			return;
-		}
+
 
 		added=out_buff.offer(input);
-		_lock=false;
+	
 
+		if (added)
+		{
+			_operations.offer(new QueueItem(0,1));
+			StartThread();
+		}
+	
 		
-		
-		if (sdThread == null && added)
+	}
+	
+	private synchronized void StartThread()
+	{
+		if (sdThread == null)
 		{
 			sdThread = new SendThread();
 			sdThread.start();
@@ -134,23 +279,8 @@ public class Habitat_interface {
 			sdThread = new SendThread();
 			sdThread.start();
 		}
-		
 	}
-	
 
-	/* use this method to get lock. can release lock by direct manipulation
-	 * 
-	 */
-	private synchronized boolean _getLock()
-	{
-		if (_lock)
-			return false;
-		else
-		{
-			_lock = true;
-			return true;
-		}
-	}
 	
 	private boolean _upload(Telemetry_string input)
 	{
@@ -238,12 +368,12 @@ public class Habitat_interface {
 				{
 					if (result.getJSONObject().containsKey("data"))
 					{
-						JSONObject objdata = (JSONObject)(result.getJSONObject().get("data"));
+						JSONObject objdata = result.getJSONObject().getJSONObject("data");
 						if (objdata.containsKey("_parsed"))
 						{
-							JSONObject obparse = (JSONObject)objdata.get("_parsed");
-							if (obparse.containsKey("payload_configuration"))
-								payload_configs.put(input.callsign, obparse.get("payload_configuration").toString());
+							objdata = objdata.getJSONObject("_parsed");
+							if (objdata.containsKey("payload_configuration"))
+								payload_configs.put(input.callsign, objdata.getString("payload_configuration"));
 						}
 					}					
 				}
@@ -330,6 +460,19 @@ public class Habitat_interface {
 		return false;
 	}
 	
+	protected void fireDataReceived(List<String> data, boolean success, String callsign, int startTime, int endTime)
+	{
+		for (int i = 0; i < _listeners.size(); i++)
+		{
+			_listeners.get(i).HabitatRx(data, success, callsign, startTime, endTime);
+		}
+	}
+	
+	public void addStringRecievedListener(HabitatRxEvent listener)
+	{	
+		_listeners.add(listener);
+	}
+	
 	class SendThread extends Thread
 	{
 		  
@@ -338,31 +481,50 @@ public class Habitat_interface {
 			  boolean buff_empty = false;
 			  while(!buff_empty)
 			  {
-				  int attempts=0;
-				  while (attempts < 10 && !_getLock())
+				
+				  
+				  if (!_operations.isEmpty())
 				  {
-					  if (attempts >= 9)
-						  return ;
-					  
-					  try {
-						Thread.sleep(2);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					  attempts++;
+					  QueueItem qi = _operations.poll();
+					  if (qi != null)
+					  {
+						  if (qi.type == 0)
+						  {			//upload telem
+							  Telemetry_string tosend = out_buff.poll();
+							  boolean res = true;
+							  if (tosend != null)								
+								  res = _upload(tosend);  //now we have some telem, lets send it							  
+							  if (!res)
+								  System.out.println("UPLOAD FAILED :(");
+						  }
+						  else
+						  {			//get data
+							  String id = resolvePayloadID(qi.callsign);
+							  if (id != null)
+								  getPayloadDataSince(qi.startTime, qi.stopTime,qi.count, id, qi.callsign);
+						  }
+					  }
+					  else
+						  buff_empty = true;
 				  }
+				  else
+					  buff_empty = true;
+				  
+			  }
+			
+			  //deal with any items in the send queue which are left over
+			  buff_empty = false;
+			  while(!buff_empty)
+			  {
 				  
 				  if (out_buff.isEmpty())
 				  {
-					  _lock = false;
 					  buff_empty = true;
 				  }
 				  else
 				  {
 					  Telemetry_string tosend = out_buff.poll();
-					  
-					  _lock = false;
+
 					  boolean res = true;
 					  if (tosend == null)
 						  buff_empty = true;
@@ -371,10 +533,31 @@ public class Habitat_interface {
 					  
 					  if (!res)
 						  System.out.println("UPLOAD FAILED :(");
-					  
-					  
 				  }
 			  }
 		  }
+	}
+	
+	
+	class QueueItem
+	{
+		public int type;				//0: upload payload, 1: get payload data
+		public String callsign = "";
+		public int startTime = 0;
+		public int stopTime = 0;
+		public int count = 0;
+		public QueueItem(int _type,int _count)
+		{
+			type = _type;
+			count = _count;
+		}
+		public QueueItem(int _type, String _callsign, int _startTime, int _stopTime, int _count)
+		{
+			type = _type;
+			callsign = _callsign;
+			startTime = _startTime;
+			stopTime = _stopTime;
+			count = _count;
+		}
 	}
 }

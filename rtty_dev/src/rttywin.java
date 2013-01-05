@@ -244,7 +244,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
-				hi.getActivePayloads();
+				hi.queryActiveFlights();
 			}
 		});
 		btnNewButton.setBounds(152, 24, 89, 23);
