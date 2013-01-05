@@ -39,6 +39,7 @@ public class Habitat_interface {
 	
 	private int _prev_query_time = 5 * 60 * 60;
 	
+	private boolean _queried_current_flights = false;
     
 	//TODO: if failed due to connection error, identify error and dont clear the list.
 	
@@ -92,7 +93,14 @@ public class Habitat_interface {
 	{
 		if (payload_configs.contains(callsign))
 			return payload_configs.get(callsign);
-		else
+		else if (!_queried_current_flights){
+			_queried_current_flights = queryActiveFlights();
+			if (payload_configs.contains(callsign))
+				return payload_configs.get(callsign);
+			else
+				return null;
+		}
+		else			
 			return null;
 	}
 	
@@ -110,7 +118,7 @@ public class Habitat_interface {
 			List<Document> docsout;
 			View v = new View("flight/launch_time_including_payloads");
 			
-			v.setStartKey("[" + Long.toString((System.currentTimeMillis() / 1000L)) + "]");
+			v.setStartKey("[" + Long.toString((System.currentTimeMillis() / 1000L)-(2*60*60)) + "]");
 			
 			v.setWithDocs(true);
 			v.setLimit(30);
@@ -121,7 +129,7 @@ public class Habitat_interface {
 			docsout.toString();
  
 
-			//docsout.get(0).getJSONObject().getJSONObject("doc").getString("tipe")
+			//docsout.get(0).getJSONObject().getJSONObject("doc").getString("type")
 			//docsout.get(1).getJSONObject().getJSONObject("doc").getJSONArray("sentences").getJSONObject(0).getString("callsign")
 			 
 			for (int i = 0; i < docsout.size(); i++)
@@ -134,14 +142,16 @@ public class Habitat_interface {
 				if (obj != null) {
 					if (obj.containsKey("type")) {
 						if (obj.getString("type").equals("payload_configuration")) {
-							if (obj.containsKey("sentences")){
+							if (obj.containsKey("sentences")){	
 								JSONArray jar = obj.getJSONArray("sentences");
 								for (int j = 0; j < jar.size(); j++){
 									if (jar.getJSONObject(j).containsKey("callsign")){
 										String call = jar.getJSONObject(j).getString("callsign");
 										if (!flight_configs.containsKey(call))
 											flight_configs.put(call, docsout.get(i).getId());
-									}
+										if (obj.containsKey("_id"))										
+											payload_configs.put(call,obj.getString("_id"));
+									}									
 								}
 							}							
 						}
