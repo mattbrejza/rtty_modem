@@ -104,6 +104,51 @@ public class Habitat_interface {
 			return null;
 	}
 	
+	public boolean queryAllPayloadDocs(String callsign)
+	{
+		try
+		{
+			//open DB connection
+			if (s == null)
+			{
+				 s = new Session(_habitat_url,80);
+				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
+			}
+		
+			List<Document> docsout;
+			View v = new View("payload_configuration/name_time_created");
+			//startkey=["CRAAG1",1357396479]&endkey=["CRAAG1",0]&descending=true
+			v.setStartKey("[%22" + callsign + "%22," + Long.toString((System.currentTimeMillis() / 1000L)) + "]");
+			v.setEndKey("[%22" + callsign + "%22,0]");
+			//v.setWithDocs(true);
+			v.setLimit(1);
+			v.setDescending(true);
+			
+			ViewResults r = db.view(v);
+			docsout = r.getResults();
+			
+			docsout.toString();
+ 
+
+			//docsout.get(0).getJSONObject().getJSONObject("doc").getString("type")
+			//docsout.get(1).getJSONObject().getJSONObject("doc").getJSONArray("sentences").getJSONObject(0).getString("callsign")
+			 
+			if (docsout.size() > 0)
+			{
+				payload_configs.put(callsign,docsout.get(0).getId());
+			}
+			
+			
+			
+			
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
 	public boolean queryActiveFlights()
 	{
 		try
