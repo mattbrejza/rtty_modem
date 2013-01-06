@@ -15,7 +15,11 @@ package com.brejza.matt.habmodem;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import rtty.StringRxEvent;
 import rtty.moving_average;
@@ -41,6 +45,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public final static String CHAR_RX = "com.brejza.matt.habmodem.CHAR_RX";
 	public final static String CHARS = "com.brejza.matt.habmodem.CHARS";
 	public final static String FFT_UPDATED = "com.brejza.matt.habmodem.FFT_UPDATED";
+	public final static String HABITAT_NEW_DATA = "com.brejza.matt.habmodem.HABITAT_NEW_DATA";
+	public final static String TELEM_STR = "com.brejza.matt.habmodem.TELEM_STR";
 	
 	 // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -56,22 +62,23 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	Habitat_interface hab_con;
 	
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
-	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>()); 
+	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>());
+	public ConcurrentHashMap<String,Long> payloadLastUpdate = new ConcurrentHashMap<String,Long>();
 	
 	public Dsp_service() {
-		// TODO Auto-generated constructor stub
 		rcv.addStringRecievedListener(this);
 	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
+
 		startAudio();
 		hab_con = new Habitat_interface(
 					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_server", "habitat.habhub.org"),
 					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_db", "habitat"),
 					 new Listener("MATT_XOOM", new Gps_coordinate(50.2,-0.6,0)));
-		hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
+		//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
+		hab_con.addGetActiveFlightsTask();
 		System.out.println("Starting audio");
 		return mBinder;
 	}
@@ -153,6 +160,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		return (int) (rcv.get_f2()*(rcv.FFT_half_len*2));
 	}
 	
+	public List<String> getFlightPayloadList()
+	{
+		List<String> out = new ArrayList<String>();
+		
+		Iterator<Entry<String, String>> it = hab_con.payload_configs.entrySet().iterator();
+		while (it.hasNext()) {				
+	        out.add(it.next().getKey());
+	        it.remove();
+	    }
+
+		return out;
+	}
+	
 	class captureThread extends Thread
     {
     	
@@ -217,13 +237,41 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	
     }
 
-
+//TODO: avoid hardcoding stuff here
+	public void updateActivePayloadsHabitat()
+	{
+		for (int i = 0; i < listActivePayloads.size(); i++)
+		{
+			String call = listActivePayloads.get(i);
+			long start = 0;
+			if (payloadLastUpdate.contains(call))
+				start = payloadLastUpdate.get(call).longValue();
+			
+			hab_con.addDataFetchTask(listActivePayloads.get(i), start, (System.currentTimeMillis() / 1000L), 3000);
+			
+			
+		}
+	}
 
 
 	@Override
 	public void HabitatRx(List<String> data, boolean success, String callsign,
-			int startTime, int endTime) {
+			long startTime, long endTime) {
 		// TODO Auto-generated method stub
+		
+		
+		if (success)
+		{
+			payloadLastUpdate.put(callsign,endTime);
+			listRxStr.addAll(data);
+			Intent i = new Intent(HABITAT_NEW_DATA);
+			if (data.size() > 0)
+				i.putExtra(TELEM_STR, data.get(data.size()-1));
+			sendBroadcast(i);
+			//TODO put latest string in the intent
+		}
+		
+		
 		
 	}
 

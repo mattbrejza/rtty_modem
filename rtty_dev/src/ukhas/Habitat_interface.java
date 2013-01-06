@@ -83,9 +83,15 @@ public class Habitat_interface {
 		
 	}
 	
-	public void addDataFetchTask(String callsign, int startTime, int stopTime, int limit)
+	public void addDataFetchTask(String callsign, long startTime, long stopTime, int limit)
 	{
 		_operations.offer(new QueueItem(1,callsign, startTime, stopTime, limit));
+		StartThread();
+	}
+	
+	public void addGetActiveFlightsTask()
+	{
+		_operations.offer(new QueueItem(2,0));
 		StartThread();
 	}
 	
@@ -98,7 +104,13 @@ public class Habitat_interface {
 			if (payload_configs.contains(callsign))
 				return payload_configs.get(callsign);
 			else
-				return null;
+			{
+				queryAllPayloadDocs(callsign);
+				if (payload_configs.contains(callsign))
+					return payload_configs.get(callsign);
+				else
+					return null;
+			}
 		}
 		else			
 			return null;
@@ -135,7 +147,9 @@ public class Habitat_interface {
 			 
 			if (docsout.size() > 0)
 			{
-				payload_configs.put(callsign,docsout.get(0).getId());
+				JSONArray ja = docsout.get(0).getJSONArray("key");
+				if (ja.getString(0).equals(callsign))
+					payload_configs.put(callsign,docsout.get(0).getId());
 			}
 			
 			
@@ -213,7 +227,8 @@ public class Habitat_interface {
 		}
 	}
 	
-	private boolean getPayloadDataSince(int timestampStart, int timestampStop, int limit, String payloadID, String callsign)
+	//TODO: if flight doc exists, query that view instead
+	private boolean getPayloadDataSince(long timestampStart, long timestampStop, int limit, String payloadID, String callsign)
 	{
 		try
 		{
@@ -227,8 +242,14 @@ public class Habitat_interface {
 			 List<Document> docsout;
 			 View v = new View("payload_telemetry/payload_time");
 
-			 v.setStartKey("[%22" + payloadID + "%22," +Long.toString((System.currentTimeMillis() / 1000L)-_prev_query_time) + "]");
-			 v.setEndKey("[%22" + payloadID + "%22," +Long.toString(System.currentTimeMillis() / 1000L)+ "]");
+			 long starttime;
+			 if (timestampStart > 0)
+				 starttime = timestampStart;
+			 else
+				 starttime = (System.currentTimeMillis() / 1000L)-_prev_query_time;
+			 
+			 v.setStartKey("[%22" + payloadID + "%22," +Long.toString(starttime) + "]");
+			 v.setEndKey("[%22" + payloadID + "%22," +Long.toString(timestampStop)+ "]");
 
 			 v.setWithDocs(true);
 			 v.setLimit(40);
@@ -429,6 +450,8 @@ public class Habitat_interface {
 							objdata = objdata.getJSONObject("_parsed");
 							if (objdata.containsKey("payload_configuration"))
 								payload_configs.put(input.callsign, objdata.getString("payload_configuration"));
+							if (objdata.containsKey("flight"))
+								flight_configs.put(input.callsign, objdata.getString("flight"));
 						}
 					}					
 				}
@@ -515,7 +538,7 @@ public class Habitat_interface {
 		return false;
 	}
 	
-	protected void fireDataReceived(List<String> data, boolean success, String callsign, int startTime, int endTime)
+	protected void fireDataReceived(List<String> data, boolean success, String callsign, long startTime, long endTime)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
@@ -552,11 +575,15 @@ public class Habitat_interface {
 							  if (!res)
 								  System.out.println("UPLOAD FAILED :(");
 						  }
-						  else
+						  else if (qi.type == 1)
 						  {			//get data
 							  String id = resolvePayloadID(qi.callsign);
 							  if (id != null)
 								  getPayloadDataSince(qi.startTime, qi.stopTime,qi.count, id, qi.callsign);
+						  }
+						  else     //update list of active flights
+						  {
+							  _queried_current_flights = queryActiveFlights();
 						  }
 					  }
 					  else
@@ -596,17 +623,17 @@ public class Habitat_interface {
 	
 	class QueueItem
 	{
-		public int type;				//0: upload payload, 1: get payload data
+		public int type;				//0: upload payload, 1: get payload telem, 2: update active flight list
 		public String callsign = "";
-		public int startTime = 0;
-		public int stopTime = 0;
+		public long startTime = 0;
+		public long stopTime = 0;
 		public int count = 0;
 		public QueueItem(int _type,int _count)
 		{
 			type = _type;
 			count = _count;
 		}
-		public QueueItem(int _type, String _callsign, int _startTime, int _stopTime, int _count)
+		public QueueItem(int _type, String _callsign, long _startTime, long _stopTime, int _count)
 		{
 			type = _type;
 			callsign = _callsign;

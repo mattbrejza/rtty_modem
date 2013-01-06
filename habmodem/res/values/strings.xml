@@ -24,5 +24,7 @@
 	<string name="longitude">LONGITUDE</string>
 	<string name="ascent_rate">ASCENT RATE</string>
 	<string name="add_button_description">Add Payload to be Tracked</string>
+	<string name="dialog_add_payload_title">Select Payload</string>
+	<string name="dialog_add_payload_body">Select or enter payload to be tracked</string>
 
 </resources>

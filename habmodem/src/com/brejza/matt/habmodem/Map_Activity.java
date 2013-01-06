@@ -28,30 +28,33 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
 
+import ukhas.Telemetry_string;
+
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
 import android.location.Criteria;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.app.Activity;
-import android.app.Fragment;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.support.v4.app.NavUtils;
 
-public class Map_Activity extends MapActivity {
+
+public class Map_Activity extends MapActivity implements AddPayloadFragment.NoticeDialogListener {
 
 	MapView mapView;
 	private StringRxReceiver strrxReceiver;
+	private HabitatRxReceiver habirxReceiver;
 	boolean isReg = false;
 	
 	Drawable defaultMarker;
@@ -169,6 +172,15 @@ public class Map_Activity extends MapActivity {
         
     }
     
+    public void btnAddPayload(View view)
+    {
+        FragmentManager fm = getFragmentManager();
+
+    	AddPayloadFragment di = new AddPayloadFragment();
+    	di.setAutoPayload(mService.getFlightPayloadList());
+    	di.show(fm, "AddPayload");
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -208,7 +220,12 @@ public class Map_Activity extends MapActivity {
    		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
    		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
    		if (!isReg) { registerReceiver(strrxReceiver, intentFilter1); }
-   		
+   	   
+        //habitat receiver
+   		if (habirxReceiver == null) habirxReceiver = new HabitatRxReceiver();
+   		IntentFilter intentFilter2 = new IntentFilter(Dsp_service.HABITAT_NEW_DATA);
+   		if (!isReg) { registerReceiver(habirxReceiver, intentFilter2); }
+   		isReg = true;
    		
    	}
        
@@ -216,7 +233,10 @@ public class Map_Activity extends MapActivity {
     public void onPause(){
        	super.onPause();
        	if (isReg)
-        	   if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+       	{
+	       	 if (habirxReceiver != null) unregisterReceiver(habirxReceiver);
+	       	 if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+       	}
            
            isReg = false;
            
@@ -243,12 +263,26 @@ public class Map_Activity extends MapActivity {
         }
     }
     
-    public void btnClose(View view)
-    {
-    	System.out.println("BUTTON PRESS  " +view.toString());
-    	//view.ge
-    	//view.getParent().
+    private class HabitatRxReceiver extends BroadcastReceiver  {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Dsp_service.HABITAT_NEW_DATA)) {
+            //Do stuff
+            	if (intent.hasExtra(Dsp_service.TELEM_STR))
+            	{
+            		Telemetry_string str = new Telemetry_string( intent.getStringExtra(Dsp_service.TELEM_STR));
+                	item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
+                	itemizedOverlay.requestRedraw();
+                	
+                	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
+                	fragment.updatePayload(str);
+            	}
+            }
+        }
     }
+    
+
 
     
     /** Defines callbacks for service binding, passed to bindService() */
@@ -268,5 +302,13 @@ public class Map_Activity extends MapActivity {
             mBound = false;
         }
     };
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog, String callsign) {
+		// TODO Auto-generated method stub
+    	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
+    	fragment.AddPayload(callsign);
+    	mService.listActivePayloads.add(callsign);
+	}
 
 }
