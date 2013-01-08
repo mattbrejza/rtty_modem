@@ -26,5 +26,6 @@
 	<string name="add_button_description">Add Payload to be Tracked</string>
 	<string name="dialog_add_payload_title">Select Payload</string>
 	<string name="dialog_add_payload_body">Select or enter payload to be tracked</string>
+	<string name="refresh_button">Refresh</string>
 
 </resources>

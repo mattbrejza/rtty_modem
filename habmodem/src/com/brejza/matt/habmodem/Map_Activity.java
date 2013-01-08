@@ -198,6 +198,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	intent = new Intent(this, StatusScreen.class);
             	startActivity(intent);
                 return true;
+            case R.id.refresh_button:
+            	mService.updateActivePayloadsHabitat();
+            	return true;
             case R.id.fft_screen:
             	intent = new Intent(this, FFTActivity.class);
             	startActivity(intent);

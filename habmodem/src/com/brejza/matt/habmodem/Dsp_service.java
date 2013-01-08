@@ -67,6 +67,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public Dsp_service() {
 		rcv.addStringRecievedListener(this);
+		
 	}
 
 	@Override
@@ -79,6 +80,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 					 new Listener("MATT_XOOM", new Gps_coordinate(50.2,-0.6,0)));
 		//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
 		hab_con.addGetActiveFlightsTask();
+		hab_con.addHabitatRecievedListener(this);
 		System.out.println("Starting audio");
 		return mBinder;
 	}
@@ -172,6 +174,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 		return out;
 	}
+
 	
 	class captureThread extends Thread
     {
@@ -243,11 +246,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		for (int i = 0; i < listActivePayloads.size(); i++)
 		{
 			String call = listActivePayloads.get(i);
-			long start = 0;
+			long start = (System.currentTimeMillis() / 1000L) - (4*24*60*60) ;//0;
 			if (payloadLastUpdate.contains(call))
 				start = payloadLastUpdate.get(call).longValue();
 			
-			hab_con.addDataFetchTask(listActivePayloads.get(i), start, (System.currentTimeMillis() / 1000L), 3000);
+			if ( start + 60 < (System.currentTimeMillis() / 1000L) )
+				hab_con.addDataFetchTask(listActivePayloads.get(i), start, (System.currentTimeMillis() / 1000L), 3000);
 			
 			
 		}
@@ -262,6 +266,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		if (success)
 		{
+			System.out.println("DEBUG: Got " + data.size() + "sentences for payload " + callsign);
 			payloadLastUpdate.put(callsign,endTime);
 			listRxStr.addAll(data);
 			Intent i = new Intent(HABITAT_NEW_DATA);
