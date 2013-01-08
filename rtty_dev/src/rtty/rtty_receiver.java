@@ -304,7 +304,7 @@ public class rtty_receiver implements StringRxEvent {
         					}  
         				}
         				
-        				System.out.println(transitionsh + "  " + transitionsl + "  " + highs);
+        			//	System.out.println(transitionsh + "  " + transitionsl + "  " + highs);
         				
         				
         				

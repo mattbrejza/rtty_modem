@@ -11,6 +11,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import rtty.StringRxEvent;
+
 
 import net.sf.json.*;
 
@@ -83,6 +85,11 @@ public class Habitat_interface {
 		
 	}
 	
+	public void addHabitatRecievedListener(HabitatRxEvent listener)
+	{	
+		_listeners.add(listener);
+	}
+	
 	public void addDataFetchTask(String callsign, long startTime, long stopTime, int limit)
 	{
 		_operations.offer(new QueueItem(1,callsign, startTime, stopTime, limit));
@@ -99,21 +106,21 @@ public class Habitat_interface {
 	{
 		if (payload_configs.contains(callsign))
 			return payload_configs.get(callsign);
-		else if (!_queried_current_flights){
+		else if (!_queried_current_flights)
 			_queried_current_flights = queryActiveFlights();
-			if (payload_configs.contains(callsign))
+			
+		if (payload_configs.contains(callsign))
+			return payload_configs.get(callsign);
+		else
+		{
+			queryAllPayloadDocs(callsign);
+			if (payload_configs.containsKey(callsign))
 				return payload_configs.get(callsign);
 			else
-			{
-				queryAllPayloadDocs(callsign);
-				if (payload_configs.contains(callsign))
-					return payload_configs.get(callsign);
-				else
-					return null;
-			}
+				return null;   //TODO: add list of non payloads
 		}
-		else			
-			return null;
+		
+
 	}
 	
 	public boolean queryAllPayloadDocs(String callsign)
@@ -159,6 +166,7 @@ public class Habitat_interface {
 		}
 		catch (Exception e)
 		{
+			System.out.println("ERROR: "+ e.toString());
 			return false;
 		}
 	}
@@ -232,13 +240,14 @@ public class Habitat_interface {
 	{
 		try
 		{
+			System.out.println("DEBUG: STARTING GET PAYLOAD");
 			//open DB connection
 			if (s == null)
 			{
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
-		
+			System.out.println("DEBUG: DATABASE OPEN");
 			 List<Document> docsout;
 			 View v = new View("payload_telemetry/payload_time");
 
@@ -252,12 +261,19 @@ public class Habitat_interface {
 			 v.setEndKey("[%22" + payloadID + "%22," +Long.toString(timestampStop)+ "]");
 
 			 v.setWithDocs(true);
-			 v.setLimit(40);
+			 v.setLimit(limit);
 
+			 System.out.println("DEBUG: DATABASE START QUERY");
+			 
 			 ViewResults r = db.view(v);
+			 
+			 System.out.println("DEBUG: DATABASE GOT QUERY");
+			 
 			 docsout = r.getResults();
 
-			 docsout.toString();
+			 System.out.println("DEBUG: DATABASE GOT LIST OF JSON");
+			 
+			 
 			 
 			 List<String> out = new LinkedList<String>();
 			 
@@ -278,7 +294,7 @@ public class Habitat_interface {
 					}
 				}
 			}
-			
+			System.out.println("DEBUG: DATABASE PROCESSING DONE");
 			fireDataReceived(out,true,callsign,timestampStart, timestampStop);
 			return true;
 		}
