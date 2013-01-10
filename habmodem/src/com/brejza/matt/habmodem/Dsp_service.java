@@ -246,7 +246,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		for (int i = 0; i < listActivePayloads.size(); i++)
 		{
 			String call = listActivePayloads.get(i);
-			long start = (System.currentTimeMillis() / 1000L) - (4*24*60*60) ;//0;
+			long start = (System.currentTimeMillis() / 1000L) - (7*24*60*60) ;//0;
 			if (payloadLastUpdate.contains(call))
 				start = payloadLastUpdate.get(call).longValue();
 			

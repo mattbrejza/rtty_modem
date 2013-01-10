@@ -29,7 +29,7 @@ public class Telemetry_string {
 	
 	public Date time;
 	
-	public int packetID;
+	public int packetID=0;
 	
 	public Gps_coordinate coords;
 	
@@ -91,13 +91,27 @@ public class Telemetry_string {
 			System.arraycopy(fields, 6, user_fields, 0, fields.length-6);		
 		}
 		
-		if (fields.length >= 6)
+		int ci = 0;
+		int offset = 0;
+		
+		if (fields.length > 1)
+		{
+			//see if counter exists
+			ci = fields[1].indexOf(':');
+			offset = 0;
+			if (ci > 0)
+				offset = -1;	
+		}
+		
+		if (fields.length >= 6+offset)
 		{
 			callsign = fields[0];
 			
+					
+			
 			//handle time			
 			SimpleDateFormat ft;
-			if (fields[2].length() > 6)
+			if (fields[2+offset].length() > 6)
 				ft = new SimpleDateFormat ("HH:mm:ss");
 			else
 				ft = new SimpleDateFormat ("HHmmss");
@@ -105,8 +119,9 @@ public class Telemetry_string {
 			try //this is all a bit horrible :(
 			{
 				ft.setTimeZone(TimeZone.getTimeZone("UTC"));
-				packetID = Integer.parseInt(fields[1]);
-				time = ft.parse(fields[2]);		
+				if (offset == 0)
+					packetID = Integer.parseInt(fields[1]);
+				time = ft.parse(fields[2+offset]);		
 				
 				Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 				Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -117,10 +132,10 @@ public class Telemetry_string {
 			}
 			catch (Exception e)
 			{
-				
+				System.out.println("Error parsing - " + e.toString());
 			}
 			
-			coords = new Gps_coordinate(fields[3],fields[4],fields[5]);			
+			coords = new Gps_coordinate(fields[3+offset],fields[4+offset],fields[5+offset]);			
 		}
 	}
 	

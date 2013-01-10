@@ -11,6 +11,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+
 import rtty.StringRxEvent;
 
 
@@ -265,10 +269,45 @@ public class Habitat_interface {
 
 			 System.out.println("DEBUG: DATABASE START QUERY");
 			 
-			 ViewResults r = db.view(v);
+			 //ViewResults r = db.view(v);
+			 String body = db.view_dont_parse(v);
+			 
+			 //cut off the "preamble"
+			 //int g = body.indexOf("\"rows\":");
+			 
+			 //if (g > 0)
+			 //{
+			//	 body = body.substring(g+7,body.length()-2);
+			 //}
 			 
 			 System.out.println("DEBUG: DATABASE GOT QUERY");
 			 
+			 List<String> out = new LinkedList<String>();
+			 
+			 JsonFactory fac = new JsonFactory();
+			 JsonParser jp = fac.createJsonParser(body);
+			 
+			// while(jp.nextValue() != JsonToken.END_OBJECT)
+			 String str,str1;
+			 int nullcount = 0;
+			while((jp.nextToken() != JsonToken.END_OBJECT || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
+			 {
+				//jp.nextToken();
+
+				str  = jp.getCurrentName();
+				str1 = jp.getText();
+				if (str != null && str1 != null)
+				{
+				 if (str.equals("_sentence") && !str1.equals("_sentence"))
+					 out.add(str1);  
+				 	nullcount = 0;
+				}
+				else
+					nullcount++;
+			 }
+			jp.close();
+			 
+			 /*
 			 docsout = r.getResults();
 
 			 System.out.println("DEBUG: DATABASE GOT LIST OF JSON");
@@ -293,9 +332,9 @@ public class Habitat_interface {
 						}
 					}
 				}
-			}
+			} */
 			System.out.println("DEBUG: DATABASE PROCESSING DONE");
-			fireDataReceived(out,true,callsign,timestampStart, timestampStop);
+			fireDataReceived(out,true,callsign,timestampStart, timestampStop); 
 			return true;
 		}
 		catch (Exception e)

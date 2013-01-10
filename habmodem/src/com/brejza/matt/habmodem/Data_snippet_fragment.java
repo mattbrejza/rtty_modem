@@ -40,6 +40,7 @@ public class Data_snippet_fragment extends Fragment {
 	
 	public void updateDisplay(Telemetry_string in_str)
 	{
+		System.out.println("DISPLAYING TIME : " + in_str);
 		if (!_loaded)
 		{
 			onLoad = in_str;

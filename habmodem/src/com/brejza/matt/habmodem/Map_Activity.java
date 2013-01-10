@@ -135,19 +135,19 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         points = new GeoPoint[][] { { geoPoint1, geoPoint2 } };
         OverlayWay way1 = new OverlayWay(points);
 		
-		wayover.addWay(way1);
+		//wayover.addWay(way1);
 
         
         
         
         // add the ArrayItemizedOverlay to the MapView
 		 mapView.getOverlays().add(itemizedOverlay);
-		 mapView.getOverlays().add(wayover);
+		// mapView.getOverlays().add(wayover);
         
         
       
-		 points = new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } };
-		 way1 = new OverlayWay(points);
+		 //points = new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } };
+		 //way1 = new OverlayWay(points);
         
 
    		
@@ -274,9 +274,63 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             //Do stuff
             	if (intent.hasExtra(Dsp_service.TELEM_STR))
             	{
+            		
             		Telemetry_string str = new Telemetry_string( intent.getStringExtra(Dsp_service.TELEM_STR));
+            		System.out.println("GOT INTENT : " + intent.getStringExtra(Dsp_service.TELEM_STR));
+            		System.out.println("LAST PAYLOAD: " + str.getSentence() + "   time: " + str.time.toString());
                 	item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
                 	itemizedOverlay.requestRedraw();
+                	
+                	 Paint wayDefaultPaintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+             		wayDefaultPaintFill.setStyle(Paint.Style.STROKE);
+             		wayDefaultPaintFill.setColor(Color.BLUE);
+             		wayDefaultPaintFill.setAlpha(160);
+             		wayDefaultPaintFill.setStrokeWidth(2);
+             		wayDefaultPaintFill.setStrokeJoin(Paint.Join.ROUND);
+             		wayDefaultPaintFill.setPathEffect(new DashPathEffect(new float[] { 20, 20 }, 0));
+             		Paint wayDefaultPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+             		wayDefaultPaintOutline.setStyle(Paint.Style.STROKE);
+             		wayDefaultPaintOutline.setColor(Color.BLUE);
+             		wayDefaultPaintOutline.setAlpha(128);
+             		wayDefaultPaintOutline.setStrokeWidth(7);
+             		wayDefaultPaintOutline.setStrokeJoin(Paint.Join.ROUND);
+             		// create an individual paint object for an overlay way
+             		Paint wayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+             		wayPaint.setStyle(Paint.Style.FILL);
+             		wayPaint.setColor(Color.YELLOW);
+             		wayPaint.setAlpha(192);
+                	
+                	System.out.println("statingto fill array");
+                	 ArrayWayOverlay wayover = new ArrayWayOverlay(wayDefaultPaintFill,wayDefaultPaintOutline);
+                     points = new GeoPoint[1][mService.listRxStr.size()];
+                     GeoPoint lp=new GeoPoint(0,0);
+                     int last = 0;
+                     for (int i = 0 ; i < mService.listRxStr.size(); i++)
+                     {
+                    	 Telemetry_string ts = new Telemetry_string(mService.listRxStr.get(i));
+                    	 if (ts != null)
+                    	 {
+                    		 if (ts.coords != null)// && last < ts.packetID)
+                    			 lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);                    			 
+
+                    			 
+                    	 }       
+                    	 points[0][i] = lp;
+                    	 last = ts.packetID;
+                     }
+                     System.out.println("ended to fill array");
+             		/* GeoPoint geoPoint1 = new GeoPoint(51.45,-0.3);
+            		GeoPoint geoPoint2 = new GeoPoint(51.75,-0.4);
+            		GeoPoint geoPoint3 = new GeoPoint(50.75,-0.2);
+
+      
+                    points = new GeoPoint[][] { { geoPoint1, geoPoint2 } }; */
+                    
+                     
+                     OverlayWay way1 = new OverlayWay(points);
+             		
+             		wayover.addWay(way1);
+             		mapView.getOverlays().add(wayover); 
                 	
                 	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
                 	fragment.updatePayload(str);
