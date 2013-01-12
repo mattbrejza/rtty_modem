@@ -1,6 +1,7 @@
 package ukhas;
 
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -270,7 +271,7 @@ public class Habitat_interface {
 			 System.out.println("DEBUG: DATABASE START QUERY");
 			 
 			 //ViewResults r = db.view(v);
-			 String body = db.view_dont_parse(v);
+			// String body = db.view_dont_parse(v);
 			 
 			 //cut off the "preamble"
 			 //int g = body.indexOf("\"rows\":");
@@ -285,28 +286,36 @@ public class Habitat_interface {
 			 List<String> out = new LinkedList<String>();
 			 
 			 JsonFactory fac = new JsonFactory();
-			 JsonParser jp = fac.createJsonParser(body);
-			 
-			// while(jp.nextValue() != JsonToken.END_OBJECT)
-			 String str,str1;
-			 int nullcount = 0;
-			while((jp.nextToken() != JsonToken.END_OBJECT || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
+			 InputStream is = db.view_dont_parse(v);
+			 if (is != null)
 			 {
-				//jp.nextToken();
-
-				str  = jp.getCurrentName();
-				str1 = jp.getText();
-				if (str != null && str1 != null)
-				{
-				 if (str.equals("_sentence") && !str1.equals("_sentence"))
-					 out.add(str1);  
-				 	nullcount = 0;
-				}
-				else
-					nullcount++;
+				 
+				 JsonParser jp = fac.createJsonParser(is);
+				// while(jp.nextValue() != JsonToken.END_OBJECT)
+				 String str,str1;
+				// int nullcount = 0;
+				while(jp.nextToken() != null )// || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
+				 {
+					//jp.nextToken();
+	
+					str  = jp.getCurrentName();
+					str1 = jp.getText();
+					if (str != null && str1 != null)
+					{
+					 if (str.equals("_sentence") && !str1.equals("_sentence"))
+						 out.add(str1);  
+					 	//nullcount = 0;
+					}
+					//else
+					//	nullcount++;
+				 }
+				jp.close();
+				is.close();
+				
 			 }
-			jp.close();
-			 
+			s.clearCouchResponse();
+			
+			
 			 /*
 			 docsout = r.getResults();
 

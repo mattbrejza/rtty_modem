@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/json-lib-2.2.3-MODIFIED-jdk15.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/jacob.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/rtty_dev/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Matt/git/rtty_modem/habmodem/libs/jackson-all-1.9.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
