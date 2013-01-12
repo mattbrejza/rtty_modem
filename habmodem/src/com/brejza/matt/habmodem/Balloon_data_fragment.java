@@ -27,13 +27,14 @@ public class Balloon_data_fragment extends Fragment {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void AddPayload (String callsign)
+	public void AddPayload (String callsign, int colour)
 	{
 		if (info_boxes.containsKey(callsign))
 			return;
 
 		Data_snippet_fragment dsf = new Data_snippet_fragment();
 		dsf.setCallsign(callsign);
+		dsf.setColour(colour);
 		dsf.containg_fragment = this;  //so that it cna remoe itself
 		FrameLayout  innerLayout1 = new FrameLayout (getView().getContext());
 		
@@ -64,7 +65,8 @@ public class Balloon_data_fragment extends Fragment {
 		
 		if (dsf == null)
 		{
-			AddPayload(str.callsign);
+			int colour = ((Map_Activity)getActivity()).getColour(str.callsign);
+			AddPayload(str.callsign,colour);
 			dsf = info_boxes.get(call);
 			if (dsf == null)
 				return;

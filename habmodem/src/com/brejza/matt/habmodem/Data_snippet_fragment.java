@@ -23,6 +23,8 @@ public class Data_snippet_fragment extends Fragment {
 	private boolean _loaded = false;
 	private Telemetry_string onLoad;
 	
+	private int _colour = 0x00FF0000;
+	
 	public Balloon_data_fragment containg_fragment;
 	
 	public Data_snippet_fragment() {
@@ -100,11 +102,11 @@ public class Data_snippet_fragment extends Fragment {
     	txt.setText(_callsign);
     	
     	ImageView lin = (ImageView)getView().findViewById(R.id.colourID);
-    	lin.setBackgroundColor(0xFFFF0000);
+    	lin.setBackgroundColor(_colour);
     	lin.invalidate();
     	
     	ImageView lin1 = (ImageView)getView().findViewById(R.id.colourID1);
-    	lin1.setBackgroundColor(0xFFFF0000);
+    	lin1.setBackgroundColor(_colour);
     	lin1.invalidate();
 
     	if (onLoad != null)
@@ -112,6 +114,20 @@ public class Data_snippet_fragment extends Fragment {
     	
     }
     
+    public void setColour(int colour)
+    {
+    	_colour = colour;
+    	if (_loaded)
+    	{
+	    	ImageView lin = (ImageView)getView().findViewById(R.id.colourID);
+	    	lin.setBackgroundColor(_colour);
+	    	lin.invalidate();
+	    	
+	    	ImageView lin1 = (ImageView)getView().findViewById(R.id.colourID1);
+	    	lin1.setBackgroundColor(_colour);
+	    	lin1.invalidate();
+    	}
+    }
    
     
     public void btnClose(View view)

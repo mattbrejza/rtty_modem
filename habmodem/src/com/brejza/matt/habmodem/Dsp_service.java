@@ -64,6 +64,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
 	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>());
 	public ConcurrentHashMap<String,Long> payloadLastUpdate = new ConcurrentHashMap<String,Long>();
+	public ConcurrentHashMap<String,List<String>> listPayloadData = new ConcurrentHashMap<String,List<String>>();
 	
 	public Dsp_service() {
 		rcv.addStringRecievedListener(this);
@@ -126,6 +127,15 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		if (!checksum) return;
 		last_str = str;
 		listRxStr.add(str.getSentence());
+		
+		if (listPayloadData.containsKey(str.callsign))
+			listPayloadData.get(str.callsign).add(str.getSentence());
+		else{
+			List<String> l = Collections.synchronizedList(new ArrayList<String>()); 
+			l.add(str.getSentence());
+			listPayloadData.put(str.callsign,l);
+		}
+			
 		
 		if (checksum)
 			hab_con.upload_payload_telem(str);
@@ -246,7 +256,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		for (int i = 0; i < listActivePayloads.size(); i++)
 		{
 			String call = listActivePayloads.get(i);
-			long start = (System.currentTimeMillis() / 1000L) - (7*24*60*60) ;//0;
+			long start = (System.currentTimeMillis() / 1000L) - (9*24*60*60) ;//0;
 			if (payloadLastUpdate.contains(call))
 				start = payloadLastUpdate.get(call).longValue();
 			
@@ -269,6 +279,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			System.out.println("DEBUG: Got " + data.size() + "sentences for payload " + callsign);
 			payloadLastUpdate.put(callsign,endTime);
 			listRxStr.addAll(data);
+			
+			if (listPayloadData.containsKey(callsign))
+				listPayloadData.get(callsign).addAll(data);
+			else
+				listPayloadData.put(callsign,data);
+			
+			
 			Intent i = new Intent(HABITAT_NEW_DATA);
 			if (data.size() > 0)
 				i.putExtra(TELEM_STR, data.get(data.size()-1));

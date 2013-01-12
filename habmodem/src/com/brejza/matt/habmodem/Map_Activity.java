@@ -14,6 +14,10 @@
 package com.brejza.matt.habmodem;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -57,8 +61,17 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private HabitatRxReceiver habirxReceiver;
 	boolean isReg = false;
 	
+	protected int last_colour = 0x0;
+	public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
+	
 	Drawable defaultMarker;
 	ArrayItemizedOverlay itemizedOverlay;
+	ArrayItemizedOverlay array_img_balloons;
+	ArrayWayOverlay array_waypoints; 
+	
+	public ConcurrentHashMap<String,OverlayWay> map_path_overlays = new ConcurrentHashMap<String,OverlayWay>();
+	
+	
 	OverlayItem item;
 	
 	GeoPoint[][] points;
@@ -135,21 +148,30 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         points = new GeoPoint[][] { { geoPoint1, geoPoint2 } };
         OverlayWay way1 = new OverlayWay(points);
 		
-		//wayover.addWay(way1);
+		wayover.addWay(way1);
 
         
         
         
         // add the ArrayItemizedOverlay to the MapView
 		 mapView.getOverlays().add(itemizedOverlay);
-		// mapView.getOverlays().add(wayover);
+		 //mapView.getOverlays().add(wayover);
         
-        
+		 way1.setWayNodes(new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } });
+	
+         wayover.requestRedraw();
       
 		 //points = new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } };
 		 //way1 = new OverlayWay(points);
         
-
+         
+         
+         
+         //////////////////////////////////
+         //now for some stuff that isnt test code
+         
+         array_waypoints = new  ArrayWayOverlay(wayDefaultPaintFill,wayDefaultPaintOutline);
+         mapView.getOverlays().add(array_waypoints);
    		
    		
    		loc_han = new Location_handler(this);
@@ -249,6 +271,87 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
        }
     }
     
+    protected int getColour(String callsign)
+    {
+    	if (path_colours.containsKey(callsign))
+    		return path_colours.get(callsign).intValue();
+    	else {
+    		int c = newColour();
+    		path_colours.put(callsign, new Integer(c));
+    		return c;
+    	}
+    		
+    }
+    
+    private int newColour()
+    {
+    	if (last_colour == 0)
+    	{
+    		last_colour = 0xFFFF0000;
+    		return last_colour;
+    	}
+    	else
+    	{
+    		float lasthsv[]= new float[3];
+    		Color.colorToHSV(last_colour,lasthsv);
+    		lasthsv[0] = (lasthsv[0] + (180 + 33)) % 360;
+    		last_colour = Color.HSVToColor(lasthsv);
+    		return last_colour;
+    	}
+    }
+    
+    private void UpdateBalloonTrack(List<String> telem, String callsign)
+    {
+    	
+    	//step1: check to see if data already exists
+    	if (map_path_overlays.containsKey(callsign))
+    	{
+    		
+    		
+    	}
+    	else
+    	{
+    		//create new objects and start from scratch
+    		
+    		
+    		
+    		GeoPoint[][] points = new GeoPoint[1][telem.size()];
+    		
+    		GeoPoint lp=new GeoPoint(0,0);
+     
+            for (int i = 0 ; i < mService.listRxStr.size(); i++)
+            {
+            	Telemetry_string ts = new Telemetry_string(mService.listRxStr.get(i));
+            	if (ts != null)
+            	{
+            		if (ts.coords != null)
+            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);                    			 
+
+            			 
+            	}      
+            	points[0][i] = lp;
+             }
+            
+    		Paint linepaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    		linepaint.setStyle(Paint.Style.STROKE);
+    		linepaint.setColor(getColour(callsign));
+    		linepaint.setAlpha(128);
+    		linepaint.setStrokeWidth(4);
+    		linepaint.setStrokeJoin(Paint.Join.ROUND);
+            
+    		OverlayWay way = new OverlayWay(points,linepaint,linepaint);
+    		
+    		
+    		array_waypoints.addWay(way);
+    		map_path_overlays.put(callsign, way);
+    		
+    		array_waypoints.requestRedraw();
+    		
+    		
+    		
+    	}    	
+    }
+    
     private class StringRxReceiver extends BroadcastReceiver  {
 
     	@Override
@@ -259,6 +362,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             //	list.add
             	item.setPoint(new GeoPoint(mService.getLastString().coords.latitude,mService.getLastString().coords.longitude));
             	itemizedOverlay.requestRedraw();
+            	
+   
+            	List<String> l = new ArrayList<String>(); 
+				l.add(mService.getLastString().getSentence());
+				UpdateBalloonTrack(l,mService.getLastString().callsign);
             	
             	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
             	fragment.updatePayload(mService.getLastString());
@@ -280,29 +388,15 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             		System.out.println("LAST PAYLOAD: " + str.getSentence() + "   time: " + str.time.toString());
                 	item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
                 	itemizedOverlay.requestRedraw();
+                	System.out.println("STARTING TO DRAW");
                 	
-                	 Paint wayDefaultPaintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-             		wayDefaultPaintFill.setStyle(Paint.Style.STROKE);
-             		wayDefaultPaintFill.setColor(Color.BLUE);
-             		wayDefaultPaintFill.setAlpha(160);
-             		wayDefaultPaintFill.setStrokeWidth(2);
-             		wayDefaultPaintFill.setStrokeJoin(Paint.Join.ROUND);
-             		wayDefaultPaintFill.setPathEffect(new DashPathEffect(new float[] { 20, 20 }, 0));
-             		Paint wayDefaultPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
-             		wayDefaultPaintOutline.setStyle(Paint.Style.STROKE);
-             		wayDefaultPaintOutline.setColor(Color.BLUE);
-             		wayDefaultPaintOutline.setAlpha(128);
-             		wayDefaultPaintOutline.setStrokeWidth(7);
-             		wayDefaultPaintOutline.setStrokeJoin(Paint.Join.ROUND);
-             		// create an individual paint object for an overlay way
-             		Paint wayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-             		wayPaint.setStyle(Paint.Style.FILL);
-             		wayPaint.setColor(Color.YELLOW);
-             		wayPaint.setAlpha(192);
                 	
                 	System.out.println("statingto fill array");
-                	 ArrayWayOverlay wayover = new ArrayWayOverlay(wayDefaultPaintFill,wayDefaultPaintOutline);
+                	/*
                      points = new GeoPoint[1][mService.listRxStr.size()];
+                     
+                     
+                     
                      GeoPoint lp=new GeoPoint(0,0);
                      int last = 0;
                      for (int i = 0 ; i < mService.listRxStr.size(); i++)
@@ -324,13 +418,15 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             		GeoPoint geoPoint3 = new GeoPoint(50.75,-0.2);
 
       
-                    points = new GeoPoint[][] { { geoPoint1, geoPoint2 } }; */
+                    points = new GeoPoint[][] { { geoPoint1, geoPoint2 } }; 
                     
                      
                      OverlayWay way1 = new OverlayWay(points);
-             		
+                    
              		wayover.addWay(way1);
-             		mapView.getOverlays().add(wayover); 
+             		
+             		mapView.getOverlays().add(wayover); */
+                	UpdateBalloonTrack(mService.listRxStr,str.callsign);
                 	
                 	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
                 	fragment.updatePayload(str);
@@ -364,7 +460,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	public void onDialogPositiveClick(DialogFragment dialog, String callsign) {
 		// TODO Auto-generated method stub
     	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
-    	fragment.AddPayload(callsign);
+    	    	
+    	fragment.AddPayload(callsign,getColour(callsign));
     	mService.listActivePayloads.add(callsign);
 	}
 
