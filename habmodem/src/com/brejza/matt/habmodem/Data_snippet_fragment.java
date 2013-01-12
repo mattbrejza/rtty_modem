@@ -42,7 +42,7 @@ public class Data_snippet_fragment extends Fragment {
 	
 	public void updateDisplay(Telemetry_string in_str)
 	{
-		System.out.println("DISPLAYING TIME : " + in_str);
+		
 		if (!_loaded)
 		{
 			onLoad = in_str;
@@ -85,6 +85,7 @@ public class Data_snippet_fragment extends Fragment {
             @Override
             public void onClick(View v) {
             	if (containg_fragment != null)
+            		((Map_Activity)getActivity()).removePayload(_callsign);
             		containg_fragment.removePayload(_callsign);
             }            
         });

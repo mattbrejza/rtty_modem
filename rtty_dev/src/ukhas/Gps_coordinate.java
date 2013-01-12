@@ -75,6 +75,7 @@ public class Gps_coordinate {
 		if (lat.length() < 3 || lat.length() < 3)
 		{
 			latlong_valid = false;
+			return;
 		}
 		
 		if (lat.charAt(0) == '-')

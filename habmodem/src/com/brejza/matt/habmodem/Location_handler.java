@@ -21,7 +21,7 @@ public class Location_handler implements LocationListener  {
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
 		mapact.overlayMyLocation.setPoint(new GeoPoint(location.getLatitude(),location.getLongitude()));
-		mapact.itemizedOverlay.requestRedraw();
+		mapact.array_img_balloons.requestRedraw();
 	}
 	
 	@Override

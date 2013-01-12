@@ -29,7 +29,7 @@ public class Balloon_data_fragment extends Fragment {
 	
 	public void AddPayload (String callsign, int colour)
 	{
-		if (info_boxes.containsKey(callsign))
+		if (info_boxes.containsKey(callsign.toUpperCase()))
 			return;
 
 		Data_snippet_fragment dsf = new Data_snippet_fragment();
@@ -38,7 +38,7 @@ public class Balloon_data_fragment extends Fragment {
 		dsf.containg_fragment = this;  //so that it cna remoe itself
 		FrameLayout  innerLayout1 = new FrameLayout (getView().getContext());
 		
-		info_boxes.put(callsign, dsf);
+		info_boxes.put(callsign.toUpperCase(), dsf);
  
     	innerLayout1.setId(id_counter);
     	FragmentManager fragmentManager = getFragmentManager();
@@ -61,13 +61,13 @@ public class Balloon_data_fragment extends Fragment {
 		
 		String call = str.callsign;
 		
-		Data_snippet_fragment dsf = info_boxes.get(call);
+		Data_snippet_fragment dsf = info_boxes.get(call.toUpperCase());
 		
 		if (dsf == null)
 		{
 			int colour = ((Map_Activity)getActivity()).getColour(str.callsign);
 			AddPayload(str.callsign,colour);
-			dsf = info_boxes.get(call);
+			dsf = info_boxes.get(call.toUpperCase());
 			if (dsf == null)
 				return;
 		}
@@ -78,7 +78,7 @@ public class Balloon_data_fragment extends Fragment {
 	
 	public void removePayload(String callsign)
 	{
-		Data_snippet_fragment dsf = info_boxes.get(callsign);
+		Data_snippet_fragment dsf = info_boxes.get(callsign.toUpperCase());
 		
 		if (dsf == null)
 			return;
@@ -93,7 +93,7 @@ public class Balloon_data_fragment extends Fragment {
     	
     	root.removeView(v);
     	
-    	info_boxes.remove(callsign);
+    	info_boxes.remove(callsign.toUpperCase());
     	
 	}
 	

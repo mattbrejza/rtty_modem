@@ -15,7 +15,6 @@ package com.brejza.matt.habmodem;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,6 +31,7 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
 
+import ukhas.Gps_coordinate;
 import ukhas.Telemetry_string;
 
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
@@ -65,16 +65,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
 	
 	Drawable defaultMarker;
-	ArrayItemizedOverlay itemizedOverlay;
-	ArrayItemizedOverlay array_img_balloons;
+	//ArrayItemizedOverlay itemizedOverlay;
+	protected ArrayItemizedOverlay array_img_balloons;
 	ArrayWayOverlay array_waypoints; 
 	
 	public ConcurrentHashMap<String,OverlayWay> map_path_overlays = new ConcurrentHashMap<String,OverlayWay>();
+	public ConcurrentHashMap<String,OverlayItem> map_balloon_overlays = new ConcurrentHashMap<String,OverlayItem>();
 	
+	//OverlayItem item;
 	
-	OverlayItem item;
-	
-	GeoPoint[][] points;
+	//GeoPoint[][] points;
 	
 	public OverlayItem overlayMyLocation;
 	private Location_handler loc_han;
@@ -96,11 +96,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         mapView.setMapFile(new File("/sdcard/england.map"));
 
         
-        
+        /*
 
         // create a default marker for the overlay
         // R.drawable.marker is just a placeholder for your own drawable
-        defaultMarker = getResources().getDrawable(R.drawable.ic_launcher);
+        defaultMarker = getResources().getDrawable(R.drawable.ic_map_balloon);
 
         // create an ItemizedOverlay with the default marker
         itemizedOverlay = new ArrayItemizedOverlay(defaultMarker);
@@ -117,7 +117,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 
         // add the OverlayItem to the ArrayItemizedOverlay
         itemizedOverlay.addItem(item);
-
+        
        
         //test path
         
@@ -160,7 +160,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		 way1.setWayNodes(new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } });
 	
          wayover.requestRedraw();
-      
+      */
 		 //points = new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } };
 		 //way1 = new OverlayWay(points);
         
@@ -169,10 +169,17 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
          
          //////////////////////////////////
          //now for some stuff that isnt test code
+        
+        Paint dw = new Paint(Paint.ANTI_ALIAS_FLAG);
+        dw.setStyle(Paint.Style.STROKE);
+        dw.setColor(Color.BLUE);
          
-         array_waypoints = new  ArrayWayOverlay(wayDefaultPaintFill,wayDefaultPaintOutline);
-         mapView.getOverlays().add(array_waypoints);
-   		
+        array_waypoints = new  ArrayWayOverlay(dw,dw);
+        mapView.getOverlays().add(array_waypoints);
+         
+         
+        array_img_balloons = new ArrayItemizedOverlay(getResources().getDrawable(R.drawable.ic_map_balloon));
+        mapView.getOverlays().add(array_img_balloons);
    		
    		loc_han = new Location_handler(this);
    		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -273,11 +280,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     
     protected int getColour(String callsign)
     {
-    	if (path_colours.containsKey(callsign))
-    		return path_colours.get(callsign).intValue();
+    	if (path_colours.containsKey(callsign.toUpperCase()))
+    		return path_colours.get(callsign.toUpperCase()).intValue();
     	else {
     		int c = newColour();
-    		path_colours.put(callsign, new Integer(c));
+    		path_colours.put(callsign.toUpperCase(), Integer.valueOf(c));
     		return c;
     	}
     		
@@ -300,13 +307,27 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	}
     }
     
+    private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
+    {
+    	if (map_balloon_overlays.containsKey(callsign) && coord.latlong_valid)
+    	{
+    		map_balloon_overlays.get(callsign).setPoint(new GeoPoint(coord.latitude,coord.longitude));
+    	}
+    	else
+    	{
+    		OverlayItem i = new OverlayItem(new GeoPoint(coord.latitude,coord.longitude), callsign, callsign + " location");
+    		array_img_balloons.addItem(i);
+    		array_img_balloons.requestRedraw();
+    	}
+    }
+    
     private void UpdateBalloonTrack(List<String> telem, String callsign)
     {
     	
     	//step1: check to see if data already exists
-    	if (map_path_overlays.containsKey(callsign))
+    	if (map_path_overlays.containsKey(callsign.toUpperCase()))
     	{
-    		
+    		 
     		
     	}
     	else
@@ -319,9 +340,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     		
     		GeoPoint lp=new GeoPoint(0,0);
      
-            for (int i = 0 ; i < mService.listRxStr.size(); i++)
+            for (int i = 0 ; i < telem.size(); i++)
             {
-            	Telemetry_string ts = new Telemetry_string(mService.listRxStr.get(i));
+            	Telemetry_string ts = new Telemetry_string(telem.get(i));
             	if (ts != null)
             	{
             		if (ts.coords != null)
@@ -343,7 +364,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     		
     		
     		array_waypoints.addWay(way);
-    		map_path_overlays.put(callsign, way);
+    		map_path_overlays.put(callsign.toUpperCase(), way);
     		
     		array_waypoints.requestRedraw();
     		
@@ -360,9 +381,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             //Do stuff
             	System.out.println("GOT INTENT telem  " + mService.getLastString().coords.latitude + "  " + mService.getLastString().coords.longitude);
             //	list.add
-            	item.setPoint(new GeoPoint(mService.getLastString().coords.latitude,mService.getLastString().coords.longitude));
-            	itemizedOverlay.requestRedraw();
-            	
+            	//item.setPoint(new GeoPoint(mService.getLastString().coords.latitude,mService.getLastString().coords.longitude));
+            	//itemizedOverlay.requestRedraw();
+            	UpdateBalloonLocation(mService.getLastString().coords,mService.getLastString().callsign);
    
             	List<String> l = new ArrayList<String>(); 
 				l.add(mService.getLastString().getSentence());
@@ -384,49 +405,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	{
             		
             		Telemetry_string str = new Telemetry_string( intent.getStringExtra(Dsp_service.TELEM_STR));
-            		System.out.println("GOT INTENT : " + intent.getStringExtra(Dsp_service.TELEM_STR));
-            		System.out.println("LAST PAYLOAD: " + str.getSentence() + "   time: " + str.time.toString());
-                	item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
-                	itemizedOverlay.requestRedraw();
-                	System.out.println("STARTING TO DRAW");
-                	
-                	
-                	System.out.println("statingto fill array");
-                	/*
-                     points = new GeoPoint[1][mService.listRxStr.size()];
-                     
-                     
-                     
-                     GeoPoint lp=new GeoPoint(0,0);
-                     int last = 0;
-                     for (int i = 0 ; i < mService.listRxStr.size(); i++)
-                     {
-                    	 Telemetry_string ts = new Telemetry_string(mService.listRxStr.get(i));
-                    	 if (ts != null)
-                    	 {
-                    		 if (ts.coords != null)// && last < ts.packetID)
-                    			 lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);                    			 
 
-                    			 
-                    	 }       
-                    	 points[0][i] = lp;
-                    	 last = ts.packetID;
-                     }
-                     System.out.println("ended to fill array");
-             		/* GeoPoint geoPoint1 = new GeoPoint(51.45,-0.3);
-            		GeoPoint geoPoint2 = new GeoPoint(51.75,-0.4);
-            		GeoPoint geoPoint3 = new GeoPoint(50.75,-0.2);
-
-      
-                    points = new GeoPoint[][] { { geoPoint1, geoPoint2 } }; 
-                    
-                     
-                     OverlayWay way1 = new OverlayWay(points);
-                    
-             		wayover.addWay(way1);
-             		
-             		mapView.getOverlays().add(wayover); */
-                	UpdateBalloonTrack(mService.listRxStr,str.callsign);
+                	//item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
+                	//itemizedOverlay.requestRedraw();
+            		UpdateBalloonLocation(str.coords,str.callsign);
+ 
+                	if (mService.listPayloadData.containsKey(str.callsign.toUpperCase()))
+                		UpdateBalloonTrack(mService.listPayloadData.get(str.callsign.toUpperCase()),str.callsign);
                 	
                 	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
                 	fragment.updatePayload(str);
@@ -463,6 +448,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	    	
     	fragment.AddPayload(callsign,getColour(callsign));
     	mService.listActivePayloads.add(callsign);
+	}
+	
+	public void removePayload(String callsign)
+	{
+		if (mService.listActivePayloads.contains(callsign))
+			mService.listActivePayloads.remove(callsign);
+		System.out.println("REMOVED PAYLOAD: " + callsign);
 	}
 
 }

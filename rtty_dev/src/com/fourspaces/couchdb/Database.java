@@ -27,8 +27,6 @@ import net.sf.json.util.JSONStringer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.util.EntityUtils;
 
 /**
  * This represents a particular database on the CouchDB server

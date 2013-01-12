@@ -1,10 +1,22 @@
+// Copyright 2012 (C) Matthew Brejza
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+
 package ukhas;
 
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,10 +26,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-
-import rtty.StringRxEvent;
-
 
 import net.sf.json.*;
 
@@ -109,18 +117,19 @@ public class Habitat_interface {
 	
 	private String resolvePayloadID(String callsign)
 	{
-		if (payload_configs.contains(callsign))
-			return payload_configs.get(callsign);
+		String c = callsign.toUpperCase();
+		if (payload_configs.containsKey(c))
+			return payload_configs.get(c);
 		else if (!_queried_current_flights)
 			_queried_current_flights = queryActiveFlights();
 			
-		if (payload_configs.contains(callsign))
-			return payload_configs.get(callsign);
+		if (payload_configs.containsKey(c))
+			return payload_configs.get(c);
 		else
 		{
-			queryAllPayloadDocs(callsign);
-			if (payload_configs.containsKey(callsign))
-				return payload_configs.get(callsign);
+			queryAllPayloadDocs(c);
+			if (payload_configs.containsKey(c))
+				return payload_configs.get(c);
 			else
 				return null;   //TODO: add list of non payloads
 		}
@@ -130,6 +139,7 @@ public class Habitat_interface {
 	
 	public boolean queryAllPayloadDocs(String callsign)
 	{
+		String docid = null;
 		try
 		{
 			//open DB connection
@@ -140,43 +150,46 @@ public class Habitat_interface {
 			}
 		
 			List<Document> docsout;
-			View v = new View("payload_configuration/name_time_created");
+			View v = new View("payload_configuration/callsign_time_created_index");
 			//startkey=["CRAAG1",1357396479]&endkey=["CRAAG1",0]&descending=true
-			v.setStartKey("[%22" + callsign + "%22," + Long.toString((System.currentTimeMillis() / 1000L)) + "]");
-			v.setEndKey("[%22" + callsign + "%22,0]");
+			v.setStartKey("[%22" + callsign.toUpperCase() + "%22," + Long.toString((System.currentTimeMillis() / 1000L)) + "]");
+			v.setEndKey("[%22" + callsign.toLowerCase() +  "%22,0]");
 			//v.setWithDocs(true);
 			v.setLimit(1);
 			v.setDescending(true);
-			
 			ViewResults r = db.view(v);
 			docsout = r.getResults();
 			
-			docsout.toString();
+			//docsout.toString();
  
 
 			//docsout.get(0).getJSONObject().getJSONObject("doc").getString("type")
 			//docsout.get(1).getJSONObject().getJSONObject("doc").getJSONArray("sentences").getJSONObject(0).getString("callsign")
-			 
+			
 			if (docsout.size() > 0)
 			{
 				JSONArray ja = docsout.get(0).getJSONArray("key");
+				String ss = docsout.get(0).getId();
 				if (ja.getString(0).equals(callsign))
-					payload_configs.put(callsign,docsout.get(0).getId());
+					docid = ss;
 			}
 			
-			
-			
-			
-			return true;
 		}
 		catch (Exception e)
 		{
 			System.out.println("ERROR: "+ e.toString());
 			return false;
 		}
+			
+		if (docid != null)
+			payload_configs.put(callsign.toUpperCase(),docid);
+		
+		
+		return true;
+	
 	}
 	
-	public boolean queryActiveFlights()
+	private boolean queryActiveFlights()
 	{
 		try
 		{
@@ -198,7 +211,7 @@ public class Habitat_interface {
 			ViewResults r = db.view(v);
 			docsout = r.getResults();
 			
-			docsout.toString();
+			//docsout.toString();
  
 
 			//docsout.get(0).getJSONObject().getJSONObject("doc").getString("type")
@@ -219,10 +232,10 @@ public class Habitat_interface {
 								for (int j = 0; j < jar.size(); j++){
 									if (jar.getJSONObject(j).containsKey("callsign")){
 										String call = jar.getJSONObject(j).getString("callsign");
-										if (!flight_configs.containsKey(call))
-											flight_configs.put(call, docsout.get(i).getId());
+										if (!flight_configs.containsKey(call.toUpperCase()))
+											flight_configs.put(call.toUpperCase(), docsout.get(i).getId());
 										if (obj.containsKey("_id"))										
-											payload_configs.put(call,obj.getString("_id"));
+											payload_configs.put(call.toUpperCase(),obj.getString("_id"));
 									}									
 								}
 							}							
@@ -245,15 +258,14 @@ public class Habitat_interface {
 	{
 		try
 		{
-			System.out.println("DEBUG: STARTING GET PAYLOAD");
+
 			//open DB connection
 			if (s == null)
 			{
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
-			System.out.println("DEBUG: DATABASE OPEN");
-			 List<Document> docsout;
+
 			 View v = new View("payload_telemetry/payload_time");
 
 			 long starttime;
@@ -268,19 +280,7 @@ public class Habitat_interface {
 			 v.setWithDocs(true);
 			 v.setLimit(limit);
 
-			 System.out.println("DEBUG: DATABASE START QUERY");
-			 
-			 //ViewResults r = db.view(v);
-			// String body = db.view_dont_parse(v);
-			 
-			 //cut off the "preamble"
-			 //int g = body.indexOf("\"rows\":");
-			 
-			 //if (g > 0)
-			 //{
-			//	 body = body.substring(g+7,body.length()-2);
-			 //}
-			 
+
 			 System.out.println("DEBUG: DATABASE GOT QUERY");
 			 
 			 List<String> out = new LinkedList<String>();
@@ -316,32 +316,6 @@ public class Habitat_interface {
 			s.clearCouchResponse();
 			
 			
-			 /*
-			 docsout = r.getResults();
-
-			 System.out.println("DEBUG: DATABASE GOT LIST OF JSON");
-			 
-			 
-			 
-			 List<String> out = new LinkedList<String>();
-			 
-			 
-			for (int i = 0; i < docsout.size(); i++)
-			{
-				JSONObject obj;
-				if (docsout.get(i).containsKey("doc"))
-				{
-					obj = docsout.get(i).getJSONObject("doc");
-					if (obj.containsKey("data"))
-					{
-						obj = obj.getJSONObject("data");
-						if (obj.containsKey("_sentence"))
-						{
-							out.add(obj.getString("_sentence"));
-						}
-					}
-				}
-			} */
 			System.out.println("DEBUG: DATABASE PROCESSING DONE");
 			fireDataReceived(out,true,callsign,timestampStart, timestampStop); 
 			return true;
@@ -351,8 +325,6 @@ public class Habitat_interface {
 			fireDataReceived(null,false,callsign,timestampStart, timestampStop);
 			return false;
 		}
-			
-		
 	}
 	
 	public void getActivePayloads()
@@ -380,8 +352,6 @@ public class Habitat_interface {
 			foodoc.toString();
 			//((JSONObject)((JSONObject)foodoc.get(1).getJSONObject().get("doc")).get("data")).get("payload")
 			
-	
-			
 		}
 		catch (Exception e)
 		{
@@ -391,20 +361,14 @@ public class Habitat_interface {
 	
 	public void upload_payload_telem(Telemetry_string input)
 	{
-		boolean added=false;
-		
-
-
-		added=out_buff.offer(input);
-	
+		boolean added=false;		
+		added=out_buff.offer(input);	
 
 		if (added)
 		{
 			_operations.offer(new QueueItem(0,1));
 			StartThread();
 		}
-	
-		
 	}
 	
 	private synchronized void StartThread()
@@ -632,12 +596,15 @@ public class Habitat_interface {
 					  {
 						  if (qi.type == 0)
 						  {			//upload telem
-							  Telemetry_string tosend = out_buff.poll();
+							  
+							  Telemetry_string tosend = out_buff.peek();
 							  boolean res = true;
 							  if (tosend != null)								
 								  res = _upload(tosend);  //now we have some telem, lets send it							  
 							  if (!res)
 								  System.out.println("UPLOAD FAILED :(");
+							  else //success, remove data from queue
+								  out_buff.poll();
 						  }
 						  else if (qi.type == 1)
 						  {			//get data

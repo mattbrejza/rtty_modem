@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +34,6 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
@@ -128,17 +126,26 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		last_str = str;
 		listRxStr.add(str.getSentence());
 		
-		if (listPayloadData.containsKey(str.callsign))
-			listPayloadData.get(str.callsign).add(str.getSentence());
+		if (listPayloadData.containsKey(str.callsign.toUpperCase()))
+			listPayloadData.get(str.callsign.toUpperCase()).add(str.getSentence());
 		else{
 			List<String> l = Collections.synchronizedList(new ArrayList<String>()); 
 			l.add(str.getSentence());
-			listPayloadData.put(str.callsign,l);
+			listPayloadData.put(str.callsign.toUpperCase(),l);
 		}
 			
 		
-		if (checksum)
-			hab_con.upload_payload_telem(str);
+		if (checksum) {
+			hab_con.upload_payload_telem(str);    //upload recieved string to server
+			if (payloadLastUpdate.containsKey(str.callsign.toUpperCase()))   //if there are no (big) gaps since last string add current time as last update
+			{
+				if ((System.currentTimeMillis() / 1000L) -60 < payloadLastUpdate.get(str.callsign.toUpperCase()))
+					payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
+			}
+			else
+				payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
+			
+		}
 		
 		if (!listActivePayloads.contains(str.callsign))
 		{
@@ -257,8 +264,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		{
 			String call = listActivePayloads.get(i);
 			long start = (System.currentTimeMillis() / 1000L) - (9*24*60*60) ;//0;
-			if (payloadLastUpdate.contains(call))
-				start = payloadLastUpdate.get(call).longValue();
+			if (payloadLastUpdate.containsKey(call.toUpperCase()))
+				start = payloadLastUpdate.get(call.toUpperCase()).longValue();
 			
 			if ( start + 60 < (System.currentTimeMillis() / 1000L) )
 				hab_con.addDataFetchTask(listActivePayloads.get(i), start, (System.currentTimeMillis() / 1000L), 3000);
@@ -277,13 +284,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		if (success)
 		{
 			System.out.println("DEBUG: Got " + data.size() + "sentences for payload " + callsign);
-			payloadLastUpdate.put(callsign,endTime);
+			payloadLastUpdate.put(callsign.toUpperCase(),endTime);
 			listRxStr.addAll(data);
 			
-			if (listPayloadData.containsKey(callsign))
-				listPayloadData.get(callsign).addAll(data);
+			if (listPayloadData.containsKey(callsign.toUpperCase()))
+				listPayloadData.get(callsign.toUpperCase()).addAll(data);
 			else
-				listPayloadData.put(callsign,data);
+				listPayloadData.put(callsign.toUpperCase(),data);
 			
 			
 			Intent i = new Intent(HABITAT_NEW_DATA);
