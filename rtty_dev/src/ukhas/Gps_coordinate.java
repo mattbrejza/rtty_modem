@@ -88,16 +88,17 @@ public class Gps_coordinate {
 		
 		i = lat.indexOf('.');
 		j = longi.indexOf('.');
-		if (i < 0 || j < 0)   //TODO: unimplemented format
-		{
-			latlong_valid = false;
-			return;
-		}
+
 		
 		try
 		{
-		
-			if (i == 4+offset_lat) //NMEA
+			if (i < 0 || j < 0)  // 1/10s of a microdegree
+			{
+
+				Set_decimal(Double.parseDouble(lat)/1e7, Double.parseDouble(longi)/1e7);
+				return;
+			}
+			else if (i == 4+offset_lat) //NMEA
 			{
 				if (j == 5 + offset_long)  //confirmed NMEA
 				{

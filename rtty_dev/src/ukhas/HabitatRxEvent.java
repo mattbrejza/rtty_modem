@@ -1,9 +1,9 @@
 package ukhas;
 
 import java.util.EventListener;
-import java.util.List;
+import java.util.TreeMap;
 
 public interface HabitatRxEvent extends EventListener
 {
-	void HabitatRx(List<String> data, boolean success, String callsign, long startTime, long endTime);
+	void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign, long startTime, long endTime);
 }

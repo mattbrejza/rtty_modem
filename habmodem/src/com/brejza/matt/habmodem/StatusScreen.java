@@ -15,10 +15,6 @@ package com.brejza.matt.habmodem;
 
 import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GraphView.GraphViewData;
-import com.jjoe64.graphview.GraphViewSeries;
-import com.jjoe64.graphview.LineGraphView;
 
 
 import android.os.Bundle;
@@ -31,20 +27,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import rtty.*;
-import ukhas.*;
 
 
 
@@ -65,8 +54,7 @@ public class StatusScreen extends Activity  {
 
 //	private GraphView graphView;
 //	private GraphViewSeries viewseries;
-	
-	private int FFT_half_len = 512;
+
 
 	private StringRxReceiver strrxReceiver;
 	private CharRxReceiver charrxReceiver;

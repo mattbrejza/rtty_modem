@@ -18,9 +18,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -283,7 +283,7 @@ public class Habitat_interface {
 
 			 System.out.println("DEBUG: DATABASE GOT QUERY");
 			 
-			 List<String> out = new LinkedList<String>();
+			 TreeMap<Long,Telemetry_string> out = new TreeMap<Long,Telemetry_string>();
 			 
 			 JsonFactory fac = new JsonFactory();
 			 InputStream is = db.view_dont_parse(v);
@@ -291,9 +291,9 @@ public class Habitat_interface {
 			 {
 				 
 				 JsonParser jp = fac.createJsonParser(is);
-				// while(jp.nextValue() != JsonToken.END_OBJECT)
+
 				 String str,str1;
-				// int nullcount = 0;
+
 				while(jp.nextToken() != null )// || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
 				 {
 					//jp.nextToken();
@@ -302,8 +302,11 @@ public class Habitat_interface {
 					str1 = jp.getText();
 					if (str != null && str1 != null)
 					{
-					 if (str.equals("_sentence") && !str1.equals("_sentence"))
-						 out.add(str1);  
+					 if (str.equals("_sentence") && !str1.equals("_sentence")){
+						 Telemetry_string ts = new Telemetry_string(str1);
+						 out.put(new Long(ts.time.getTime()),ts);  
+					 }
+					 
 					 	//nullcount = 0;
 					}
 					//else
@@ -566,11 +569,11 @@ public class Habitat_interface {
 		return false;
 	}
 	
-	protected void fireDataReceived(List<String> data, boolean success, String callsign, long startTime, long endTime)
+	protected void fireDataReceived(TreeMap<Long, Telemetry_string> out, boolean success, String callsign, long startTime, long endTime)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
-			_listeners.get(i).HabitatRx(data, success, callsign, startTime, endTime);
+			_listeners.get(i).HabitatRx(out, success, callsign, startTime, endTime);
 		}
 	}
 	

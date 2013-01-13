@@ -14,15 +14,12 @@
 package com.brejza.matt.habmodem;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
@@ -54,7 +51,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-public class Map_Activity extends MapActivity implements AddPayloadFragment.NoticeDialogListener {
+public class Map_Activity extends MapActivity implements AddPayloadFragment.NoticeDialogListener,LocationSelectFragment.NoticeDialogListener {
 
 	MapView mapView;
 	private StringRxReceiver strrxReceiver;
@@ -64,19 +61,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	protected int last_colour = 0x0;
 	public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
 	
-	Drawable defaultMarker;
+	//Drawable defaultMarker;
 	//ArrayItemizedOverlay itemizedOverlay;
 	protected ArrayItemizedOverlay array_img_balloons;
-	ArrayWayOverlay array_waypoints; 
+	private ArrayWayOverlay array_waypoints; 
+	protected OverlayItem overlayMyLocation;
 	
-	public ConcurrentHashMap<String,OverlayWay> map_path_overlays = new ConcurrentHashMap<String,OverlayWay>();
-	public ConcurrentHashMap<String,OverlayItem> map_balloon_overlays = new ConcurrentHashMap<String,OverlayItem>();
-	
-	//OverlayItem item;
-	
-	//GeoPoint[][] points;
-	
-	public OverlayItem overlayMyLocation;
+	private ConcurrentHashMap<String,OverlayWay> map_path_overlays = new ConcurrentHashMap<String,OverlayWay>();
+	protected ConcurrentHashMap<String,OverlayItem> map_balloon_overlays = new ConcurrentHashMap<String,OverlayItem>();
+	//private ConcurrentHashMap<String,Long> last_update_time = new ConcurrentHashMap<String,Long>(); 
+
 	private Location_handler loc_han;
 	private LocationManager locationManager;
 	
@@ -96,77 +90,6 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         mapView.setMapFile(new File("/sdcard/england.map"));
 
         
-        /*
-
-        // create a default marker for the overlay
-        // R.drawable.marker is just a placeholder for your own drawable
-        defaultMarker = getResources().getDrawable(R.drawable.ic_map_balloon);
-
-        // create an ItemizedOverlay with the default marker
-        itemizedOverlay = new ArrayItemizedOverlay(defaultMarker);
-
-        // create a GeoPoint with the latitude and longitude coordinates
-        GeoPoint geoPoint = new GeoPoint(52.516272, -0.0);
-
-        // create an OverlayItem with title and description
-        item = new OverlayItem(geoPoint, "Brandenburg Gate",
-                "One of the main symbols of Berlin and Germany.");
-        
-        overlayMyLocation = new OverlayItem();
-        itemizedOverlay.addItem(overlayMyLocation);
-
-        // add the OverlayItem to the ArrayItemizedOverlay
-        itemizedOverlay.addItem(item);
-        
-       
-        //test path
-        
-        Paint wayDefaultPaintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-		wayDefaultPaintFill.setStyle(Paint.Style.STROKE);
-		wayDefaultPaintFill.setColor(Color.BLUE);
-		wayDefaultPaintFill.setAlpha(160);
-		wayDefaultPaintFill.setStrokeWidth(2);
-		wayDefaultPaintFill.setStrokeJoin(Paint.Join.ROUND);
-		wayDefaultPaintFill.setPathEffect(new DashPathEffect(new float[] { 20, 20 }, 0));
-		Paint wayDefaultPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
-		wayDefaultPaintOutline.setStyle(Paint.Style.STROKE);
-		wayDefaultPaintOutline.setColor(Color.BLUE);
-		wayDefaultPaintOutline.setAlpha(128);
-		wayDefaultPaintOutline.setStrokeWidth(7);
-		wayDefaultPaintOutline.setStrokeJoin(Paint.Join.ROUND);
-		// create an individual paint object for an overlay way
-		Paint wayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		wayPaint.setStyle(Paint.Style.FILL);
-		wayPaint.setColor(Color.YELLOW);
-		wayPaint.setAlpha(192);
-		
-		GeoPoint geoPoint1 = new GeoPoint(51.45,-0.3);
-		GeoPoint geoPoint2 = new GeoPoint(51.75,-0.4);
-		GeoPoint geoPoint3 = new GeoPoint(50.75,-0.2);
-
-        ArrayWayOverlay wayover = new ArrayWayOverlay(wayDefaultPaintFill,wayDefaultPaintOutline);
-        points = new GeoPoint[][] { { geoPoint1, geoPoint2 } };
-        OverlayWay way1 = new OverlayWay(points);
-		
-		wayover.addWay(way1);
-
-        
-        
-        
-        // add the ArrayItemizedOverlay to the MapView
-		 mapView.getOverlays().add(itemizedOverlay);
-		 //mapView.getOverlays().add(wayover);
-        
-		 way1.setWayNodes(new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } });
-	
-         wayover.requestRedraw();
-      */
-		 //points = new GeoPoint[][]{ { geoPoint1, geoPoint2, geoPoint3 } };
-		 //way1 = new OverlayWay(points);
-        
-         
-         
-         
          //////////////////////////////////
          //now for some stuff that isnt test code
         
@@ -177,15 +100,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         array_waypoints = new  ArrayWayOverlay(dw,dw);
         mapView.getOverlays().add(array_waypoints);
          
-         
+
         array_img_balloons = new ArrayItemizedOverlay(getResources().getDrawable(R.drawable.ic_map_balloon));
+        
         mapView.getOverlays().add(array_img_balloons);
-   		
-   		loc_han = new Location_handler(this);
+        
+   		loc_han = new Location_handler(this,getResources().getDrawable(R.drawable.ic_map_rx));
    		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
-    public void btnEnableLocation(View view)
+    private void EnableLocation()
     {
     	//my location part
         Criteria criteria = new Criteria();
@@ -194,11 +118,17 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         String bestProvider = this.locationManager.getBestProvider(criteria, true);
         if (bestProvider == null)
         	return;
-        
+        System.out.println("STARTING GPS WITH: "+bestProvider);
         this.locationManager.requestLocationUpdates(bestProvider, 1000, 0, this.loc_han);
         
-        
-        
+    }
+    
+    private void DisableLocation()
+    {
+    	if (locationManager != null)
+    	{
+    		locationManager.removeUpdates(this.loc_han);
+    	}
     }
     
     public void btnAddPayload(View view)
@@ -227,6 +157,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	intent = new Intent(this, StatusScreen.class);
             	startActivity(intent);
                 return true;
+            case R.id.location_dialog:
+            	FragmentManager fm = getFragmentManager();
+            	LocationSelectFragment di = new LocationSelectFragment();
+            	di.enChase = mService.enableChase;
+            	di.enPos = mService.enablePosition;
+             	di.show(fm, "Location Settings");
+            	return true;
             case R.id.refresh_button:
             	mService.updateActivePayloadsHabitat();
             	return true;
@@ -321,37 +258,130 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	}
     }
     
-    private void UpdateBalloonTrack(List<String> telem, String callsign)
+    private void UpdateBalloonTrack(TreeMap<Long,Telemetry_string> telem, String callsign, boolean reAdd, boolean forceAppend)//, long dataStartTime, long dataEndTime)
     {
     	
+    	callsign = callsign.toUpperCase();
+    	GeoPoint lp=new GeoPoint(0,0);
     	//step1: check to see if data already exists
-    	if (map_path_overlays.containsKey(callsign.toUpperCase()))
+    	if (map_path_overlays.containsKey(callsign))
     	{
-    		 
-    		
+    		//if (last_update_time.containsKey(callsign))
+    		//{
+    			if (forceAppend)// || last_update_time.get(callsign).longValue() < dataStartTime)
+    			{
+    				//no conflict, just keep drawing
+    				System.out.println("Update track, no conflict - add to end");
+    				OverlayWay way = map_path_overlays.get(callsign);
+    				int size_org = way.getWayNodes()[0].length;
+    				GeoPoint[][] points = new GeoPoint[1][telem.size() + size_org];
+    				 
+    				//copy old points into new object
+    				System.arraycopy(way.getWayNodes()[0], 0, points[0], 0, size_org);
+    				 
+    				//add new points to array
+    			
+    				int i=0;
+					Iterator it = telem.entrySet().iterator();
+				    while (it.hasNext()) {
+				    	TreeMap.Entry pairs = (TreeMap.Entry)it.next();
+				    	Telemetry_string ts = (Telemetry_string) pairs.getValue();
+				    	if (ts != null){
+	            		if (ts.coords != null)
+	            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
+		            	}      
+		            	points[0][size_org+i] = lp;
+		            	i++;
+				        it.remove(); // avoids a ConcurrentModificationException
+				    }
+    				    
+		            	
+    				way.setWayNodes(points);
+    				array_waypoints.requestRedraw();
+    				 
+    			}
+    			else if (reAdd)
+    			{
+    				 //wipe and start again, so get the data from the service
+    				System.out.println("Update track - wipe old array");
+    				OverlayWay way = map_path_overlays.get(callsign);
+    				if (mService.listPayloadData.containsKey(callsign)) {
+	    				TreeMap<Long, Telemetry_string> tm = mService.listPayloadData.get(callsign);
+	    				GeoPoint[][] points = new GeoPoint[1][tm.size()];
+	    				
+	    				//add new points to array
+	    				int i=0;
+						Iterator it = telem.entrySet().iterator();
+					    while (it.hasNext()) {
+					    	TreeMap.Entry pairs = (TreeMap.Entry)it.next();
+					    	Telemetry_string ts = (Telemetry_string) pairs.getValue();
+					    	if (ts != null){
+		            		if (ts.coords != null)
+		            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
+			            	}      
+			            	points[0][i] = lp;
+			            	i++;
+					        it.remove(); // avoids a ConcurrentModificationException
+					    }
+	    				
+	    				//add new points to array (old)
+					    /*
+	    				for (int i = 0 ; i < tm.size(); i++)
+			            {
+			            	Telemetry_string ts = (tm.get(i));
+			            	if (ts != null){
+			            		if (ts.coords != null)
+			            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
+			            	}      
+			            	points[0][i] = lp;
+			            }
+	    				way.setWayNodes(points);
+	    				array_waypoints.requestRedraw(); */
+    				}
+    			}
+    			else
+    			{
+    				 //do nothing
+    				System.out.println("Update track - do nothing");
+    			}
+    		//}
     	}
     	else
     	{
-    		//create new objects and start from scratch
-    		
-    		
+    		//create new objects and start from scratch.
+    		//ignore reAdd as there was nothing here to begin with
+    		System.out.println("Update track - new track");
     		
     		GeoPoint[][] points = new GeoPoint[1][telem.size()];
-    		
-    		GeoPoint lp=new GeoPoint(0,0);
-     
+    		/*
             for (int i = 0 ; i < telem.size(); i++)
             {
-            	Telemetry_string ts = new Telemetry_string(telem.get(i));
+            	Telemetry_string ts =(telem.get(i));
             	if (ts != null)
             	{
             		if (ts.coords != null)
             			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);                    			 
 
-            			 
             	}      
             	points[0][i] = lp;
              }
+            */
+    		//add new points to array
+			int i=0;
+			Iterator it = telem.entrySet().iterator();
+		    while (it.hasNext()) {
+		    	TreeMap.Entry pairs = (TreeMap.Entry)it.next();
+		    	Telemetry_string ts = (Telemetry_string) pairs.getValue();
+		    	if (ts != null){
+        		if (ts.coords != null)
+        			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
+            	}      
+            	points[0][i] = lp;
+            	i++;
+		        it.remove(); // avoids a ConcurrentModificationException
+		    }
+            
+            
             
     		Paint linepaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     		linepaint.setStyle(Paint.Style.STROKE);
@@ -362,15 +392,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             
     		OverlayWay way = new OverlayWay(points,linepaint,linepaint);
     		
-    		
     		array_waypoints.addWay(way);
     		map_path_overlays.put(callsign.toUpperCase(), way);
     		
     		array_waypoints.requestRedraw();
     		
-    		
-    		
-    	}    	
+    	}  
+    	//last_update_time.put(callsign.toUpperCase(), Long.valueOf(dataEndTime));	
     }
     
     private class StringRxReceiver extends BroadcastReceiver  {
@@ -385,9 +413,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	//itemizedOverlay.requestRedraw();
             	UpdateBalloonLocation(mService.getLastString().coords,mService.getLastString().callsign);
    
-            	List<String> l = new ArrayList<String>(); 
-				l.add(mService.getLastString().getSentence());
-				UpdateBalloonTrack(l,mService.getLastString().callsign);
+            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
+				l.put(mService.getLastString().time.getTime(),mService.getLastString());
+				UpdateBalloonTrack(l,mService.getLastString().callsign, false, true);//, 0, System.currentTimeMillis() / 1000L );
             	
             	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
             	fragment.updatePayload(mService.getLastString());
@@ -408,10 +436,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 
                 	//item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
                 	//itemizedOverlay.requestRedraw();
+            		
+            		//TODO: check that our data is actually new
             		UpdateBalloonLocation(str.coords,str.callsign);
  
                 	if (mService.listPayloadData.containsKey(str.callsign.toUpperCase()))
-                		UpdateBalloonTrack(mService.listPayloadData.get(str.callsign.toUpperCase()),str.callsign);
+                		UpdateBalloonTrack(mService.listPayloadData.get(str.callsign.toUpperCase()),str.callsign,true, false);//, 0, System.currentTimeMillis() / 1000L );
                 	
                 	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
                 	fragment.updatePayload(str);
@@ -455,6 +485,22 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		if (mService.listActivePayloads.contains(callsign))
 			mService.listActivePayloads.remove(callsign);
 		System.out.println("REMOVED PAYLOAD: " + callsign);
+	}
+	
+
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {
+		
+		if (!mService.enablePosition && enPos)
+			EnableLocation();
+		
+		if (mService.enablePosition && !enPos)
+			DisableLocation();
+		
+		mService.enablePosition = enPos;
+		mService.enableChase = enChase;
+		
 	}
 
 }

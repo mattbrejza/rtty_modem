@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import rtty.StringRxEvent;
@@ -54,6 +55,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	boolean isRecording = false;
 	
 	Telemetry_string last_str;
+	
+	boolean enableChase = false;
+	boolean enablePosition = false;
 
 	moving_average ascent_rates;
 	
@@ -62,7 +66,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
 	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>());
 	public ConcurrentHashMap<String,Long> payloadLastUpdate = new ConcurrentHashMap<String,Long>();
-	public ConcurrentHashMap<String,List<String>> listPayloadData = new ConcurrentHashMap<String,List<String>>();
+	public ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>> listPayloadData = new ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>>();
 	
 	public Dsp_service() {
 		rcv.addStringRecievedListener(this);
@@ -126,17 +130,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		last_str = str;
 		listRxStr.add(str.getSentence());
 		
-		if (listPayloadData.containsKey(str.callsign.toUpperCase()))
-			listPayloadData.get(str.callsign.toUpperCase()).add(str.getSentence());
-		else{
-			List<String> l = Collections.synchronizedList(new ArrayList<String>()); 
-			l.add(str.getSentence());
-			listPayloadData.put(str.callsign.toUpperCase(),l);
+		if (checksum){
+			if (listPayloadData.containsKey(str.callsign.toUpperCase()))
+				listPayloadData.get(str.callsign.toUpperCase()).put(Long.valueOf(str.time.getTime()),str);
+			else
+			{		//first one, dont need to do anything special
+				TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
+				l.put(Long.valueOf(str.time.getTime()),str);
+				listPayloadData.put(str.callsign.toUpperCase(),l);
+			}
 		}
-			
 		
 		if (checksum) {
-			hab_con.upload_payload_telem(str);    //upload recieved string to server
+			hab_con.upload_payload_telem(str);    //upload received string to server
 			if (payloadLastUpdate.containsKey(str.callsign.toUpperCase()))   //if there are no (big) gaps since last string add current time as last update
 			{
 				if ((System.currentTimeMillis() / 1000L) -60 < payloadLastUpdate.get(str.callsign.toUpperCase()))
@@ -276,28 +282,29 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 
 	@Override
-	public void HabitatRx(List<String> data, boolean success, String callsign,
+	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
 			long startTime, long endTime) {
 		// TODO Auto-generated method stub
 		
 		
 		if (success)
 		{
-			System.out.println("DEBUG: Got " + data.size() + "sentences for payload " + callsign);
+			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
 			payloadLastUpdate.put(callsign.toUpperCase(),endTime);
-			listRxStr.addAll(data);
+			//listRxStr.addAll(data);
 			
-			if (listPayloadData.containsKey(callsign.toUpperCase()))
-				listPayloadData.get(callsign.toUpperCase()).addAll(data);
+			if (listPayloadData.containsKey(callsign.toUpperCase())){
+				TreeMap<Long, Telemetry_string> chm = listPayloadData.get(callsign.toUpperCase());
+				chm.putAll(data);
+			}
 			else
 				listPayloadData.put(callsign.toUpperCase(),data);
 			
 			
 			Intent i = new Intent(HABITAT_NEW_DATA);
 			if (data.size() > 0)
-				i.putExtra(TELEM_STR, data.get(data.size()-1));
+				i.putExtra(TELEM_STR, data.get(data.lastKey()).getSentence());
 			sendBroadcast(i);
-			//TODO put latest string in the intent
 		}
 		
 		

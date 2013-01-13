@@ -27,5 +27,8 @@
 	<string name="dialog_add_payload_title">Select Payload</string>
 	<string name="dialog_add_payload_body">Select or enter payload to be tracked</string>
 	<string name="refresh_button">Refresh</string>
+	<string name="location_dialog">My Location</string>
+	<string name="cancel">Cancel</string>
+	<string name="accept">OK</string>
 
 </resources>

@@ -9,6 +9,9 @@
     <item android:id="@+id/fft_screen"
           android:showAsAction="ifRoom|withText"
           android:title="@string/fft_screen" />
+    <item android:id="@+id/location_dialog"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/location_dialog" />
     <item android:id="@+id/refresh_button"
           android:showAsAction="ifRoom|withText"
           android:title="@string/refresh_button" />
