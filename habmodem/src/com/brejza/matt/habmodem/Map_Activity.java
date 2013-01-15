@@ -24,6 +24,7 @@ import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
 import org.mapsforge.android.maps.overlay.ArrayWayOverlay;
+import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -56,6 +57,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	MapView mapView;
 	private StringRxReceiver strrxReceiver;
 	private HabitatRxReceiver habirxReceiver;
+	private GPSRxReceiver gpsrxReceiver;
 	boolean isReg = false;
 	
 	protected int last_colour = 0x0;
@@ -71,8 +73,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	protected ConcurrentHashMap<String,OverlayItem> map_balloon_overlays = new ConcurrentHashMap<String,OverlayItem>();
 	//private ConcurrentHashMap<String,Long> last_update_time = new ConcurrentHashMap<String,Long>(); 
 
-	private Location_handler loc_han;
-	private LocationManager locationManager;
+
 	
 	Dsp_service mService;
     boolean mBound = false;
@@ -105,31 +106,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         
         mapView.getOverlays().add(array_img_balloons);
         
-   		loc_han = new Location_handler(this,getResources().getDrawable(R.drawable.ic_map_rx));
-   		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+   		//loc_han = new Location_handler(this,getResources().getDrawable(R.drawable.ic_map_rx));
+   		//this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
-    private void EnableLocation()
-    {
-    	//my location part
-        Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        
-        String bestProvider = this.locationManager.getBestProvider(criteria, true);
-        if (bestProvider == null)
-        	return;
-        System.out.println("STARTING GPS WITH: "+bestProvider);
-        this.locationManager.requestLocationUpdates(bestProvider, 1000, 0, this.loc_han);
-        
-    }
-    
-    private void DisableLocation()
-    {
-    	if (locationManager != null)
-    	{
-    		locationManager.removeUpdates(this.loc_han);
-    	}
-    }
+
     
     public void btnAddPayload(View view)
     {
@@ -160,8 +141,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             case R.id.location_dialog:
             	FragmentManager fm = getFragmentManager();
             	LocationSelectFragment di = new LocationSelectFragment();
-            	di.enChase = mService.enableChase;
-            	di.enPos = mService.enablePosition;
+            	di.enChase = mService.getEnableChase();
+            	di.enPos = mService.getEnablePosition();
              	di.show(fm, "Location Settings");
             	return true;
             case R.id.refresh_button:
@@ -190,10 +171,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
    		if (!isReg) { registerReceiver(strrxReceiver, intentFilter1); }
    	   
-        //habitat receiver
+   		//habitat receiver
    		if (habirxReceiver == null) habirxReceiver = new HabitatRxReceiver();
    		IntentFilter intentFilter2 = new IntentFilter(Dsp_service.HABITAT_NEW_DATA);
    		if (!isReg) { registerReceiver(habirxReceiver, intentFilter2); }
+   		
+   		
+   		//gps receiver
+   		if (gpsrxReceiver == null) gpsrxReceiver = new GPSRxReceiver();
+   		IntentFilter intentFilter3 = new IntentFilter(Dsp_service.GPS_UPDATED);
+   		if (!isReg) { registerReceiver(gpsrxReceiver, intentFilter3); }
    		isReg = true;
    		
    	}
@@ -203,8 +190,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
        	super.onPause();
        	if (isReg)
        	{
-	       	 if (habirxReceiver != null) unregisterReceiver(habirxReceiver);
-	       	 if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+	    	if (habirxReceiver != null) unregisterReceiver(habirxReceiver);
+	       	if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
+	       	if (gpsrxReceiver != null) unregisterReceiver(gpsrxReceiver);
        	}
            
            isReg = false;
@@ -399,6 +387,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     		
     	}  
     	//last_update_time.put(callsign.toUpperCase(), Long.valueOf(dataEndTime));	
+    	System.out.println("Update track - done");
     }
     
     private class StringRxReceiver extends BroadcastReceiver  {
@@ -419,6 +408,35 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	
             	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
             	fragment.updatePayload(mService.getLastString());
+            }
+        }
+    }
+    
+    
+    private class GPSRxReceiver extends BroadcastReceiver  {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Dsp_service.GPS_UPDATED)) {
+            //Do stuff
+            	if (mService.currentLocationValid && mService.getEnablePosition())
+            	{
+            		
+            		if (overlayMyLocation == null)
+            		{
+            		//	System.out.println("DEBUG : adding user onto map new  " + mService.currentLatitude + "  " + mService.currentLatitude);
+            			overlayMyLocation = new OverlayItem(new GeoPoint(mService.currentLatitude,mService.currentLongitude),
+            														"User Location","",ItemizedOverlay.boundCenterBottom(getResources().getDrawable(R.drawable.ic_map_rx)));
+            			array_img_balloons.addItem(overlayMyLocation);
+            			array_img_balloons.requestRedraw();
+            		}
+            		else
+            		{
+            		//	System.out.println("DEBUG : adding user onto map  " + mService.currentLatitude + "  " + mService.currentLongitude);
+            			overlayMyLocation.setPoint(new GeoPoint(mService.currentLatitude,mService.currentLongitude));
+            			array_img_balloons.requestRedraw();
+            		}
+            	}
             }
         }
     }
@@ -492,15 +510,17 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {
 		
+		mService.changeLocationSettings(enPos,enChase);
+		 /*
 		if (!mService.enablePosition && enPos)
-			EnableLocation();
+			mService.EnableLocation();
 		
 		if (mService.enablePosition && !enPos)
-			DisableLocation();
+			mService.DisableLocation();
 		
 		mService.enablePosition = enPos;
 		mService.enableChase = enChase;
-		
+		*/
 	}
 
 }

@@ -30,11 +30,17 @@ import ukhas.Habitat_interface;
 import ukhas.Listener;
 import ukhas.Telemetry_string;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
@@ -46,6 +52,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public final static String FFT_UPDATED = "com.brejza.matt.habmodem.FFT_UPDATED";
 	public final static String HABITAT_NEW_DATA = "com.brejza.matt.habmodem.HABITAT_NEW_DATA";
 	public final static String TELEM_STR = "com.brejza.matt.habmodem.TELEM_STR";
+	public final static String GPS_UPDATED = "com.brejza.matt.habmodem.GPS_UPDATED";
 	
 	 // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -56,9 +63,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	Telemetry_string last_str;
 	
-	boolean enableChase = false;
-	boolean enablePosition = false;
-
+	boolean _enableChase = false;
+	boolean _enablePosition = false;
+	
+	public double currentLatitude = 0;
+	public double currentLongitude = 0;
+	public boolean currentLocationValid = false;
+	
+	private Location_handler loc_han;
+	private LocationManager locationManager;
+	
+	private long chasecarUpdateSecs = 45;
+	private long lastChasecarUpdate = 0;
+	
 	moving_average ascent_rates;
 	
 	Habitat_interface hab_con;
@@ -84,6 +101,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
 		hab_con.addGetActiveFlightsTask();
 		hab_con.addHabitatRecievedListener(this);
+		loc_han = new Location_handler();
+		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		System.out.println("Starting audio");
 		return mBinder;
 	}
@@ -95,8 +114,41 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
         }
     }
 	
+	public void changeLocationSettings(boolean enablePos, boolean enableChase)
+	{
+		 
+		if (!_enablePosition && !_enableChase && (enablePos  || enableChase))
+			EnableLocation();
+		
+		if ((_enablePosition || _enableChase) && !enablePos && !enableChase)
+			DisableLocation();
+		
+		_enablePosition = enablePos;
+		_enableChase = enableChase;
+		
+	}
 	
-
+    private void EnableLocation()
+    {
+    	//my location part
+        Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        
+        String bestProvider = this.locationManager.getBestProvider(criteria, true);
+        if (bestProvider == null)
+        	return;
+        System.out.println("STARTING GPS WITH: "+bestProvider);
+        this.locationManager.requestLocationUpdates(bestProvider, 1000, 0, this.loc_han);
+        
+    }
+    
+    private void DisableLocation()
+    {
+    	if (locationManager != null)
+    	{
+    		locationManager.removeUpdates(this.loc_han);
+    	}
+    }
 	
 	public void startAudio()
 	{
@@ -148,8 +200,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				if ((System.currentTimeMillis() / 1000L) -60 < payloadLastUpdate.get(str.callsign.toUpperCase()))
 					payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
 			}
-			else
-				payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
+			//else
+			//	payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
 			
 		}
 		
@@ -310,5 +362,61 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		
 	}
+	
+	public class Location_handler implements LocationListener  {
+
+
+
+		
+		public Location_handler() {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void onLocationChanged(Location location) {
+			// TODO Auto-generated method stub
+			
+			
+			
+			if ((lastChasecarUpdate + chasecarUpdateSecs < System.currentTimeMillis() / 1000L) && _enableChase){
+				hab_con.updateChaseCar(new Listener("MATT_XOOM", new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude())));
+				lastChasecarUpdate = System.currentTimeMillis() / 1000L;
+			}
+			
+			
+			currentLatitude = location.getLatitude();
+			currentLongitude = location.getLongitude();
+			currentLocationValid = true;
+			sendBroadcast(new Intent(GPS_UPDATED));
+		}
+		
+		@Override
+		public void onProviderDisabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+	
+	public boolean getEnableChase(){
+		return _enableChase;
+	}
+	
+	public boolean getEnablePosition(){
+		return _enablePosition;
+	}
+	
 
 }
