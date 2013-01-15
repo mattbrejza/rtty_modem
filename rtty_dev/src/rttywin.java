@@ -11,15 +11,8 @@
 // GNU General Public License for more details.
 
 
-import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -90,7 +83,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	  
 	DoubleFFT_1D ft = new DoubleFFT_1D(512);
 	  
-	private graph_line grtty = new graph_line();
+	//private graph_line grtty = new graph_line();
 
 	  
 	Plot2DPanel plot = new Plot2DPanel();
@@ -245,7 +238,9 @@ public class rttywin extends JFrame implements StringRxEvent {
 			public void actionPerformed(ActionEvent e) {
 				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
 				//hi.queryAllPayloadDocs("APEX");
-				hi.addDataFetchTask("HABJOE",(System.currentTimeMillis() / 1000L)-(8*24*60*60),(System.currentTimeMillis() / 1000L),3000);
+				hi.updateChaseCar(new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
+				hi.addDataFetchTask("NANU",(System.currentTimeMillis() / 1000L)-(15*24*60*60),(System.currentTimeMillis() / 1000L),3000);
+			
 			}
 		});
 		btnNewButton.setBounds(152, 24, 89, 23);

@@ -52,6 +52,11 @@ public class Habitat_interface {
 	private Database db;
 	private Thread sdThread;
 	
+	public String device = "XOOM";
+	public String device_software = "4.0.x";
+	public String application = "HAB Modem";
+	public String application_version = "pre-alpha";
+	
 	private int _prev_query_time = 5 * 60 * 60;
 	
 	private boolean _queried_current_flights = false;
@@ -60,6 +65,8 @@ public class Habitat_interface {
 	
 	private Queue<Telemetry_string> out_buff = new LinkedBlockingQueue<Telemetry_string>();
 	private Queue<QueueItem> _operations = new LinkedBlockingQueue<QueueItem>();
+	
+	
 	
 	public Habitat_interface(String callsign) {		
 		_listener_info = new Listener(callsign);
@@ -106,6 +113,13 @@ public class Habitat_interface {
 	public void addDataFetchTask(String callsign, long startTime, long stopTime, int limit)
 	{
 		_operations.offer(new QueueItem(1,callsign, startTime, stopTime, limit));
+		StartThread();
+	}
+	
+	public void updateChaseCar(Listener newlocation)
+	{
+		_listener_info = newlocation;
+		_operations.offer(new QueueItem(3,0));
 		StartThread();
 	}
 	
@@ -293,17 +307,32 @@ public class Habitat_interface {
 				 JsonParser jp = fac.createJsonParser(is);
 
 				 String str,str1;
-
+				 boolean gotkey = false;
+				 boolean keypt1 = false;
+				 long lasttime = 0;
 				while(jp.nextToken() != null )// || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
 				 {
 					//jp.nextToken();
 	
 					str  = jp.getCurrentName();
 					str1 = jp.getText();
+					if (str == "key" && str1 == "[")
+						gotkey = true;
+					else if (gotkey){
+						keypt1 = true;
+						gotkey = false;
+					} else if (keypt1) {
+						keypt1 = false;
+						try {
+							lasttime = Long.parseLong(str1); }					
+						catch (NumberFormatException e) {
+							System.out.println("ERROR PARSING - NUMBER FORMAT EXCEPTION!!!"); }
+													
+					}
 					if (str != null && str1 != null)
 					{
 					 if (str.equals("_sentence") && !str1.equals("_sentence")){
-						 Telemetry_string ts = new Telemetry_string(str1);
+						 Telemetry_string ts = new Telemetry_string(str1,lasttime);
 						 out.put(new Long(ts.time.getTime()),ts);  
 					 }
 					 
@@ -323,6 +352,7 @@ public class Habitat_interface {
 			fireDataReceived(out,true,callsign,timestampStart, timestampStop); 
 			return true;
 		}
+		
 		catch (Exception e)
 		{
 			fireDataReceived(null,false,callsign,timestampStart, timestampStop);
@@ -388,6 +418,62 @@ public class Habitat_interface {
 		}
 	}
 
+	
+	private boolean _update_chasecar()
+	{
+		try
+		{
+			//open DB connection
+			if (s == null)
+			{
+				 s = new Session(_habitat_url,80);
+				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
+			}
+			
+			if (_listener_info != null)
+			{
+				
+				Document doc = new Document ();
+				
+				//date uploaded
+				Date time = new Date();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+				String t = dateFormat.format(time);
+				t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+				
+				
+				doc.put("type", "listener_telemetry");
+				doc.put("time_created", t);
+				doc.put("time_uploaded", t);
+				
+				
+				JSONObject client = new JSONObject();
+				client.put("device", device);
+				client.put("device_software", device_software);
+				client.put("application", application);
+				client.put("application_version", application_version);
+				
+				JSONObject data = _listener_info.getJSONDataField();
+				data.put("client", client);
+						
+				doc.put("data", data);
+				
+			
+				
+				db.saveDocument(doc);
+				
+				CouchResponse cr = s.getLastResponse();
+				System.out.println(cr);
+				
+				
+			}			
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
 	
 	private boolean _upload(Telemetry_string input)
 	{
@@ -615,9 +701,13 @@ public class Habitat_interface {
 							  if (id != null)
 								  getPayloadDataSince(qi.startTime, qi.stopTime,qi.count, id, qi.callsign);
 						  }
-						  else     //update list of active flights
+						  else if (qi.type == 2)    //update list of active flights
 						  {
 							  _queried_current_flights = queryActiveFlights();
+						  }
+						  else               //upload chasecar
+						  {
+							  _update_chasecar();
 						  }
 					  }
 					  else
@@ -657,7 +747,7 @@ public class Habitat_interface {
 	
 	class QueueItem
 	{
-		public int type;				//0: upload payload, 1: get payload telem, 2: update active flight list
+		public int type;				//0: upload payload, 1: get payload telem, 2: update active flight list, 3: update chase car
 		public String callsign = "";
 		public long startTime = 0;
 		public long stopTime = 0;

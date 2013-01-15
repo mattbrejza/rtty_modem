@@ -50,12 +50,16 @@ public class Telemetry_string {
 	}
 	
 	public Telemetry_string(String telem) {
-		parse_telem(telem);
+		parse_telem(telem, System.currentTimeMillis() / 1000L);
+		checksum_valid = check_checksum(telem,0);
+	}
+	public Telemetry_string(String telem, long timerx) {
+		parse_telem(telem,timerx);
 		checksum_valid = check_checksum(telem,0);
 	}
 	
 	public Telemetry_string(String telem, boolean _checksum_valid) {
-		parse_telem(telem);
+		parse_telem(telem, System.currentTimeMillis() / 1000L);
 		checksum_valid = _checksum_valid;
 		
 		//get time created
@@ -66,7 +70,7 @@ public class Telemetry_string {
 		doc_time_created = t;
 	}
 	
-	private void parse_telem(String str)
+	private void parse_telem(String str, long timerx)
 	{
 		int start = str.lastIndexOf('$');
 		
@@ -118,16 +122,37 @@ public class Telemetry_string {
 			
 			try //this is all a bit horrible :(
 			{
-				ft.setTimeZone(TimeZone.getTimeZone("UTC"));
+				
 				if (offset == 0)
 					packetID = Integer.parseInt(fields[1]);
-				time = ft.parse(fields[2+offset]);		
 				
+				
+				
+				//get time rx @ 12am
 				Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 				Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-				cal.setTime(time);
-				cal.set(cal2.get(Calendar.YEAR), cal2.get(Calendar.MONTH), cal2.get(Calendar.DAY_OF_MONTH));
-				time = cal.getTime();
+				ft.setTimeZone(TimeZone.getTimeZone("UTC"));
+				time = ft.parse(fields[2+offset]);		
+				cal2.setTime(time);
+				
+				cal.setTimeInMillis(timerx*1000);
+				cal.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
+				cal.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
+				cal.set(Calendar.SECOND, cal2.get(Calendar.SECOND));
+				
+				//long best_guess = cal2.getTimeInMillis();
+				
+						
+
+				if (cal.getTimeInMillis() < timerx*1000 - 12*60*60*1000)
+					cal.roll(Calendar.DAY_OF_YEAR, 1);
+				if (cal.getTimeInMillis() < timerx*1000 + 12*60*60*1000)
+					;
+				else					
+					cal.roll(Calendar.DAY_OF_YEAR, -1);
+				
+				time = cal.getTime(); 
+				
 				
 			}
 			catch (Exception e)

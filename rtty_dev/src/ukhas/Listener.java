@@ -32,7 +32,7 @@ public class Listener {
 		_changed = true;
 	}
 
-	public String getJSONDataField()
+	public JSONObject getJSONDataField()
 	{
 		_changed = false;
 		
@@ -43,13 +43,14 @@ public class Listener {
 			data.put("latitude", _coords.latitude);
 			data.put("longitude", _coords.longitude);
 			data.put("altitude",_coords.altitude);
+			data.put("chase", true);
 			
 		}
 		catch (Exception e)
 		{
-			return "";
+			return null;
 		}
-		return data.toString();
+		return data;
 	}
 	
 	public String CallSign()
