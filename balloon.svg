@@ -62,7 +62,7 @@
        fx="109.43666"
        fy="896.12244"
        r="35.40897"
-       gradientTransform="matrix(1,0,0,1.7313395,0,-655.36973)"
+       gradientTransform="matrix(1,0,0,1.7313395,296.98485,-688.70476)"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -72,9 +72,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="553.86993"
-     inkscape:cy="134.42824"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="356.77816"
+     inkscape:cy="304.34021"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -91,24 +91,25 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     style="display:inline">
     <path
-       style="opacity:0.75663714999999998;fill:url(#radialGradient5289);fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 107.01007,956.9274 c 0.13026,-2.28868 -0.79498,-20.49993 -0.79498,-20.49993 0,0 0.32875,-18.53351 -4.15738,-21.7864 C 85.490515,902.6284 73.120619,894.64535 74.691353,869.27794 76.459066,840.7299 97.927297,835.86647 107.68673,835.3643 c 9.85139,-0.50691 34.44065,2.58989 36.55487,35.1393 1.60977,24.78283 -18.28758,33.91933 -33.88004,44.4682 -4.29833,2.90795 -4.05433,22.5264 -4.05433,22.5264"
+       style="opacity:0.75663715;fill:url(#radialGradient5289);fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 403.99492,923.59237 c 0.13026,-2.28868 -0.79498,-20.49993 -0.79498,-20.49993 0,0 0.32875,-18.53351 -4.15738,-21.7864 -16.5672,-12.01267 -28.93709,-19.99572 -27.36636,-45.36313 1.76771,-28.54804 23.23594,-33.41147 32.99538,-33.91364 9.85139,-0.50691 34.44065,2.58989 36.55487,35.1393 1.60977,24.78283 -18.28758,33.91933 -33.88004,44.4682 -4.29833,2.90795 -4.05433,22.5264 -4.05433,22.5264"
        id="path3015"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccsssssc"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:5.9;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:none;stroke:#000000;stroke-width:5.9000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 271.07143,961.29075 0,-120.35714 59.83412,-0.52673 -59.83412,59.4553 -56.40691,-59.11612 56.41833,0.1812"
        id="path3002"
        inkscape:connector-curvature="0"
@@ -116,8 +117,8 @@
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:6.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="m 496.44468,905.7665 c 0,-1.66787 6.72653,-52.92473 25.0546,-52.95473 18.61458,-0.0305 24.53346,53.35074 24.53346,53.35074"
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 496.44468,912.83757 c 0,-1.66787 6.72653,-52.92473 25.0546,-52.95473 18.61458,-0.0305 24.53346,53.35074 24.53346,53.35074"
        id="path3003"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="csc"
@@ -125,23 +126,25 @@
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:6.59999999999999960;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 557.68569 947.52193 C 561.19746 953.85332 565.59282 958.31547 570.99675 958.32432 C 576.38392 958.33315 580.70776 953.86843 584.13252 947.51876 "
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 557.68569,954.593 c 3.51177,6.33139 7.90713,10.79354 13.31106,10.80239 5.38717,0.009 9.71101,-4.45589 13.13577,-10.80556"
        id="path3864"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
        inkscape:export-xdpi="1000"
-       inkscape:export-ydpi="1000" />
+       inkscape:export-ydpi="1000"
+       inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:6.59999999999999960;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-       d="M 545.94215 905.36959 C 545.94215 905.80187 546.394 909.56527 547.38258 914.90454 "
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 545.94215,912.44066 c 0,0.43228 0.45185,4.19568 1.44043,9.53495"
        id="path3003-1"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
        inkscape:export-xdpi="1000"
-       inkscape:export-ydpi="1000" />
+       inkscape:export-ydpi="1000"
+       inkscape:connector-curvature="0" />
     <path
        inkscape:connector-curvature="0"
        style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 595.70006,906.17335 c 0,0.43228 -0.45185,4.19568 -1.44043,9.53495"
+       d="m 595.70006,913.24442 c 0,0.43228 -0.45185,4.19568 -1.44043,9.53495"
        id="path3003-1-0"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
        inkscape:export-xdpi="1000"
@@ -149,7 +152,7 @@
     <path
        inkscape:connector-curvature="0"
        style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 595.65493,906.43572 c 0,-0.43228 0.45185,-4.19568 1.44043,-9.53495"
+       d="m 595.65493,913.50679 c 0,-0.43228 0.45185,-4.19568 1.44043,-9.53495"
        id="path3003-1-0-2"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
        inkscape:export-xdpi="1000"
@@ -162,9 +165,9 @@
      style="display:inline">
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:661.00001335%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-size:40px;font-style:normal;font-weight:bold;line-height:661.00001335%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Courier New Bold"
        x="501.66431"
-       y="943.30481"
+       y="950.37585"
        id="text3791"
        sodipodi:linespacing="661.00001%"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
@@ -173,7 +176,64 @@
          sodipodi:role="line"
          id="tspan3793"
          x="501.66431"
-         y="943.30481"
+         y="950.37585"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:661.00001335%;font-family:Courier New;-inkscape-font-specification:Courier New Bold">01100</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 458.9086,713.14939 c 0,-1.66787 6.72653,-52.92473 25.0546,-52.95473 18.61458,-0.0305 24.53346,53.35074 24.53346,53.35074"
+       id="path3003-17"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="csc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 585.80952,586.20935 c 3.51177,6.33139 7.90713,10.79354 13.31106,10.80239 5.38717,0.009 9.71101,-4.45589 13.13577,-10.80556"
+       id="path3864-4"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 508.40607,712.75248 c 0,0.43228 0.45185,4.19568 1.44043,9.53495"
+       id="path3003-1-09"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 558.16398,713.55624 c 0,0.43228 -0.45185,4.19568 -1.44043,9.53495"
+       id="path3003-1-0-4"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 558.11885,713.81861 c 0,-0.43228 0.45185,-4.19568 1.44043,-9.53495"
+       id="path3003-1-0-2-8"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000" />
+    <text
+       xml:space="preserve"
+       style="font-size:61.47397232px;font-style:normal;font-weight:bold;line-height:661.00001335%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans;-inkscape-font-specification:Courier New Bold"
+       x="494.44223"
+       y="700.46979"
+       id="text3791-8"
+       sodipodi:linespacing="661.00001%"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000"
+       transform="scale(0.91151402,1.0970758)"><tspan
+         sodipodi:role="line"
+         id="tspan3793-2"
+         x="494.44223"
+         y="700.46979"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:661.00001335%;font-family:Courier New;-inkscape-font-specification:Courier New Bold">01100</tspan></text>
   </g>
 </svg>

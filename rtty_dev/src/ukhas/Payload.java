@@ -4,37 +4,49 @@ import java.util.TreeMap;
 
 public class Payload {
 	
-		String _callsign;
+		public String callsign;
 		String _payloadID;
 		String _flightID;
 		boolean _isActiveFlight = false;
 		boolean _useFlightView = false;
+		boolean _activePayload = false;
 		int _total300 = 0;
 		int _total50 = 0;
 		
 		int _maxLookBehind = 3*24*60*60;
 		int _maxRecords = 3000;
 		long _lastUpdated = 0;
-		public TreeMap<Long,Telemetry_string> data = null;
+		public TreeMap<Long,Telemetry_string> data = new TreeMap<Long,Telemetry_string>();
 		
-		Payload(String callsign)
+		AscentRate ascentRate = new AscentRate();
+		
+		public Payload(String call, boolean activePayload)
 		{
-			_callsign = callsign; 
+			callsign = call; 
+			_activePayload = activePayload;
 		}
 		
-		Payload(String callsign, String payloadID, String flightID)
+		public Payload(String call, String payloadID, String flightID)
 		{
-			_callsign = callsign; 
+			callsign = call; 
 			_payloadID = payloadID;
 			_flightID = flightID;
 			_isActiveFlight = true;
+			_activePayload = false;
 		}
 		
-		Payload(String callsign, String payloadID)
+		public Payload(String call, String payloadID)
 		{
-			_callsign = callsign;
+			callsign = call;
 			_payloadID = payloadID;
+			_activePayload = false;
 		}
+		
+		public Payload(Telemetry_string str){
+			callsign = str.callsign;
+			data.put(Long.valueOf(str.time.getTime()), str);
+			_activePayload = true;
+		}		
 		
 		public void setFlightID(String id){
 			_flightID = id;
@@ -51,7 +63,22 @@ public class Payload {
 		public void setMaxLookBehind(int t){
 			_maxLookBehind = t;
 		}
-		public long getLastUpdate(boolean flightView) {
+		public long getLastUpdated(){
+			return _lastUpdated;
+		}
+		public void setMaxRecords(int max){
+			_maxRecords = max;
+		}
+		public boolean isActivePayload(){
+			return _activePayload;
+		}
+		public void setIsActivePayload(boolean ap){
+			_activePayload = ap;
+		}
+		public int getMaxRecords(){
+			return _maxRecords;
+		}
+		public long getUpdateStart(boolean flightView) {
 			if (_lastUpdated == 0){
 				if (flightView)
 					return 0;
@@ -63,9 +90,35 @@ public class Payload {
 		}
 		public void setLastUpdated(long t){
 			_lastUpdated = t;
+			_activePayload = true;
 		}
 		public void setLastUpdatedNow(){
 			_lastUpdated = System.currentTimeMillis()/1000;
+			_activePayload = true;
+		}
+		public Telemetry_string getLastString()	{
+			if (data.size() > 0)
+			{
+				return data.lastEntry().getValue();
+			}
+			else
+				return null;
+		}
+		public double getAscentRate(){
+			return ascentRate.getAscentRate();
+		}
+
+		public void putPacket(Telemetry_string str) {
+			data.put(str.time.getTime(), str);
+			if (str.coords.alt_valid)
+				ascentRate.AddData(str.time.getTime(), str.coords.altitude);
+		}
+		
+		public void putPackets( TreeMap<Long,Telemetry_string> in){
+			data.putAll(in);
+			Gps_coordinate c = data.lastEntry().getValue().coords;
+			if (c.alt_valid)
+				ascentRate.AddData(data.lastEntry().getValue().time.getTime(),c.altitude);
 		}
 		
 }

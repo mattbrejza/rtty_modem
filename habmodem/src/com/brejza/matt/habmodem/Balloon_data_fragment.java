@@ -54,7 +54,7 @@ public class Balloon_data_fragment extends Fragment {
     	
 	}
 	
-	public void updatePayload(Telemetry_string str)
+	public void updatePayload(Telemetry_string str, double ascentrate)
 	{
 		
 		String call = str.callsign;
@@ -70,7 +70,7 @@ public class Balloon_data_fragment extends Fragment {
 				return;
 		}
 		
-		dsf.updateDisplay(str);
+		dsf.updateDisplay(str,ascentrate);
 		
 	}
 	

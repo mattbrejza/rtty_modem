@@ -35,7 +35,7 @@ public class Data_snippet_fragment extends Fragment {
 		updateDisplay(in_str);
 		TextView txtasc = (TextView)getView().findViewById(R.id.txtAscentRate);
 		DecimalFormat df = new DecimalFormat("#.#");
-		txtasc.setText(df.format(ascent_rate));
+		txtasc.setText(df.format(ascent_rate) + "m/s");
 	}
 	
 	public void updateDisplay(Telemetry_string in_str)

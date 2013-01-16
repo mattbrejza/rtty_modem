@@ -15,10 +15,8 @@ package com.brejza.matt.habmodem;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -187,6 +185,41 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		return last_str;
 	}
 	
+	public boolean payloadExists(String callsign) {
+		return (mapPayloads.containsKey(callsign.toString().toUpperCase()));
+	}
+	public boolean activePayloadExists(String callsign) {
+		if (mapPayloads.containsKey(callsign.toString().toUpperCase())){
+			return mapPayloads.get(callsign.toUpperCase()).isActivePayload();
+		}
+		else
+			return false;
+	}
+	public TreeMap<Long, Telemetry_string> getPayloadData (String callsign){
+		if (payloadExists(callsign))
+			return mapPayloads.get(callsign.toUpperCase()).data;
+		else
+			return null;
+	}
+	public double getAscentRate(String callsign) {
+		if (payloadExists(callsign))
+			return mapPayloads.get(callsign.toUpperCase()).getAscentRate();
+		else
+			return 0;
+	}
+	public long getLastUpdate(String callsign){
+		if (payloadExists(callsign))
+			return mapPayloads.get(callsign.toUpperCase()).getLastUpdated();
+		else
+			return 0;
+	}
+	public void addActivePayload(String call){
+		if (!payloadExists(call))
+			mapPayloads.put(call,new Payload(call,true));
+	}
+	public void removeActivePayload(String call){
+		mapPayloads.remove(call.toUpperCase());
+	}
 	public double[] getFFT()
 	{
 		return rcv.get_fft();
@@ -207,17 +240,41 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		return (int) (rcv.get_f2()*(rcv.FFT_half_len*2));
 	}
 	
-	public List<String> getFlightPayloadList()
+	public List<String> getActivePayloadList()
 	{
-		List<String> out = new ArrayList<String>();
-		
-		Iterator<Entry<String, String>> it = hab_con.payload_configs.entrySet().iterator();
-		while (it.hasNext()) {				
-	        out.add(it.next().getKey());
-	        it.remove();
-	    }
-
+		List<String> out = new ArrayList<String>();		
+		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
+		{
+			if (entry.getValue().isActivePayload())
+				out.add(entry.getKey());
+		}
 		return out;
+	}
+	
+	public ConcurrentHashMap<String,Payload> getPayloadList()
+	{
+		//check for any new payload data in habitat interface
+			
+		for (Map.Entry<String, String> entry : hab_con.payload_configs.entrySet())
+		{
+			String call = entry.getKey().toUpperCase();
+			if (payloadExists(call))
+			{   //update records
+				mapPayloads.get(call).setPayloadID(entry.getValue());
+				if (hab_con.flight_configs.containsKey(call))
+					mapPayloads.get(call).setFlightID(hab_con.flight_configs.get(call));
+			}
+			else
+			{
+				if (hab_con.flight_configs.containsKey(entry.getKey().toUpperCase()))
+					mapPayloads.put(call, new Payload(entry.getKey(),hab_con.payload_configs.get(call),hab_con.flight_configs.get(call)));
+				else
+					mapPayloads.put(call, new Payload(entry.getKey(),hab_con.payload_configs.get(call)));
+				
+			}
+		}
+		//	out.add(entry.getKey());		
+		return mapPayloads;
 	}
 
 	
@@ -286,16 +343,15 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     }
 
 	public void updateActivePayloadsHabitat()
-	{
-		
+	{		
 		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
 		{
-			long start = entry.getValue().getLastUpdate(false);      //TODO: if flight and enabled query flight DB here
-			if ( start + 30 < (System.currentTimeMillis() / 1000L) )
-				hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), entry.getValue().getMaxRecords());
-			
-		}
-		
+			if (entry.getValue().isActivePayload()){
+				long start = entry.getValue().getUpdateStart(false);      //TODO: if flight and enabled query flight DB here
+				if ( start + 30 < (System.currentTimeMillis() / 1000L) )
+					hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), entry.getValue().getMaxRecords());
+			}
+		}		
 	}
 
 	public void StringRx(Telemetry_string str, boolean checksum)
@@ -309,7 +365,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			hab_con.upload_payload_telem(str);    //upload received string to server
 			
 			if (mapPayloads.containsKey(call)){
-				mapPayloads.get(call).data.put(Long.valueOf(str.time.getTime()),str);
+				mapPayloads.get(call).setIsActivePayload(true);
+				mapPayloads.get(call).putPacket(str);
 				if ((System.currentTimeMillis() / 1000L) -60 < mapPayloads.get(call).getLastUpdated())
 					mapPayloads.get(call).setLastUpdatedNow(); //if there are no (big) gaps since last string add current time as last update
 			}
@@ -322,7 +379,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			}
 		}
 		else
-			mapPayloads.put(call,new Payload(call));
+			mapPayloads.put(call,new Payload(call,true));
 		
 		sendBroadcast(new Intent(TELEM_RX));
 	}
@@ -339,11 +396,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			
 			if (mapPayloads.containsKey(call)){
 				mapPayloads.get(call).setLastUpdated(endTime);
-				mapPayloads.get(call).data.putAll(data);
+				mapPayloads.get(call).putPackets(data);
+				mapPayloads.get(call).setIsActivePayload(true);
 			}
 			else
 			{
-				Payload p = new Payload(callsign);
+				Payload p = new Payload(callsign,true);
 				p.setLastUpdated(endTime);
 				p.data = data;
 				mapPayloads.put(call, p);

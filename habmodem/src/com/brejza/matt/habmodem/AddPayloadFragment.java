@@ -3,6 +3,10 @@ package com.brejza.matt.habmodem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import ukhas.Payload;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,15 +28,14 @@ public class AddPayloadFragment extends DialogFragment {
 	 
 	// Use this instance of the interface to deliver action events
 	NoticeDialogListener mListener;
-	List<String> _active_payloads =  new ArrayList<String>();
+	ConcurrentHashMap<String,Payload> _active_payloads =  new ConcurrentHashMap<String,Payload>();
+	List<String> _list_active_payloads = new ArrayList<String>();
 	AutoCompleteTextView s;
 	    
 	
 	public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-       mListener = (NoticeDialogListener) activity;
-      
+       mListener = (NoticeDialogListener) activity;      
 	}
 	
     @Override
@@ -41,10 +44,6 @@ public class AddPayloadFragment extends DialogFragment {
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         
-        
-
-        
-
         View v = inflater.inflate(R.layout.dialog_add_payload, null);
         builder.setTitle(R.string.dialog_add_payload_title);
         builder.setView(v)        
@@ -63,7 +62,7 @@ public class AddPayloadFragment extends DialogFragment {
                });      
         
         s = (AutoCompleteTextView) v.findViewById(R.id.auto_payload);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _active_payloads);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _list_active_payloads);
         s.setAdapter(adapter);
        
         
@@ -76,14 +75,16 @@ public class AddPayloadFragment extends DialogFragment {
     	super.onStart();
     }
     
-    public void setAutoPayload(List<String> in)
+    public void setAutoPayload(ConcurrentHashMap<String,Payload> in)
     {
     	_active_payloads = in;
+    	for (Map.Entry<String, Payload> entry : in.entrySet())
+    		_list_active_payloads.add(entry.getValue().callsign);    		   	
     }
     
-    public void AddAutoPayload(String str)
-    {
-    	_active_payloads.add(str);
-    }
+   // public void AddAutoPayload(String str)
+   // {
+   // 	_active_payloads.add(str);
+   // }
  
 }

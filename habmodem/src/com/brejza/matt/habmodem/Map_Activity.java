@@ -35,8 +35,6 @@ import ukhas.Telemetry_string;
 
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
-import android.location.Criteria;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.DialogFragment;
@@ -119,7 +117,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         FragmentManager fm = getFragmentManager();
 
     	AddPayloadFragment di = new AddPayloadFragment();
-    	di.setAutoPayload(mService.getFlightPayloadList());
+    	di.setAutoPayload(mService.getPayloadList());
     	di.show(fm, "AddPayload");
     }
     
@@ -423,7 +421,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	
     	//try
     	//{
-    	List<String> flights = mService.getFlightPayloadList();
+    	List<String> flights = mService.getActivePayloadList();
     	if (mBound && mService != null)
     	{
 	    	for (int i = 0; i < flights.size(); i++)
@@ -434,7 +432,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	    		if (tm != null){
 	        		UpdateBalloonTrack(tm,call,true, false);
 	        		
-		    		fragment.updatePayload(tm.lastEntry().getValue());
+		    		fragment.updatePayload(tm.lastEntry().getValue(),mService.getAscentRate(call));
 		    		UpdateBalloonLocation(tm.lastEntry().getValue().coords,call);
 		    	}
 	    	}
@@ -467,7 +465,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 				UpdateBalloonTrack(l,mService.getLastString().callsign, false, true);//, 0, System.currentTimeMillis() / 1000L );
             	
             	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
-            	fragment.updatePayload(mService.getLastString());
+            	fragment.updatePayload(mService.getLastString(),mService.getAscentRate(mService.getLastString().callsign));
             }
         }
     }
@@ -524,7 +522,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             		}
             		
                 	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
-                	fragment.updatePayload(str);
+                	fragment.updatePayload(str,mService.getAscentRate(str.callsign));
             	}
             }
         }
