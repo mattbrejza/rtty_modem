@@ -15,6 +15,7 @@ package com.brejza.matt.habmodem;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -317,8 +318,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     				 //wipe and start again, so get the data from the service
     				System.out.println("Update track - wipe old array");
     				OverlayWay way = map_path_overlays.get(callsign);
-    				if (mService.listPayloadData.containsKey(callsign)) {
-	    				TreeMap<Long, Telemetry_string> tm = mService.listPayloadData.get(callsign);
+    				
+	    			TreeMap<Long, Telemetry_string> tm = mService.getPayloadData(callsign);
+	    			if (tm != null){
 	    				GeoPoint[][] points = new GeoPoint[1][tm.size()];
 	    				
 	    				//add new points to array
@@ -421,17 +423,19 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	
     	//try
     	//{
+    	List<String> flights = mService.getFlightPayloadList();
     	if (mBound && mService != null)
     	{
-	    	for (int i = 0; i < mService.listActivePayloads.size(); i++)
+	    	for (int i = 0; i < flights.size(); i++)
 	    	{
-	    		String call = mService.listActivePayloads.get(i).toUpperCase();
+	    		String call = flights.get(i).toUpperCase();
 	    		fragment.AddPayload(call,getColour(call));
-	    		if (mService.listPayloadData.containsKey(call)){
-	        		UpdateBalloonTrack(mService.listPayloadData.get(call),call,true, false);
-	        		TreeMap<Long,Telemetry_string> payloaddata = mService.listPayloadData.get(call);
-		    		fragment.updatePayload(payloaddata.get(payloaddata.lastKey()));
-		    		UpdateBalloonLocation(payloaddata.get(payloaddata.lastKey()).coords,call);
+	    		TreeMap <Long, Telemetry_string> tm = mService.getPayloadData(call);
+	    		if (tm != null){
+	        		UpdateBalloonTrack(tm,call,true, false);
+	        		
+		    		fragment.updatePayload(tm.lastEntry().getValue());
+		    		UpdateBalloonLocation(tm.lastEntry().getValue().coords,call);
 		    	}
 	    	}
 	    	requestUpdate = false;
@@ -512,16 +516,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
                 	//itemizedOverlay.requestRedraw();
             		
             		//TODO: check that our data is actually new
-            		if (mService.payloadLastUpdate.containsKey(str.callsign.toUpperCase())){
-            			if (str.time.getTime()/1000L >= mService.payloadLastUpdate.get(str.callsign.toUpperCase()))
+            		if (mService.payloadExists(str.callsign)){
+            			if (str.time.getTime()/1000L >= mService.getLastUpdate(str.callsign))
             				UpdateBalloonLocation(str.coords,str.callsign);
-            		}
             			
+            			UpdateBalloonTrack(mService.getPayloadData(str.callsign),str.callsign,true, false);//, 0, System.currentTimeMillis() / 1000L );
+            		}
             		
- 
-                	if (mService.listPayloadData.containsKey(str.callsign.toUpperCase()))
-                		UpdateBalloonTrack(mService.listPayloadData.get(str.callsign.toUpperCase()),str.callsign,true, false);//, 0, System.currentTimeMillis() / 1000L );
-                	
                 	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
                 	fragment.updatePayload(str);
             	}
@@ -560,14 +561,14 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
     	    	
     	fragment.AddPayload(callsign,getColour(callsign));
-    	mService.listActivePayloads.add(callsign);
+    	mService.addActivePayload(callsign);
     	mService.updateActivePayloadsHabitat();
 	}
 	
 	public void removePayload(String callsign)
 	{
-		if (mService.listActivePayloads.contains(callsign))
-			mService.listActivePayloads.remove(callsign);
+		if (mService.payloadExists(callsign))
+			mService.removeActivePayload(callsign);
 		System.out.println("REMOVED PAYLOAD: " + callsign);
 	}
 	
