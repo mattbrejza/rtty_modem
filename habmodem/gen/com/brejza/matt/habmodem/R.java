@@ -16,12 +16,15 @@ public final class R {
     public static final class drawable {
         public static final int edittext_bg=0x7f020000;
         public static final int grad=0x7f020001;
-        public static final int ic_action_search=0x7f020002;
-        public static final int ic_close=0x7f020003;
-        public static final int ic_launcher=0x7f020004;
-        public static final int ic_map_balloon=0x7f020005;
-        public static final int ic_map_rx=0x7f020006;
-        public static final int ic_ui_add=0x7f020007;
+        public static final int ic_action_decoder=0x7f020002;
+        public static final int ic_action_location=0x7f020003;
+        public static final int ic_action_refresh=0x7f020004;
+        public static final int ic_action_search=0x7f020005;
+        public static final int ic_close=0x7f020006;
+        public static final int ic_launcher=0x7f020007;
+        public static final int ic_map_balloon=0x7f020008;
+        public static final int ic_map_rx=0x7f020009;
+        public static final int ic_ui_add=0x7f02000a;
     }
     public static final class id {
         public static final int auto_payload=0x7f090006;
@@ -29,17 +32,17 @@ public final class R {
         public static final int btnClose=0x7f09000c;
         public static final int colourID=0x7f09001d;
         public static final int colourID1=0x7f09001e;
-        public static final int fft_screen=0x7f090022;
+        public static final int fft_screen=0x7f090024;
         public static final int horizontalScrollView1=0x7f090007;
         public static final int imageButton1=0x7f090009;
         public static final int imgViWF=0x7f090002;
         public static final int layout_payloads=0x7f090008;
         public static final int listRxStrings=0x7f090004;
-        public static final int location_dialog=0x7f090023;
+        public static final int location_dialog=0x7f090022;
         public static final int mapView=0x7f090001;
         public static final int map_screen=0x7f090021;
         public static final int menu_settings=0x7f09001f;
-        public static final int refresh_button=0x7f090024;
+        public static final int refresh_button=0x7f090023;
         public static final int settings_screen=0x7f090025;
         public static final int status_screen=0x7f090020;
         public static final int tableRow1=0x7f09000a;

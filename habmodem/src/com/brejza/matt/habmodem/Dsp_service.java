@@ -28,6 +28,7 @@ import ukhas.Gps_coordinate;
 import ukhas.HabitatRxEvent;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
+import ukhas.Payload;
 import ukhas.Telemetry_string;
 import android.app.Service;
 import android.content.Context;
@@ -81,9 +82,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	Habitat_interface hab_con;
 	
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
-	public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>());
-	public ConcurrentHashMap<String,Long> payloadLastUpdate = new ConcurrentHashMap<String,Long>();
-	public ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>> listPayloadData = new ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>>();
+	//public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>());
+	//public ConcurrentHashMap<String,Long> payloadLastUpdate = new ConcurrentHashMap<String,Long>();
+	//public ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>> listPayloadData = new ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>>();
+	
+	private ConcurrentHashMap<String, Payload> mapPayloads = new ConcurrentHashMap<String, Payload>();
 	
 	public Dsp_service() {
 		rcv.addStringRecievedListener(this);
@@ -116,7 +119,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public void changeLocationSettings(boolean enablePos, boolean enableChase)
 	{
-		 
+		 //TODO: work out why diabling one disables both
 		if (!_enablePosition && !_enableChase && (enablePos  || enableChase))
 			EnableLocation();
 		
@@ -321,7 +324,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		for (int i = 0; i < listActivePayloads.size(); i++)
 		{
 			String call = listActivePayloads.get(i);
-			long start = (System.currentTimeMillis() / 1000L) - (9*24*60*60) ;//0;
+			long start = (System.currentTimeMillis() / 1000L) - (1*18*60*60) ;//0;
 			if (payloadLastUpdate.containsKey(call.toUpperCase()))
 				start = payloadLastUpdate.get(call.toUpperCase()).longValue();
 			
@@ -417,6 +420,18 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public boolean getEnablePosition(){
 		return _enablePosition;
 	}
+	
+	public Telemetry_string getMostRecent(String callsign)
+	{
+		
+	}
+	
+	public TreeMap<Long,Telemetry_string> getAllData(String callsign)
+	{
+		
+	}
+	
+
 	
 
 }

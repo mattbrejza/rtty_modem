@@ -16,38 +16,40 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo" >
+        android:theme="@android:style/Theme.Holo" android:allowClearUserData="true">
         <service android:name=".Dsp_service" />
 
         <activity
-            android:name=".StatusScreen"
-            android:label="@string/title_activity_status_screen" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>       
-        <activity
             android:name=".Map_Activity"
             android:label="@string/title_activity_map" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.brejza.matt.habmodem.StatusScreen" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+           
         </activity>
+        
+        <activity
+            android:name=".StatusScreen"
+            android:label="@string/title_activity_status_screen" >
+ 			<meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.brejza.matt.habmodem.Map_Activity" />
+        </activity>       
+        
         <activity
             android:name=".FFTActivity"
             android:label="@string/title_activity_fft" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.brejza.matt.habmodem.StatusScreen" />
+                android:value="com.brejza.matt.habmodem.Map_Activity" />
         </activity>
         <activity
             android:name=".Preferences_activity"
             android:label="@string/title_activity_prefs" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.brejza.matt.habmodem.StatusScreen" />
+                android:value="com.brejza.matt.habmodem.Map_Activity" />
         </activity>
     </application>
 

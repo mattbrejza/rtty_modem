@@ -43,12 +43,11 @@ public class FFTActivity extends Activity {
         	case android.R.id.home:
         		NavUtils.navigateUpFromSameTask(this);
             case R.id.status_screen:
-            	intent = new Intent(this, StatusScreen.class);
-            	startActivity(intent);
+            //	intent = new Intent(this, StatusScreen.class);
+            //	startActivity(intent);
                 return true;
             case R.id.map_screen:
-            	intent = new Intent(this, Map_Activity.class);
-            	startActivity(intent);
+            	finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/status_screen"
+          android:icon="@drawable/ic_action_decoder"
           android:showAsAction="ifRoom|withText"
           android:title="@string/status_screen" />
      <item android:id="@+id/map_screen"
           android:showAsAction="ifRoom|withText"
-          android:title="@string/map_screen" />
-    <item android:id="@+id/fft_screen"
-          android:showAsAction="ifRoom|withText"
-          android:title="@string/fft_screen" />
+          android:title="@string/map_screen" />   
     <item android:id="@+id/location_dialog"
-          android:showAsAction="ifRoom|withText"
+          android:icon="@drawable/ic_action_location"
+          android:showAsAction="ifRoom"
           android:title="@string/location_dialog" />
     <item android:id="@+id/refresh_button"
-          android:showAsAction="ifRoom|withText"
+          android:icon="@drawable/ic_action_refresh"
+          android:showAsAction="ifRoom"
           android:title="@string/refresh_button" />
+     <item android:id="@+id/fft_screen"
+          android:showAsAction="ifRoom|withText"
+          android:title="@string/fft_screen" />
     <item android:id="@+id/settings_screen"
           android:title="@string/settings_screen" />
    

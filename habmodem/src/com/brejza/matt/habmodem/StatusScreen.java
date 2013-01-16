@@ -87,12 +87,11 @@ public class StatusScreen extends Activity  {
     	Intent intent;
         switch (item.getItemId()) {
             case R.id.fft_screen:
-            	intent = new Intent(this, FFTActivity.class);
-            	startActivity(intent);
+            //	intent = new Intent(this, FFTActivity.class);
+            //	startActivity(intent);
                 return true;
             case R.id.map_screen:
-            	intent = new Intent(this, Map_Activity.class);
-            	startActivity(intent);
+            	finish();
                 return true;
             case R.id.settings_screen:
             	intent = new Intent(this,Preferences_activity.class);
@@ -146,11 +145,14 @@ public class StatusScreen extends Activity  {
     protected void onStart() {
         super.onStart();
      //   // Bind to LocalService
-        Intent intent = new Intent(this, Dsp_service.class);
+       // Intent intent = new Intent(this, Dsp_service.class);
     
-        startService(intent);
+       // startService(intent);
         
-
+      	 // Bind to LocalService
+        Intent intent = new Intent(this, Dsp_service.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        mBound = true;
       
        
     }
@@ -172,8 +174,10 @@ public class StatusScreen extends Activity  {
 
    		
    	 // Bind to LocalService
-        Intent intent = new Intent(this, Dsp_service.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+   		if (!mBound){
+	        Intent intent = new Intent(this, Dsp_service.class);
+	        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+   		}
         
      
       //string receiver
@@ -209,10 +213,10 @@ public class StatusScreen extends Activity  {
            
            isReg = false;
            
-       if (mBound) {
-           unbindService(mConnection);
-           mBound = false;
-       }
+     //  if (mBound) {
+     //      unbindService(mConnection);
+     //      mBound = false;
+     //  }
     }
     
     ///////////////

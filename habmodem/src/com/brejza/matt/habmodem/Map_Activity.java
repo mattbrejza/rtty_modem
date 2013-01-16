@@ -59,6 +59,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private HabitatRxReceiver habirxReceiver;
 	private GPSRxReceiver gpsrxReceiver;
 	boolean isReg = false;
+	boolean requestUpdate = false;
 	
 	protected int last_colour = 0x0;
 	public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
@@ -128,6 +129,28 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     }
     
     @Override
+    public void onStart()
+    {
+    	super.onStart();
+    	  //   // Bind to LocalService
+        Intent intent = new Intent(this, Dsp_service.class);    
+        startService(intent);
+    	requestUpdate = true;
+    	System.out.println("DEBUG : STARTING ACTIVITY");
+    }
+    
+   
+    @Override
+    public void onStop()
+    {
+    	super.onStop();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+    
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
     	Intent intent;
@@ -157,14 +180,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         }
     }
     
+    
     @Override
    	public void onResume() {
    		super.onResume();
 
    		
-   	 // Bind to LocalService
-        Intent intent = new Intent(this, Dsp_service.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+   		if (!mBound){
+	        Intent intent = new Intent(this, Dsp_service.class);
+	        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+   		}
         
         //string receiver
    		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
@@ -183,6 +208,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		if (!isReg) { registerReceiver(gpsrxReceiver, intentFilter3); }
    		isReg = true;
    		
+   		
+   		
    	}
        
     @Override
@@ -197,10 +224,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
            
            isReg = false;
            
-       if (mBound) {
-           unbindService(mConnection);
-           mBound = false;
-       }
+
     }
     
     protected int getColour(String callsign)
@@ -280,7 +304,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		            	}      
 		            	points[0][size_org+i] = lp;
 		            	i++;
-				        it.remove(); // avoids a ConcurrentModificationException
+				      //  it.remove(); // avoids a ConcurrentModificationException
 				    }
     				    
 		            	
@@ -309,7 +333,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 			            	}      
 			            	points[0][i] = lp;
 			            	i++;
-					        it.remove(); // avoids a ConcurrentModificationException
+					       // it.remove(); // avoids a ConcurrentModificationException
 					    }
 	    				
 	    				//add new points to array (old)
@@ -366,7 +390,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	}      
             	points[0][i] = lp;
             	i++;
-		        it.remove(); // avoids a ConcurrentModificationException
+		        //it.remove(); // avoids a ConcurrentModificationException
 		    }
             
             
@@ -388,6 +412,38 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	}  
     	//last_update_time.put(callsign.toUpperCase(), Long.valueOf(dataEndTime));	
     	System.out.println("Update track - done");
+    }
+    
+    private void updateAll()
+    {
+    	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
+    	
+    	
+    	//try
+    	//{
+    	if (mBound && mService != null)
+    	{
+	    	for (int i = 0; i < mService.listActivePayloads.size(); i++)
+	    	{
+	    		String call = mService.listActivePayloads.get(i).toUpperCase();
+	    		fragment.AddPayload(call,getColour(call));
+	    		if (mService.listPayloadData.containsKey(call)){
+	        		UpdateBalloonTrack(mService.listPayloadData.get(call),call,true, false);
+	        		TreeMap<Long,Telemetry_string> payloaddata = mService.listPayloadData.get(call);
+		    		fragment.updatePayload(payloaddata.get(payloaddata.lastKey()));
+		    		UpdateBalloonLocation(payloaddata.get(payloaddata.lastKey()).coords,call);
+		    	}
+	    	}
+	    	requestUpdate = false;
+    	}
+    	
+    	
+    		
+    	//}
+    	//catch (Exception e)
+    	//{
+    		
+    	//}
     }
     
     private class StringRxReceiver extends BroadcastReceiver  {
@@ -456,7 +512,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
                 	//itemizedOverlay.requestRedraw();
             		
             		//TODO: check that our data is actually new
-            		UpdateBalloonLocation(str.coords,str.callsign);
+            		if (mService.payloadLastUpdate.containsKey(str.callsign.toUpperCase())){
+            			if (str.time.getTime()/1000L >= mService.payloadLastUpdate.get(str.callsign.toUpperCase()))
+            				UpdateBalloonLocation(str.coords,str.callsign);
+            		}
+            			
+            		
  
                 	if (mService.listPayloadData.containsKey(str.callsign.toUpperCase()))
                 		UpdateBalloonTrack(mService.listPayloadData.get(str.callsign.toUpperCase()),str.callsign,true, false);//, 0, System.currentTimeMillis() / 1000L );
@@ -481,6 +542,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             LocalBinder binder = (LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+
+       		if (requestUpdate)
+       			updateAll();
+   
         }
 
         @Override
@@ -496,6 +561,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	    	
     	fragment.AddPayload(callsign,getColour(callsign));
     	mService.listActivePayloads.add(callsign);
+    	mService.updateActivePayloadsHabitat();
 	}
 	
 	public void removePayload(String callsign)
