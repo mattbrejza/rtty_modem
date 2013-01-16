@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -179,41 +180,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	//	isRecording = false;
 	//}
 	
-	public void StringRx(Telemetry_string str, boolean checksum)
-	{
-		if (!checksum) return;
-		last_str = str;
-		listRxStr.add(str.getSentence());
-		
-		if (checksum){
-			if (listPayloadData.containsKey(str.callsign.toUpperCase()))
-				listPayloadData.get(str.callsign.toUpperCase()).put(Long.valueOf(str.time.getTime()),str);
-			else
-			{		//first one, dont need to do anything special
-				TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
-				l.put(Long.valueOf(str.time.getTime()),str);
-				listPayloadData.put(str.callsign.toUpperCase(),l);
-			}
-		}
-		
-		if (checksum) {
-			hab_con.upload_payload_telem(str);    //upload received string to server
-			if (payloadLastUpdate.containsKey(str.callsign.toUpperCase()))   //if there are no (big) gaps since last string add current time as last update
-			{
-				if ((System.currentTimeMillis() / 1000L) -60 < payloadLastUpdate.get(str.callsign.toUpperCase()))
-					payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
-			}
-			//else
-			//	payloadLastUpdate.put(str.callsign.toUpperCase(), (System.currentTimeMillis() / 1000L));
-			
-		}
-		
-		if (!listActivePayloads.contains(str.callsign))
-		{
-			listActivePayloads.add(str.callsign);
-		}
-		sendBroadcast(new Intent(TELEM_RX));
-	}
+	
 	
 	public Telemetry_string getLastString()
 	{
@@ -318,43 +285,69 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	
     }
 
-//TODO: avoid hardcoding stuff here
 	public void updateActivePayloadsHabitat()
 	{
-		for (int i = 0; i < listActivePayloads.size(); i++)
+		
+		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
 		{
-			String call = listActivePayloads.get(i);
-			long start = (System.currentTimeMillis() / 1000L) - (1*18*60*60) ;//0;
-			if (payloadLastUpdate.containsKey(call.toUpperCase()))
-				start = payloadLastUpdate.get(call.toUpperCase()).longValue();
-			
-			if ( start + 60 < (System.currentTimeMillis() / 1000L) )
-				hab_con.addDataFetchTask(listActivePayloads.get(i), start, (System.currentTimeMillis() / 1000L), 3000);
-			
+			long start = entry.getValue().getLastUpdate(false);      //TODO: if flight and enabled query flight DB here
+			if ( start + 30 < (System.currentTimeMillis() / 1000L) )
+				hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), entry.getValue().getMaxRecords());
 			
 		}
+		
 	}
 
+	public void StringRx(Telemetry_string str, boolean checksum)
+	{
+		String call = str.callsign.toUpperCase();
+		if (!checksum) return;
+		last_str = str;
+		listRxStr.add(str.getSentence());
+		
+		if (checksum){
+			hab_con.upload_payload_telem(str);    //upload received string to server
+			
+			if (mapPayloads.containsKey(call)){
+				mapPayloads.get(call).data.put(Long.valueOf(str.time.getTime()),str);
+				if ((System.currentTimeMillis() / 1000L) -60 < mapPayloads.get(call).getLastUpdated())
+					mapPayloads.get(call).setLastUpdatedNow(); //if there are no (big) gaps since last string add current time as last update
+			}
+			else
+			{		//first one, dont need to do anything special
+				//TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
+				//l.put(Long.valueOf(str.time.getTime()),str);
+				//listPayloadData.put(str.callsign.toUpperCase(),l);
+				mapPayloads.put(call,new Payload(str));
+			}
+		}
+		else
+			mapPayloads.put(call,new Payload(call));
+		
+		sendBroadcast(new Intent(TELEM_RX));
+	}
 
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
 			long startTime, long endTime) {
 		// TODO Auto-generated method stub
-		
+		String call = callsign.toUpperCase();
 		
 		if (success)
 		{
 			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
-			payloadLastUpdate.put(callsign.toUpperCase(),endTime);
-			//listRxStr.addAll(data);
 			
-			if (listPayloadData.containsKey(callsign.toUpperCase())){
-				TreeMap<Long, Telemetry_string> chm = listPayloadData.get(callsign.toUpperCase());
-				chm.putAll(data);
+			if (mapPayloads.containsKey(call)){
+				mapPayloads.get(call).setLastUpdated(endTime);
+				mapPayloads.get(call).data.putAll(data);
 			}
 			else
-				listPayloadData.put(callsign.toUpperCase(),data);
-			
+			{
+				Payload p = new Payload(callsign);
+				p.setLastUpdated(endTime);
+				p.data = data;
+				mapPayloads.put(call, p);
+			}
 			
 			Intent i = new Intent(HABITAT_NEW_DATA);
 			if (data.size() > 0)
@@ -368,9 +361,6 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public class Location_handler implements LocationListener  {
 
-
-
-		
 		public Location_handler() {
 			// TODO Auto-generated constructor stub
 		}
@@ -423,12 +413,22 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public Telemetry_string getMostRecent(String callsign)
 	{
-		
+		if (mapPayloads.containsKey(callsign.toUpperCase()))
+		{
+			return mapPayloads.get(callsign.toUpperCase()).getLastString();
+		}
+		else
+			return null;
 	}
 	
 	public TreeMap<Long,Telemetry_string> getAllData(String callsign)
 	{
-		
+		if (mapPayloads.containsKey(callsign.toUpperCase()))
+		{
+			return mapPayloads.get(callsign.toUpperCase()).data;
+		}
+		else
+			return null;
 	}
 	
 
