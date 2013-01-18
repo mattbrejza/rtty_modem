@@ -18,12 +18,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 
 
 public class AddPayloadFragment extends DialogFragment {
 	
 	 public interface NoticeDialogListener {
-	        public void onDialogPositiveClick(DialogFragment dialog, String callsign);
+	        public void onDialogPositiveClick(DialogFragment dialog, String callsign, int lookBehind);
 	    }
 	 
 	// Use this instance of the interface to deliver action events
@@ -31,6 +32,8 @@ public class AddPayloadFragment extends DialogFragment {
 	ConcurrentHashMap<String,Payload> _active_payloads =  new ConcurrentHashMap<String,Payload>();
 	List<String> _list_active_payloads = new ArrayList<String>();
 	AutoCompleteTextView s;
+	EditText et ;
+	//View v;
 	    
 	
 	public void onAttach(Activity activity) {
@@ -52,7 +55,17 @@ public class AddPayloadFragment extends DialogFragment {
                    @Override
                    public void onClick(DialogInterface dialog, int id) {
                        // add payload
-                	   mListener.onDialogPositiveClick(AddPayloadFragment.this, s.getText().toString());
+                	   //et = (EditText)v.findViewById(R.id.txtLookDays);
+                	   int i=4;
+                	   try{
+                		   i = Integer.parseInt(et.getText().toString());
+                	   }
+                	   catch (Exception e)
+                	   {
+                		   i = 4;
+                	   }
+                	   
+                	   mListener.onDialogPositiveClick(AddPayloadFragment.this, s.getText().toString(), i);
                    }
                })
                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -62,6 +75,7 @@ public class AddPayloadFragment extends DialogFragment {
                });      
         
         s = (AutoCompleteTextView) v.findViewById(R.id.auto_payload);
+        et = (EditText)v.findViewById(R.id.txtLookDays);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _list_active_payloads);
         s.setAdapter(adapter);
        

@@ -284,6 +284,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         	intent = new Intent(this, FFTActivity.class);
         	startActivity(intent);
             return true; }
+        else if (item.getItemId() ==  R.id.settings_screen) {
+        	intent = new Intent(this,Preferences_activity.class);
+        	startActivity(intent); 
+            return true;}
         
         return super.onOptionsItemSelected(item);
     
@@ -632,7 +636,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             		
             		//TODO: check that our data is actually new
             		if (mService.payloadExists(str.callsign)){
-            			if (str.time.getTime()/1000L >= mService.getLastUpdate(str.callsign))
+            			if (str.time.getTime()>= mService.getMostRecent(str.callsign).time.getTime())
             				UpdateBalloonLocation(str.coords,str.callsign);
             			
             			UpdateBalloonTrack(mService.getPayloadData(str.callsign),str.callsign,true, false);//, 0, System.currentTimeMillis() / 1000L );
@@ -671,12 +675,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     };
 
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog, String callsign) {
+	public void onDialogPositiveClick(DialogFragment dialog, String callsign, int lookBehind) {
 		// TODO Auto-generated method stub
     	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
     	    	
     	fragment.AddPayload(callsign,getColour(callsign));
-    	mService.addActivePayload(callsign);
+    	mService.addActivePayload(callsign,lookBehind);
     	mService.updateActivePayloadsHabitat();
 	}
 	

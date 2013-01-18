@@ -210,17 +210,30 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		else
 			return 0;
 	}
-	public long getLastUpdate(String callsign){
-		if (payloadExists(callsign))
-			return mapPayloads.get(callsign.toUpperCase()).getLastUpdated();
-		else
-			return 0;
-	}
+	//public long getLastUpsddate(String callsign){
+	//	if (payloadExists(callsign))
+	//		return mapPayloads.get(callsign.toUpperCase()).getLastUpdated();
+	//	else
+	//		return 0;
+	//}  //TODO: if already there, update infos
 	public void addActivePayload(String call){
 		if (!payloadExists(call))
-			mapPayloads.put(call,new Payload(call,true));
+			mapPayloads.put(call,new Payload(call,true, 3));
+		else {
+			Payload p = mapPayloads.get(call);
+			p.setIsActivePayload(true);
+		}
 	}
-	public void removeActivePayload(String call){
+	public void addActivePayload(String call, int lookBehind){
+		if (!payloadExists(call))
+			mapPayloads.put(call,new Payload(call,true, lookBehind));
+		else {
+			Payload p = mapPayloads.get(call);
+			p.setIsActivePayload(true);
+			p.setMaxLookBehindDays(lookBehind);
+		}
+	}
+	public void removeActivePayload(String call){  //TODO: remove data and other info, but not any IDs
 		mapPayloads.remove(call.toUpperCase());
 	}
 	public double[] getFFT()
