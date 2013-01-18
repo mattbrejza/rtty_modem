@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="location_dialog_items">
+    <item>Show my location on the map</item>
+    <item>Enable chasecar location reporting</item>
+</string-array>
+</resources>

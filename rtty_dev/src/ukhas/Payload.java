@@ -13,12 +13,19 @@ public class Payload {
 		int _total300 = 0;
 		int _total50 = 0;
 		
-		int _maxLookBehind = 3*24*60*60;
+		int _maxLookBehind = 4*24*60*60;
 		int _maxRecords = 3000;
 		long _lastUpdated = 0;
 		public TreeMap<Long,Telemetry_string> data = new TreeMap<Long,Telemetry_string>();
 		
 		AscentRate ascentRate = new AscentRate();
+		
+		public Payload(String call, boolean activePayload, int lookBehind)
+		{
+			callsign = call; 
+			_activePayload = activePayload;
+			_maxLookBehind = lookBehind * 24*60*60;
+		}
 		
 		public Payload(String call, boolean activePayload)
 		{
@@ -59,6 +66,9 @@ public class Payload {
 		}
 		public String getPayloadID(){
 			return _payloadID;
+		}
+		public void setMaxLookBehindDays(int t){
+			_maxLookBehind = t * 60*60*24;
 		}
 		public void setMaxLookBehind(int t){
 			_maxLookBehind = t;
