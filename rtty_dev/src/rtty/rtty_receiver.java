@@ -31,6 +31,7 @@ public class rtty_receiver implements StringRxEvent {
     private rtty_decode decoder = new rtty_decode(1200,1800,7);
     
 
+    ConfidenceCalculator cc = new ConfidenceCalculator(8000);
     
     private Telemetry_handler telem_hand_7 = new Telemetry_handler();
     private Telemetry_handler telem_hand_8 = new Telemetry_handler();
@@ -38,6 +39,7 @@ public class rtty_receiver implements StringRxEvent {
     
     private String last_sha = "";
     
+    public boolean enableFFT = true;
     
     private moving_average av_shift = new moving_average(10);
     
@@ -62,6 +64,7 @@ public class rtty_receiver implements StringRxEvent {
     private int samples_since_fft = 0;
     
     public int samples_since_last_valid = 0;
+
     
     private double[] _samples;
     private double[] _fft;
@@ -487,6 +490,35 @@ public class rtty_receiver implements StringRxEvent {
 		samples_since_search += _samples.length;
 		samples_since_fft += _samples.length;
 		
+		cc.samplesElapsed(samples.length);
+		
+		if (auto_rtty_finding && cc.fullSearchDue())
+		{
+			samples_since_fft = 0;
+			double[] loc = findRTTY(false);
+			boolean up = cc.putFrequencies(loc[0]/8000, loc[1]/8000);
+			if (up){
+				decoder._f1 = cc.getFrequencies(0);
+				decoder._f2 = cc.getFrequencies(1); }
+			
+		}
+		
+		if (enable_afc && samples_since_afc >= afc_update_freq)  //step 2 : follow signal if afc is set
+		{
+			samples_since_fft = 0;
+			samples_since_afc = 0;
+			followRTTY(false);
+			
+			cc.AFCUpdate(decoder._f1,decoder._f2);
+		}
+		
+		if (samples_since_fft >= fft_update_freq && enableFFT)
+		{
+			calcuate_FFT();
+			samples_since_fft = 0;
+		}
+		
+		/*
 		//step 1 : find rtty signal if needed
 		if (auto_rtty_finding && current_state == State.INACTIVE && samples_since_search >= search_freq)
 		{
@@ -512,6 +544,7 @@ public class rtty_receiver implements StringRxEvent {
 			samples_since_fft = 0;
 		}
 		
+		*/
 		
 		//step 3 : demodulate the signal		
 		boolean[] bits = decoder.processBlock_2bits(samples,baud);
