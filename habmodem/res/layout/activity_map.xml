@@ -1,9 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="match_parent"    
     android:layout_height="match_parent" >
     
      <LinearLayout
+         
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -19,12 +20,20 @@
              android:layout_width="match_parent"
              android:layout_height="190dp"
              tools:layout="@layout/fragment_balloon_data" />
-    
-	    <org.mapsforge.android.maps.MapView
-	        android:id="@+id/mapView"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent" />
 
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:id="@+id/map_rel_lay" >
+
+             <org.mapsforge.android.maps.MapView
+                 android:id="@+id/mapView"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent" >
+             </org.mapsforge.android.maps.MapView>
+
+
+         </RelativeLayout>
 	
     </LinearLayout>
 	    

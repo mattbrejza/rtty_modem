@@ -36,7 +36,10 @@ import ukhas.Telemetry_string;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -45,10 +48,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+
+import group.pals.android.lib.ui.filechooser.FileChooserActivity;
+import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
+import group.pals.android.lib.ui.filechooser.services.IFileProvider;
 
 
 public class Map_Activity extends MapActivity implements AddPayloadFragment.NoticeDialogListener,LocationSelectFragment.NoticeDialogListener {
@@ -59,6 +70,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private GPSRxReceiver gpsrxReceiver;
 	boolean isReg = false;
 	boolean requestUpdate = false;
+	
+	private static final int _ReqChooseFile = 0;
+	boolean _drawFileButton = false;
+	public static final String PREFS_NAME = "MyPrefsFile";
+
+	Button btnMapPath;
 	
 	protected int last_colour = 0x0;
 	public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
@@ -71,9 +88,6 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	
 	private ConcurrentHashMap<String,OverlayWay> map_path_overlays = new ConcurrentHashMap<String,OverlayWay>();
 	protected ConcurrentHashMap<String,OverlayItem> map_balloon_overlays = new ConcurrentHashMap<String,OverlayItem>();
-	//private ConcurrentHashMap<String,Long> last_update_time = new ConcurrentHashMap<String,Long>(); 
-
-
 	
 	Dsp_service mService;
     boolean mBound = false;
@@ -84,33 +98,103 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         setContentView(R.layout.activity_map);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
-     
-        this.mapView = (MapView) findViewById(R.id.mapView);
-        mapView.setClickable(true);
-        mapView.setBuiltInZoomControls(true);
-        mapView.setMapFile(new File("/sdcard/england.map"));
-
-        
-         //////////////////////////////////
-         //now for some stuff that isnt test code
-        
-        Paint dw = new Paint(Paint.ANTI_ALIAS_FLAG);
-        dw.setStyle(Paint.Style.STROKE);
-        dw.setColor(Color.BLUE);
-         
-        array_waypoints = new  ArrayWayOverlay(dw,dw);
-        mapView.getOverlays().add(array_waypoints);
-         
-
-        array_img_balloons = new ArrayItemizedOverlay(getResources().getDrawable(R.drawable.ic_map_balloon));
-        
-        mapView.getOverlays().add(array_img_balloons);
-        
-   		//loc_han = new Location_handler(this,getResources().getDrawable(R.drawable.ic_map_rx));
-   		//this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mapInit();
     }
 
+    
+    private void mapInit(){
+    	
+         
+          String mapst = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_map_path", "");
+       //  SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+       //  String mapst = settings.getString("silentMode", "");
+         
+        //  mapst = "egw";
+         File file = new File(mapst);
+         if(file.exists())
+         {
+        	 mapView = (MapView) findViewById(R.id.mapView);
+         	 mapView.setClickable(true);
+         	 mapView.setBuiltInZoomControls(true);
+	         mapView.setMapFile(file);
+	
+	         
+	          //////////////////////////////////
+	          //now for some stuff that isnt test code
+	         
+	         Paint dw = new Paint(Paint.ANTI_ALIAS_FLAG);
+	         dw.setStyle(Paint.Style.STROKE);
+	         dw.setColor(Color.BLUE);
+	          
+	         array_waypoints = new  ArrayWayOverlay(dw,dw);
+	         mapView.getOverlays().add(array_waypoints);
+	          
+	
+	         array_img_balloons = new ArrayItemizedOverlay(getResources().getDrawable(R.drawable.ic_map_balloon));
+	         
+	         mapView.getOverlays().add(array_img_balloons);
+         }
+         else if (!_drawFileButton)
+         {
+        	 _drawFileButton = true;
+        	 btnMapPath = new Button(this);
+        	 btnMapPath.setText("Select Map File");
+        	// android:id="@+id/balloon_data_holder"
+        			 
+        	 RelativeLayout ll = (RelativeLayout)findViewById(R.id.map_rel_lay);
+        	 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+        			 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        	 lp.addRule(RelativeLayout.CENTER_VERTICAL);
+        	 lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        	 
+        	 btnMapPath.setOnClickListener(new OnClickListener() {
+     			@Override
+     			public void onClick(View v) {
+     				// Display the file chooser dialog
+     				Intent intent = new Intent(Map_Activity.this, FileChooserActivity.class);
+     				intent.putExtra(FileChooserActivity._Rootpath, (Parcelable) new LocalFile(Environment.getExternalStorageDirectory().getPath() ));
+     				intent.putExtra(FileChooserActivity._RegexFilenameFilter, "(?si).*\\.(map)$");
+     				intent.putExtra(FileChooserActivity._Theme, android.R.style.Theme_Dialog);
+     				startActivityForResult(intent, _ReqChooseFile);
+     			}
+     		});
+        	 
+        	ll.addView(btnMapPath, lp);
+         }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+        case _ReqChooseFile:
+            if (resultCode == RESULT_OK) {
+                /*
+                 * you can use two flags included in data
+                 */
+               // IFileProvider.FilterMode filterMode = (IFileProvider.FilterMode)
+               //     data.getSerializableExtra(FileChooserActivity._FilterMode);
+               // boolean saveDialog = data.getBooleanExtra(FileChooserActivity._SaveDialog, false);
 
+                /*
+                 * a list of files will always return,
+                 * if selection mode is single, the list contains one file
+                 */
+                List<LocalFile> files = (List<LocalFile>)
+                    data.getSerializableExtra(FileChooserActivity._Results);
+                for (File f : files)
+                {
+                	PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).edit().putString("pref_map_path", f.getPath()).commit();
+                	System.out.println(f.toString());
+                }
+             
+                RelativeLayout ll = (RelativeLayout)findViewById(R.id.balloon_data_holder);
+                ll.removeView(btnMapPath);
+                _drawFileButton = false;
+                
+            }
+            break;
+        }
+    }
     
     public void btnAddPayload(View view)
     {
@@ -151,7 +235,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        // Handle item selection 
+    	/*
     	Intent intent;
         switch (item.getItemId()) {
         	case android.R.id.home:
@@ -176,7 +261,32 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
+        } */
+    	Intent intent;
+
+    	if (item.getItemId() == android.R.id.home)
+    		NavUtils.navigateUpFromSameTask(this);
+    	else if (item.getItemId() == R.id.status_screen) {
+        	intent = new Intent(this, StatusScreen.class);
+        	startActivity(intent);
+            return true; }
+        else if (item.getItemId() ==  R.id.location_dialog) {
+        	FragmentManager fm = getFragmentManager();
+        	LocationSelectFragment di = new LocationSelectFragment();
+        	di.enChase = mService.getEnableChase();
+        	di.enPos = mService.getEnablePosition();
+         	di.show(fm, "Location Settings");
+        	return true; }
+        else if (item.getItemId() ==  R.id.refresh_button) {
+        	mService.updateActivePayloadsHabitat();
+        	return true; }
+        else if (item.getItemId() ==  R.id.fft_screen) {
+        	intent = new Intent(this, FFTActivity.class);
+        	startActivity(intent);
+            return true; }
+        
+        return super.onOptionsItemSelected(item);
+    
     }
     
     
@@ -207,6 +317,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		if (!isReg) { registerReceiver(gpsrxReceiver, intentFilter3); }
    		isReg = true;
    		
+   		if (mapView == null)
+   			mapInit();
    		
    		
    	}
@@ -257,6 +369,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     
     private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
     {
+    	if (mapView == null)
+    		return ;
     	if (map_balloon_overlays.containsKey(callsign) && coord.latlong_valid)
     	{
     		map_balloon_overlays.get(callsign).setPoint(new GeoPoint(coord.latitude,coord.longitude));
@@ -271,7 +385,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     
     private void UpdateBalloonTrack(TreeMap<Long,Telemetry_string> telem, String callsign, boolean reAdd, boolean forceAppend)//, long dataStartTime, long dataEndTime)
     {
-    	
+    	if (mapView == null)
+    		return ;	
     	callsign = callsign.toUpperCase();
     	GeoPoint lp=new GeoPoint(0,0);
     	//step1: check to see if data already exists
@@ -416,9 +531,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     
     private void updateAll()
     {
+    	if (mapView == null)
+    		return ;
+    	
     	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
-    	
-    	
+    	    	
     	//try
     	//{
     	List<String> flights = mService.getActivePayloadList();

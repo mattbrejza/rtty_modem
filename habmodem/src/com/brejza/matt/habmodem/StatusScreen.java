@@ -85,6 +85,7 @@ public class StatusScreen extends Activity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
     	Intent intent;
+    	/*
         switch (item.getItemId()) {
             case R.id.fft_screen:
             //	intent = new Intent(this, FFTActivity.class);
@@ -99,7 +100,19 @@ public class StatusScreen extends Activity  {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
+        } */
+        
+        if (item.getItemId() == R.id.status_screen)
+        	return true;
+        else if (item.getItemId() == R.id.map_screen) {
+        	finish();
+            return true; }
+        else if (item.getItemId() ==  R.id.settings_screen) {
+        	intent = new Intent(this,Preferences_activity.class);
+        	startActivity(intent); 
+            return true;}
+       
+       return super.onOptionsItemSelected(item); 
     }
     
 	/////////////////////
@@ -197,7 +210,7 @@ public class StatusScreen extends Activity  {
    		
    		isReg = true;
    		
-   		mService.rcv.enableFFT = true;
+   		
         
    	}
     
@@ -344,6 +357,7 @@ public class StatusScreen extends Activity  {
             LocalBinder binder = (LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+            mService.rcv.enableFFT = true;
         }
 
         @Override

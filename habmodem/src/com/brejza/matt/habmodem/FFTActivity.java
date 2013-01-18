@@ -15,7 +15,6 @@ package com.brejza.matt.habmodem;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
@@ -38,6 +37,7 @@ public class FFTActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+    	/*
     	Intent intent;
         switch (item.getItemId()) {
         	case android.R.id.home:
@@ -51,7 +51,19 @@ public class FFTActivity extends Activity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
+        } */
+        
+        if (item.getItemId() == android.R.id.home)
+        	NavUtils.navigateUpFromSameTask(this);
+        else if (item.getItemId() == R.id.status_screen)
+        	return true;
+        else if (item.getItemId() == R.id.map_screen) {
+        	finish();
+            return true; }
+       
+       return super.onOptionsItemSelected(item); 
+            
+
     }
 
 

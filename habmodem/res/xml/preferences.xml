@@ -6,6 +6,12 @@
         android:summary="@string/pref_callsign_summ"
         android:defaultValue="CALLSIGN123" />
     
+    <EditTextPreference
+        android:key="pref_map_path"
+        android:title="@string/pref_map_path"
+        android:summary="@string/pref_map_path_summ"
+        android:defaultValue="/sdcard/cengland.map" />
+    
    
     <PreferenceScreen
         android:key="button_advanced_settings"

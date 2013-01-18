@@ -96,10 +96,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public IBinder onBind(Intent arg0) {
 
 		startAudio();
+		
+		String call_u = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
+		
 		hab_con = new Habitat_interface(
 					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_server", "habitat.habhub.org"),
 					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_db", "habitat"),
-					 new Listener("MATT_XOOM", new Gps_coordinate(50.2,-0.6,0)));
+					 new Listener(call_u, new Gps_coordinate(50.2,-0.6,0)));
 		//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
 		hab_con.addGetActiveFlightsTask();
 		hab_con.addHabitatRecievedListener(this);
