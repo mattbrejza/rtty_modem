@@ -196,6 +196,8 @@ public class StatusScreen extends Activity  {
    		if (!isReg) { registerReceiver(fftupdateReceiver, intentFilter3); }
    		
    		isReg = true;
+   		
+   		mService.rcv.enableFFT = true;
         
    	}
     
@@ -211,7 +213,9 @@ public class StatusScreen extends Activity  {
         	   if (fftupdateReceiver != null) unregisterReceiver(fftupdateReceiver);
        	}
            
-           isReg = false;
+        isReg = false;
+           
+        mService.rcv.enableFFT = false;
            
      //  if (mBound) {
      //      unbindService(mConnection);
