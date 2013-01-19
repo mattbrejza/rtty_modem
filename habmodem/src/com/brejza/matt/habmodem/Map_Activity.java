@@ -568,9 +568,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	    	for (int i = 0; i < flights.size(); i++)
 	    	{
 	    		String call = flights.get(i).toUpperCase();
-	    		fragment.AddPayload(call,getColour(call));
+	    		fragment.AddPayload(flights.get(i),getColour(call));
 	    		TreeMap <Long, Telemetry_string> tm = mService.getPayloadData(call);
-	    		if (tm != null){
+	    		if (tm.size() > 0){
 	        		UpdateBalloonTrack(tm,call,true, false);
 	        		
 		    		fragment.updatePayload(tm.lastEntry().getValue(),mService.getAscentRate(call));
@@ -706,8 +706,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	
 	public void removePayload(String callsign)
 	{
-		if (mService.payloadExists(callsign))
-			mService.removeActivePayload(callsign);
+		if (mService.payloadExists(callsign.toUpperCase()))
+			mService.removeActivePayload(callsign.toUpperCase());
 		System.out.println("REMOVED PAYLOAD: " + callsign);
 	}
 	

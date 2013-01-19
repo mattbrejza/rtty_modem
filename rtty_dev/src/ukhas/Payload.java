@@ -130,5 +130,10 @@ public class Payload {
 			if (c.alt_valid)
 				ascentRate.AddData(data.lastEntry().getValue().time.getTime(),c.altitude);
 		}
-		
+		public void clearUserData(){
+			data = new TreeMap<Long,Telemetry_string>();
+			_activePayload = false;
+			_lastUpdated = 0;
+			ascentRate = new AscentRate();
+		}
 }

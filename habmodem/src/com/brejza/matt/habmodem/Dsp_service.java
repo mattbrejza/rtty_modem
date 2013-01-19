@@ -191,10 +191,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	
 	public boolean payloadExists(String callsign) {
-		return (mapPayloads.containsKey(callsign.toString().toUpperCase()));
+		return (mapPayloads.containsKey(callsign.toUpperCase()));
 	}
 	public boolean activePayloadExists(String callsign) {
-		if (mapPayloads.containsKey(callsign.toString().toUpperCase())){
+		if (mapPayloads.containsKey(callsign.toUpperCase())){
 			return mapPayloads.get(callsign.toUpperCase()).isActivePayload();
 		}
 		else
@@ -218,25 +218,29 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	//	else
 	//		return 0;
 	//}  //TODO: if already there, update infos
-	public void addActivePayload(String call){
-		if (!payloadExists(call))
-			mapPayloads.put(call,new Payload(call,true, 3));
+/*	public void addActivePayload(String call){
+		String callu = call.toUpperCase();
+		if (!payloadExists(callu))
+			mapPayloads.put(callu,new Payload(call,true, 3));
 		else {
-			Payload p = mapPayloads.get(call);
+			Payload p = mapPayloads.get(callu);
 			p.setIsActivePayload(true);
 		}
-	}
+	} */
 	public void addActivePayload(String call, int lookBehind){
-		if (!payloadExists(call))
-			mapPayloads.put(call,new Payload(call,true, lookBehind));
+		String callu = call.toUpperCase();
+		if (!payloadExists(callu)) {
+			Payload p = new Payload(call,true, lookBehind);
+			mapPayloads.put(callu,p);
+		}
 		else {
-			Payload p = mapPayloads.get(call);
+			Payload p = mapPayloads.get(callu);
 			p.setIsActivePayload(true);
 			p.setMaxLookBehindDays(lookBehind);
 		}
 	}
 	public void removeActivePayload(String call){  //TODO: remove data and other info, but not any IDs
-		mapPayloads.remove(call.toUpperCase());
+		mapPayloads.get(call.toUpperCase()).clearUserData();
 	}
 	public double[] getFFT()
 	{
@@ -264,7 +268,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
 		{
 			if (entry.getValue().isActivePayload())
-				out.add(entry.getKey());
+				out.add(entry.getValue().callsign);
 		}
 		return out;
 	}
