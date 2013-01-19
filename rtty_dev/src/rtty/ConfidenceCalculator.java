@@ -10,7 +10,7 @@ public class ConfidenceCalculator {
 	
 	Queue<double[]> freqHistory = new LinkedList<double[]>();
 	
-	enum State {SIG_LOST,SIG_JUST_FOUND,SIG_TRACKING,SIG_DROPPED};
+	public enum State {SIG_LOST,SIG_JUST_FOUND,SIG_TRACKING,SIG_DROPPED};
 	State state = State.SIG_LOST;
 	
 	int _sampleRate = 8000;
@@ -19,6 +19,9 @@ public class ConfidenceCalculator {
 	
 	int samplesSinceFullSearch = 0;
 	int samplesSinceStateChange = 0;
+	
+	double _lastPowerMax = 0;
+	double _lastPowerAverage = 0;
 	
 	
 	double[] lastDecent = {-1,-1};
@@ -129,9 +132,10 @@ public class ConfidenceCalculator {
 				System.out.println("WHY AM I HERE!?!?!?!?!?!?!?!?! :o");
 				break;
 		}
-		if (entryState != state)
+		if (entryState != state){
 			samplesSinceStateChange = 0;
-		System.out.println("STATE : " + state);
+			System.out.println("STATE : " + state);
+		}
 		return out;
 	}
 	
@@ -210,11 +214,20 @@ public class ConfidenceCalculator {
 	
 	public void gotDecode()
 	{
-		
+		confidence = 100 ;
 	}
 	
-	public void putPowerLevels()
+	public void putPowerLevels(double lastMax, double lastAverage)
 	{
+		
+		if (lastAverage < _lastPowerAverage/100 && state == State.SIG_TRACKING){
+			state = State.SIG_DROPPED;
+			System.out.println("STATE : " + state);
+		}
+		
+		_lastPowerMax = lastMax;
+		_lastPowerAverage = lastAverage;
+		
 		
 	}
 	
@@ -259,7 +272,9 @@ public class ConfidenceCalculator {
 		}
 	}
 	
-	
+	public State getState(){
+		return state;
+	}
 	
 	//getters/setters
 	public int getConfidence(){

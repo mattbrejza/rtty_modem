@@ -250,8 +250,8 @@ public class rtty_receiver implements StringRxEvent {
         }
         
  //       grtty.clearMarkers();
-        System.out.println();
-        System.out.println();
+      //  System.out.println();
+      //  System.out.println();
         peak_count=Math.min(4, peak_count);
         //iterate through all combinations of peaks to find a signal
         for (int i = 0; i < peak_count-1; i++)
@@ -549,6 +549,7 @@ public class rtty_receiver implements StringRxEvent {
 		//step 3 : demodulate the signal		
 		boolean[] bits = decoder.processBlock_2bits(samples,baud);
 		
+		cc.putPowerLevels(decoder.getLastMaxPower(),decoder.getLastAveragePower());
 		
 		
 		//step 4 : convert a bitstream to telemetry		
@@ -571,6 +572,9 @@ public class rtty_receiver implements StringRxEvent {
 				str = bit2char_8.bits2chars(bits);
 				telem_hand_8.ExtractPacket(str);
 			}
+			
+			if (cc.getState() == ConfidenceCalculator.State.SIG_DROPPED)
+				current_state = State.INACTIVE;
 		}
 		else if (current_data_bits ==7)			//if data / stops not known try 7nX and 8nX, returning the results of whatever setting was used last
 		{
@@ -592,12 +596,14 @@ public class rtty_receiver implements StringRxEvent {
 		if (valid7)
 		{
 			current_state = State.IDLE;
+			cc.gotDecode();
 			current_data_bits = 7;
 			current_stop_bits = (int) Math.round(bit2char_7.average_stop_bits());
 		}
 		else if (valid8)
 		{
 			current_state = State.IDLE;
+			cc.gotDecode();
 			current_data_bits = 8;
 			current_stop_bits = (int) Math.round(bit2char_8.average_stop_bits());
 		}

@@ -100,6 +100,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	JCheckBox ck300b;
 	JLabel lbStatus;
 	JLabel lbimage;
+	JCheckBox chkOnline;
 	private JCheckBox ckPause;
 	  
 	  
@@ -142,7 +143,8 @@ public class rttywin extends JFrame implements StringRxEvent {
 	public void StringRx(Telemetry_string str, boolean checksum)
 	{
 		System.out.println(str.getSentence() + "   " + checksum);
-		hi.upload_payload_telem(str);
+		if (chkOnline.isSelected())
+			hi.upload_payload_telem(str);
 	}
 	
 	/**
@@ -340,6 +342,10 @@ public class rttywin extends JFrame implements StringRxEvent {
 		
 		lbimage.setBounds(10, 388, 510, 190);
 		contentPane.add(lbimage);
+		
+		chkOnline = new JCheckBox("Online");
+		chkOnline.setBounds(133, 54, 97, 23);
+		contentPane.add(chkOnline);
 		
          
 

@@ -27,6 +27,10 @@ public class rtty_decode {
 	private double _LO2_phase;   //high LO
 	private double _LO1_phase;   //low LO
 	
+	private double _lastMaxPower = -1;
+	private double _lastAveragePower_tot = -1;
+	private int _lastBitCount = -1;
+	
 	//demod 
 	int resample_counter = 0;
 	
@@ -231,6 +235,11 @@ public class rtty_decode {
 		//}
 		//System.arraycopy(input,input.length-200,prev_win,0,200);
 		//
+		
+		_lastBitCount = 0;
+		_lastMaxPower = 0;
+		_lastAveragePower_tot = 0;
+		
 		double[] out = new double[input.length/10];
 		int out_count = 0;
 		
@@ -263,6 +272,9 @@ public class rtty_decode {
 					out_count++;
 					_last_bit = input[i];
 					_sync_thres.update(Math.pow(input[i],2));
+					_lastMaxPower = Math.max(_lastMaxPower, Math.abs(input[i]));
+					_lastAveragePower_tot += Math.abs(input[i]);
+					_lastBitCount ++;
 					//if (i < 400)
 					//	if (DEBUG) { gbb.addMarkers(i, Color.BLUE); }
 					break;					
@@ -292,7 +304,15 @@ public class rtty_decode {
 		
 	}
 
-	
+	public double getLastMaxPower(){
+		return _lastMaxPower;
+	}
+	public double getLastAveragePower(){
+		if (_lastBitCount > 0)
+			return _lastAveragePower_tot/(double)_lastBitCount;
+		else
+			return -1;
+	}
 
 	
 }
