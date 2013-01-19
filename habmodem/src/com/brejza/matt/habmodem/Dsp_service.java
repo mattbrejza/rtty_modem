@@ -13,8 +13,10 @@
 
 package com.brejza.matt.habmodem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,6 +55,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public final static String HABITAT_NEW_DATA = "com.brejza.matt.habmodem.HABITAT_NEW_DATA";
 	public final static String TELEM_STR = "com.brejza.matt.habmodem.TELEM_STR";
 	public final static String GPS_UPDATED = "com.brejza.matt.habmodem.GPS_UPDATED";
+	public final static String LOG_EVENT = "com.brejza.matt.habmodem.LOG_EVENT";
+	public final static String LOG_STR = "com.brejza.matt.habmodem.LOG_STR";
 	
 	 // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -68,6 +72,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	boolean _enableChase = false;
 	boolean _enablePosition = false;
 	
+	
+	
+	
 	public double currentLatitude = 0;
 	public double currentLongitude = 0;
 	public boolean currentLocationValid = false;
@@ -79,6 +86,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private long lastChasecarUpdate = 0;
 	
 	moving_average ascent_rates;
+	
+	LoggingQueue log = new LoggingQueue(200);
 	
 	Habitat_interface hab_con;
 	
@@ -309,8 +318,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
             short[] buffer = new short[buffsize];
+            double[] s = new double[buffsize];
             mRecorder.startRecording();
             isRecording = true;
+            
+            logEvent("Starting Audio. Buffer Size: " + buffsize);
  
           //  setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
@@ -319,7 +331,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             	buffsize =  mRecorder.read(buffer, 0, buffsize);  
             	if (buffsize >= 512)
             	{
-	                double[] s = new double [buffsize];
+	                s = new double [buffsize];
 	                for (int i = 0; i < buffsize; i++)
 	            	    s[i] = (double) buffer[i];
 	                String rxchar =  rcv.processBlock(s,_baud);
@@ -359,6 +371,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
             mRecorder.stop();
             System.out.println("DONE RECORDING");
+            logEvent("Stopping Audio");
             isRecording = false;
        }	
     	
@@ -381,7 +394,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		String call = str.callsign.toUpperCase();
 		if (!checksum) return;
 		last_str = str;
-		listRxStr.add(str.getSentence());
+		listRxStr.add(str.getSentence().trim());
+		
+		logEvent("Decoded String - " + str.getSentence().trim());
 		
 		if (checksum){
 			hab_con.upload_payload_telem(str);    //upload received string to server
@@ -415,6 +430,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		if (success)
 		{
 			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
+			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign);
 			
 			if (mapPayloads.containsKey(call)){
 				mapPayloads.get(call).setLastUpdated(endTime);
@@ -434,9 +450,26 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				i.putExtra(TELEM_STR, data.get(data.lastKey()).getSentence());
 			sendBroadcast(i);
 		}
+		else
+		{
+			logEvent("Habitat Query Failed");
+		}
 		
 		
 		
+	}
+	
+	
+	public void logEvent(String event)
+	{		
+		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");//dd/MM/yyyy
+
+	    String s = sdfDate.format(new Date()) + " - " + event;
+
+		
+		Intent i = new Intent(LOG_EVENT);		
+		i.putExtra(LOG_STR, log.offerAndReturn(s));
+		sendBroadcast(i);		
 	}
 	
 	public class Location_handler implements LocationListener  {

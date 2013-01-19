@@ -16,6 +16,8 @@ package com.brejza.matt.habmodem;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,6 +39,7 @@ import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -48,18 +51,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import group.pals.android.lib.ui.filechooser.FileChooserActivity;
 import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
-import group.pals.android.lib.ui.filechooser.services.IFileProvider;
 
 
 public class Map_Activity extends MapActivity implements AddPayloadFragment.NoticeDialogListener,LocationSelectFragment.NoticeDialogListener {
@@ -68,13 +67,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private StringRxReceiver strrxReceiver;
 	private HabitatRxReceiver habirxReceiver;
 	private GPSRxReceiver gpsrxReceiver;
+	private LogEventReceiver logReceiver;
 	boolean isReg = false;
 	boolean requestUpdate = false;
 	
 	private static final int _ReqChooseFile = 0;
-	//boolean _drawFileButton = false;
+
 	boolean _mapFile_set = false;
-	//public static final String PREFS_NAME = "MyPrefsFile";
+
+	Timer timerLogging;
+	private Handler handler;
 
 	Button btnMapPath;
 	
@@ -121,6 +123,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         mapView.getOverlays().add(array_img_balloons);
         
         setMapFile();
+        
+        handler = new Handler(); //for timer to interact with ui
     }
 
     
@@ -342,6 +346,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		if (gpsrxReceiver == null) gpsrxReceiver = new GPSRxReceiver();
    		IntentFilter intentFilter3 = new IntentFilter(Dsp_service.GPS_UPDATED);
    		if (!isReg) { registerReceiver(gpsrxReceiver, intentFilter3); }
+   		
+   		//log receiver
+   		if (logReceiver == null) logReceiver = new LogEventReceiver();
+   		IntentFilter intentFilter4 = new IntentFilter(Dsp_service.LOG_EVENT);
+   		if (!isReg) { registerReceiver(logReceiver, intentFilter4); }
+   		
    		isReg = true;
    	
    		
@@ -355,11 +365,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	    	if (habirxReceiver != null) unregisterReceiver(habirxReceiver);
 	       	if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
 	       	if (gpsrxReceiver != null) unregisterReceiver(gpsrxReceiver);
+	       	if (logReceiver != null) unregisterReceiver(logReceiver);
        	}
-           
-           isReg = false;
-           
-
+        isReg = false;  
     }
     
     protected int getColour(String callsign)
@@ -370,8 +378,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     		int c = newColour();
     		path_colours.put(callsign.toUpperCase(), Integer.valueOf(c));
     		return c;
-    	}
-    		
+    	}    		
     }
     
     private int newColour()
@@ -669,6 +676,40 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         }
     }
     
+    
+    private class LogEventReceiver extends BroadcastReceiver  {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Dsp_service.LOG_EVENT)) {
+            //Do stuff
+            	if (intent.hasExtra(Dsp_service.LOG_STR))
+            	{
+            		String str =  intent.getStringExtra(Dsp_service.LOG_STR);
+
+            		TextView tv = (TextView)findViewById(R.id.txtLogStatus);
+            		tv.setText(str);
+            		
+            		timerLogging = new Timer();
+            		timerLogging.schedule(new LoggingTimerTask(), 6 * 1000);
+            	}
+            }
+        }
+    }
+    
+    class LoggingTimerTask extends TimerTask {
+    	
+    	public void run() {
+    		
+    		 handler.post(new Runnable() {
+                 @Override
+                 public void run() {
+                	 TextView tv = (TextView)findViewById(R.id.txtLogStatus);
+                   tv.setText("");
+                 }
+             	});
+    	}
+    }
 
 
     

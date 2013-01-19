@@ -1,5 +1,11 @@
 <resources>
 
     <style name="AppTheme" parent="android:Theme.Light" />
+    
+    <style name="MapTextOverlay" parent="android:Theme.Light"> 
+        <item name="android:textColor">#FF000000</item>
+        <item name="android:background">#88999999</item>
+      <!--   <item name="android:typeface">monospace</item> -->
+    </style>
 
 </resources>

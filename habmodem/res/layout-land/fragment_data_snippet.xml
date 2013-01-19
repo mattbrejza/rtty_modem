@@ -15,16 +15,16 @@
             android:layout_width="5dp"
             android:layout_height="match_parent"
             android:background="#FFFF00FF" />
-
+
         <TableLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="2dp" >
-
+
             <TableRow
                 android:id="@+id/tableRow1"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
 
                 <TextView
