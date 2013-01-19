@@ -61,6 +61,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	int buffsize;
 	boolean isRecording = false;
 	
+	private int _baud = 300;
+	
 	Telemetry_string last_str;
 	
 	boolean _enableChase = false;
@@ -163,7 +165,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			isRecording = true;
 			
 			buffsize = AudioRecord.getMinBufferSize(8000,AudioFormat.CHANNEL_IN_MONO ,AudioFormat.ENCODING_PCM_16BIT);
-	    	buffsize = Math.max(buffsize, 10000);
+	    	buffsize = Math.max(buffsize, 8000);
 	    	
 	    	mRecorder = new AudioRecord(AudioSource.MIC,8000,
 	    			AudioFormat.CHANNEL_IN_MONO ,
@@ -316,7 +318,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	                double[] s = new double [buffsize];
 	                for (int i = 0; i < buffsize; i++)
 	            	    s[i] = (double) buffer[i];
-	                String rxchar =  rcv.processBlock(s,300);
+	                String rxchar =  rcv.processBlock(s,_baud);
 	                Intent i = new Intent(CHAR_RX);
 	                i.putExtra(CHARS, rxchar);
 	                sendBroadcast(i);
@@ -504,7 +506,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		else
 			return null;
 	}
-	
+	public void setBaud(int baud)
+	{
+		_baud = baud;
+	}
+	public int getBaud(){
+		return _baud;
+	}
 
 	
 

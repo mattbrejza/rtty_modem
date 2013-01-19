@@ -3,7 +3,7 @@
     <string name="app_name">UKHAS HAB Tracker</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_status_screen">StatusScreen</string>
+    <string name="title_activity_status_screen">Decoder</string>
     <string name="status_screen">Status</string>
     <string name="fft_screen">FFT</string>
     <string name="title_activity_prefs">Settings</string>

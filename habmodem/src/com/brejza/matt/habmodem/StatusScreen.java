@@ -13,6 +13,8 @@
 
 package com.brejza.matt.habmodem;
 
+import ukhas.Telemetry_string;
+
 import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
@@ -27,13 +29,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 
@@ -101,7 +107,6 @@ public class StatusScreen extends Activity  {
             default:
                 return super.onOptionsItemSelected(item);
         } */
-        
         if (item.getItemId() == R.id.status_screen)
         	return true;
         else if (item.getItemId() == R.id.map_screen) {
@@ -210,8 +215,11 @@ public class StatusScreen extends Activity  {
    		
    		isReg = true;
    		
-   		
-        
+   		boolean mic = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
+        if (mic)
+        	Toast.makeText(this, "MIC AVALIABLE", Toast.LENGTH_LONG).show();
+        else
+        	Toast.makeText(this, "MIC NOT AVALIABLE :o", Toast.LENGTH_LONG).show();
    	}
     
    
@@ -358,6 +366,7 @@ public class StatusScreen extends Activity  {
             mService = binder.getService();
             mBound = true;
             mService.rcv.enableFFT = true;
+            setBaudButton();
         }
 
         @Override
@@ -406,6 +415,24 @@ public class StatusScreen extends Activity  {
             	
             }
         }
+    }
+    
+    public void setBaud(View view)
+    {
+    	int currentBaud = mService.getBaud();
+    	
+    	if (currentBaud == 300)
+    		mService.setBaud(50);
+    	else
+    		mService.setBaud(300);
+    	
+    	setBaudButton();
+    }
+    
+    private void setBaudButton()
+    {
+    	Button btn = (Button) findViewById(R.id.btnBaud);
+    	btn.setText(Integer.toString(mService.getBaud()));
     }
     
 }

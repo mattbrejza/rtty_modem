@@ -20,6 +20,7 @@ public class Data_snippet_fragment extends Fragment {
 	private String _callsign = "";
 	private boolean _loaded = false;
 	private Telemetry_string onLoad;
+	private double onLoadAR = 0;
 	
 	private int _colour = 0x00FF0000;
 	
@@ -33,6 +34,12 @@ public class Data_snippet_fragment extends Fragment {
 	public void updateDisplay(Telemetry_string in_str, double ascent_rate)
 	{
 		updateDisplay(in_str);
+		if (!_loaded)
+		{
+			onLoadAR = ascent_rate;
+			return;
+		}
+		
 		TextView txtasc = (TextView)getView().findViewById(R.id.txtAscentRate);
 		DecimalFormat df = new DecimalFormat("#.#");
 		txtasc.setText(df.format(ascent_rate) + "m/s");
@@ -109,7 +116,7 @@ public class Data_snippet_fragment extends Fragment {
     	lin1.invalidate();
 
     	if (onLoad != null)
-    		updateDisplay(onLoad);
+    		updateDisplay(onLoad,onLoadAR);
     	
     }
     
