@@ -6,9 +6,11 @@
     <string name="title_activity_status_screen">Decoder</string>
     <string name="status_screen">Status</string>
     <string name="fft_screen">FFT</string>
+    <string name="dialog_logs_title">Recent Log Messages</string>
     <string name="title_activity_prefs">Settings</string>
     <string name="map_screen">Map</string>
     <string name="settings_screen">Settings</string>
+    <string name="log_screen">Logs</string>
     <string name="title_activity_map">Map</string>
     <string name="title_activity_fft">FFTActivity</string>
     <string name="pref_callsign">Callsign</string>

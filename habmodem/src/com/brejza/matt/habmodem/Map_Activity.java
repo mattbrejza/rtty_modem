@@ -309,6 +309,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         	intent = new Intent(this, FFTActivity.class);
         	startActivity(intent);
             return true; }
+        else if (item.getItemId() == R.id.log_screen) {
+        	FragmentManager fm = getFragmentManager();
+        	ViewLogFragment di = new ViewLogFragment();
+          	di.setLogList(mService.getLog());
+          	di.show(fm, "View Logs");}
         else if (item.getItemId() ==  R.id.settings_screen) {
         	intent = new Intent(this,Preferences_activity.class);
         	startActivity(intent); 
@@ -409,7 +414,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	}
     	else
     	{
-    		mService.logEvent("Adding New Balloon To Map");
+    		mService.logEvent("Adding New Balloon To Map : " + callsign,false);
     		OverlayItem i = new OverlayItem(new GeoPoint(coord.latitude,coord.longitude), callsign, callsign + " location");
     		array_img_balloons.addItem(i);
     		array_img_balloons.requestRedraw();

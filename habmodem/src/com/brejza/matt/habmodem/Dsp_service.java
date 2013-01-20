@@ -109,6 +109,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public IBinder onBind(Intent arg0) {
 
+		
 		startAudio();
 		
 		String call_u = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
@@ -172,6 +173,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void startAudio()
 	{
 		System.out.println("isRecording: " + isRecording);
+		logEvent("Starting Audio. Already listening: " + isRecording,false);
 		if (!isRecording)
 		{
 			isRecording = true;
@@ -186,6 +188,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	    	mRecorder.startRecording();
 	    	System.out.println("STARTING THREAD");
 	    	Thread ct = new captureThread();
+	    	logEvent("Starting Audio Thread.",false);
 	        ct.start();
 		}
 	}
@@ -208,7 +211,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	
     	public void run() {
 	    	 updateActivePayloadsHabitat();
-	    	 logEvent("Starting Habitat Refresh");
+	    	 logEvent("Starting Habitat Refresh",true);
     	}
     }
 	
@@ -341,7 +344,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             mRecorder.startRecording();
             isRecording = true;
             
-            logEvent("Starting Audio. Buffer Size: " + buffsize);
+            logEvent("Starting Audio. Buffer Size: " + buffsize,true);
  
           //  setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
@@ -390,7 +393,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
             mRecorder.stop();
             System.out.println("DONE RECORDING");
-            logEvent("Stopping Audio");
+            logEvent("Stopping Audio",true);
             isRecording = false;
        }	
     	
@@ -415,7 +418,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		last_str = str;
 		listRxStr.add(str.getSentence().trim());
 		
-		logEvent("Decoded String - " + str.getSentence().trim());
+		logEvent("Decoded String - " + str.getSentence().trim(),true);
 		
 		if (checksum){
 			hab_con.upload_payload_telem(str);    //upload received string to server
@@ -449,7 +452,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		if (success)
 		{
 			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
-			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign);
+			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign,true);
 			
 			if (mapPayloads.containsKey(call)){
 				mapPayloads.get(call).setLastUpdated(endTime);
@@ -471,7 +474,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 		else
 		{
-			logEvent("Habitat Query Failed");
+			logEvent("Habitat Query Failed",true);
 		}
 		
 		
@@ -479,16 +482,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	
 	
-	public void logEvent(String event)
+	public void logEvent(String event,boolean broadcast)
 	{		
 		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");//dd/MM/yyyy
 
 	    String s = sdfDate.format(new Date()) + " - " + event;
 
-		
-		Intent i = new Intent(LOG_EVENT);		
-		i.putExtra(LOG_STR, log.offerAndReturn(s));
-		sendBroadcast(i);		
+		if (broadcast){
+			Intent i = new Intent(LOG_EVENT);		
+			i.putExtra(LOG_STR, log.offerAndReturn(s));
+			sendBroadcast(i);	
+		}
+		else
+			 log.offer(s);
 	}
 	
 	public String getFromSettingsCallsign()
@@ -560,7 +566,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		else
 			return null;
 	}
-	
+	public LoggingQueue getLog(){
+		return log;
+	}
 	public TreeMap<Long,Telemetry_string> getAllData(String callsign)
 	{
 		if (mapPayloads.containsKey(callsign.toUpperCase()))
