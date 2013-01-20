@@ -45,10 +45,8 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.widget.TextView;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
@@ -118,7 +116,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		hab_con = new Habitat_interface(
 					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_server", "habitat.habhub.org"),
 					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_db", "habitat"),
-					 new Listener(call_u, new Gps_coordinate(50.2,-0.6,0)));
+					 new Listener(call_u, new Gps_coordinate(50.2,-0.6,0),false));
 		//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
 		hab_con.addGetActiveFlightsTask();
 		hab_con.addHabitatRecievedListener(this);
@@ -506,7 +504,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			
 			
 			if ((lastChasecarUpdate + chasecarUpdateSecs < System.currentTimeMillis() / 1000L) && _enableChase){
-				hab_con.updateChaseCar(new Listener("MATT_XOOM", new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude())));
+				hab_con.updateChaseCar(new Listener("MATT_XOOM", new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude()),true));
 				lastChasecarUpdate = System.currentTimeMillis() / 1000L;
 			}
 			

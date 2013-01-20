@@ -217,7 +217,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 		JButton btnStartst = new JButton("GO!");
 		btnStartst.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
+				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0"),false));
 				startDSP();
 			}
 		});
@@ -238,9 +238,9 @@ public class rttywin extends JFrame implements StringRxEvent {
 		btnNewButton.setEnabled(true);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
+				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0"),false));
 				//hi.queryAllPayloadDocs("APEX");
-				hi.updateChaseCar(new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0")));
+				hi.updateChaseCar(new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0"),true));
 				hi.addDataFetchTask("NANU",(System.currentTimeMillis() / 1000L)-(15*24*60*60),(System.currentTimeMillis() / 1000L),3000);
 			
 			}

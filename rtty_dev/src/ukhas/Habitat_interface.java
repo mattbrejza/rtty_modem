@@ -69,7 +69,7 @@ public class Habitat_interface {
 	
 	
 	public Habitat_interface(String callsign) {		
-		_listener_info = new Listener(callsign);
+		_listener_info = new Listener(callsign,false);
 	}
 	
 	public Habitat_interface(String habitat_url, String habitat_db, Listener listener_info) {
@@ -86,8 +86,7 @@ public class Habitat_interface {
 	}
 	
 	public void Test()
-	{
-		
+	{		
 		 s = new Session(_habitat_url,80);
 		 db = s.getDatabase(_habitat_db);
 		 List<Document> foodoc;
@@ -98,11 +97,7 @@ public class Habitat_interface {
 		 v.setLimit(1);
 		//foodoc = db.view("flight/end_start_including_payloads").getResults();
 		 foodoc = db.view(v).getResults();
-		foodoc.toString();
-		
-		
-		 
-		
+		foodoc.toString();		
 	}
 	
 	public void addHabitatRecievedListener(HabitatRxEvent listener)
@@ -121,6 +116,11 @@ public class Habitat_interface {
 		_listener_info = newlocation;
 		_operations.offer(new QueueItem(3,0));
 		StartThread();
+	}
+	
+	public void updateListener(Listener newlistener)
+	{
+		_listener_info = newlistener;
 	}
 	
 	public void addGetActiveFlightsTask()
@@ -147,8 +147,6 @@ public class Habitat_interface {
 			else
 				return null;   //TODO: add list of non payloads
 		}
-		
-
 	}
 	
 	public boolean queryAllPayloadDocs(String callsign)
@@ -444,8 +442,7 @@ public class Habitat_interface {
 				
 				doc.put("type", "listener_telemetry");
 				doc.put("time_created", t);
-				doc.put("time_uploaded", t);
-				
+				doc.put("time_uploaded", t);				
 				
 				JSONObject client = new JSONObject();
 				client.put("device", device);
@@ -458,14 +455,15 @@ public class Habitat_interface {
 						
 				doc.put("data", data);
 				
-			
+				String sha = _listener_info.toSha256();
 				
-				db.saveDocument(doc);
+				db.saveDocument(doc,sha);			
 				
 				CouchResponse cr = s.getLastResponse();
 				System.out.println(cr);
 				
-				
+				if (cr.isOk())
+					_listener_UUID = sha;				
 			}			
 			return true;
 		}
@@ -498,12 +496,31 @@ public class Habitat_interface {
 					String t = dateFormat.format(time);
 					t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
 					
+					
+					
+					
+					doc.put("type", "listener_telemetry");
+					doc.put("time_created", t);
+					doc.put("time_uploaded", t);				
+					
+					JSONObject client = new JSONObject();
+					client.put("device", device);
+					client.put("device_software", device_software);
+					client.put("application", application);
+					client.put("application_version", application_version);
+					
+					JSONObject data = _listener_info.getJSONDataField();
+					data.put("client", client);
+							
+					doc.put("data", data);
+					
+					/*
 					doc.put("type","listener_telemetry");
 					doc.put("time_uploaded",t);
 					doc.put("time_created", _listener_info.get_time_created());
 					doc.put("data", _listener_info.getJSONDataField());
-					
-					String sha = _listener_info.toSha256();
+					*/
+					String sha = _listener_info.toSha256(); 
 					
 					db.saveDocument(doc,sha);
 					CouchResponse cr = s.getLastResponse();

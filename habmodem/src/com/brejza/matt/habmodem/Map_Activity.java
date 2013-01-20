@@ -400,6 +400,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     
     private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
     {
+    	callsign = callsign.toUpperCase();
     	if (mapView == null)
     		return ;
     	if (map_balloon_overlays.containsKey(callsign) && coord.latlong_valid)
@@ -408,9 +409,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	}
     	else
     	{
+    		mService.logEvent("Adding New Balloon To Map");
     		OverlayItem i = new OverlayItem(new GeoPoint(coord.latitude,coord.longitude), callsign, callsign + " location");
     		array_img_balloons.addItem(i);
     		array_img_balloons.requestRedraw();
+    		map_balloon_overlays.put(callsign, i);
+    		
     	}
     }
     
@@ -690,6 +694,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             		TextView tv = (TextView)findViewById(R.id.txtLogStatus);
             		tv.setText(str);
             		
+            		if (timerLogging != null)
+            			timerLogging.cancel();
             		timerLogging = new Timer();
             		timerLogging.schedule(new LoggingTimerTask(), 6 * 1000);
             	}

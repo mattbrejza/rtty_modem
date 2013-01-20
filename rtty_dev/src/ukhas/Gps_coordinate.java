@@ -21,6 +21,10 @@ public class Gps_coordinate {
 	public double altitude = 0;
 	public boolean alt_valid = false;
 	
+	public Gps_coordinate(){
+		
+	}
+	
 	public Gps_coordinate(double lat, double longi, double alt) {
 		Set_altitude(alt);
 		Set_decimal(lat, longi);

@@ -299,6 +299,8 @@ public final class R {
     }
     public static final class style {
         public static final int AppTheme=0x7f0a0003;
+        /**    <item name="android:typeface">monospace</item> 
+         */
         public static final int MapTextOverlay=0x7f0a0004;
         public static final int afc_button_location=0x7f0a0002;
         public static final int afc_button_navi_left=0x7f0a0000;

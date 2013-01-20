@@ -16,20 +16,23 @@ public class Listener {
 	private Gps_coordinate _coords;
 	private Date _time_created;
 	private boolean _changed;
+	private boolean _isChase = false;
 	
-	public Listener(String callsign) {
+	public Listener(String callsign, boolean isChase) {
 		_callsign = callsign;
-		_coords = new Gps_coordinate(0,0,0);
+		_coords = new Gps_coordinate();
 		_time_created = new Date();
 		_changed = true;
+		_isChase = isChase;
 	}
 	
-	public Listener(String callsign, Gps_coordinate coords) {
+	public Listener(String callsign, Gps_coordinate coords, boolean isChase) {
 		// TODO Auto-generated constructor stub
 		_callsign = callsign;
 		_coords = coords;
 		_time_created = new Date();
 		_changed = true;
+		_isChase  = isChase;
 	}
 
 	public JSONObject getJSONDataField()
@@ -40,10 +43,14 @@ public class Listener {
 		try
 		{
 			data.put("callsign", _callsign);
-			data.put("latitude", _coords.latitude);
-			data.put("longitude", _coords.longitude);
-			data.put("altitude",_coords.altitude);
-			data.put("chase", true);
+			if (_coords.latlong_valid){
+				data.put("latitude", _coords.latitude);
+				data.put("longitude", _coords.longitude);
+				data.put("chase", true);
+			}
+			if (_coords.alt_valid)
+				data.put("altitude",_coords.altitude);
+			
 			
 		}
 		catch (Exception e)
