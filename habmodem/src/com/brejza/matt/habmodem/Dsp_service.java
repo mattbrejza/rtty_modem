@@ -73,9 +73,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	boolean _enableChase = false;
 	boolean _enablePosition = false;
-	
 
 	Timer updateTimer;
+	Timer serviceInactiveTimer;
 	
 	
 	public double currentLatitude = 0;
@@ -95,36 +95,69 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	Habitat_interface hab_con;
 	
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
-	//public List<String> listActivePayloads = Collections.synchronizedList(new ArrayList<String>());
-	//public ConcurrentHashMap<String,Long> payloadLastUpdate = new ConcurrentHashMap<String,Long>();
-	//public ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>> listPayloadData = new ConcurrentHashMap<String,TreeMap<Long,Telemetry_string>>();
-	
 	private ConcurrentHashMap<String, Payload> mapPayloads = new ConcurrentHashMap<String, Payload>();
 	
 	public Dsp_service() {
-		rcv.addStringRecievedListener(this);
-		
+		rcv.addStringRecievedListener(this);		
 	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-
+	
 		
-		startAudio();
+		if (!isRecording)
+			serviceRestart();	
+		if (serviceInactiveTimer != null){
+			serviceInactiveTimer.cancel();
+			serviceInactiveTimer = null;
+			logEvent("Stopping Inactivity Timer",false);			
+		}
 		
-		String call_u = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
+		System.out.println("DEBUG : something bound");
 		
-		hab_con = new Habitat_interface(
-					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_server", "habitat.habhub.org"),
-					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_db", "habitat"),
-					 new Listener(call_u, new Gps_coordinate(50.2,-0.6,0),false));
-		//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
-		hab_con.addGetActiveFlightsTask();
-		hab_con.addHabitatRecievedListener(this);
-		loc_han = new Location_handler();
-		this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		System.out.println("Starting audio");
+		
+		if (hab_con == null){
+			String call_u = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
+			
+			hab_con = new Habitat_interface(
+						PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_server", "habitat.habhub.org"),
+						PreferenceManager.getDefaultSharedPreferences(this).getString("pref_habitat_db", "habitat"),
+						 new Listener(call_u, new Gps_coordinate(50.2,-0.6,0),false));
+			//hab_con.upload_payload_telem(new Telemetry_string("$$ASTRA,12:12:12,5044.11111,-001.00000,1212,34*1234"));	
+			hab_con.addGetActiveFlightsTask();
+			hab_con.addHabitatRecievedListener(this);
+		}
+		if (loc_han == null){
+			loc_han = new Location_handler();
+			this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		}
+		//System.out.println("Starting audio");
 		return mBinder;
+	}
+	
+	@Override
+	public void onRebind(Intent intent)
+	{
+	
+		if (!isRecording)
+			serviceRestart();	
+		if (serviceInactiveTimer != null){
+			serviceInactiveTimer.cancel();
+			serviceInactiveTimer = null;
+			logEvent("Stopping Inactivity Timer",false);			
+		}
+		System.out.println("REBOUND");
+	}
+	
+	@Override
+	public boolean onUnbind(Intent intent)
+	{
+		
+		System.out.println("DEBUG : something unbound");
+		
+		startInactiveTimer();		
+		
+		return true;
 	}
 	
 	public class LocalBinder extends Binder {
@@ -146,6 +179,37 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		_enablePosition = enablePos;
 		_enableChase = enableChase;
 		
+	}
+	
+	//doesnt need to be called when service first starts (but can be)
+	public void serviceRestart()
+	{
+		startAudio();
+		updateActivePayloadsHabitat();
+		if (countActivePayloads() > 0){
+			startUpdateTimer();
+			updateActivePayloadsHabitat();
+		}
+		logEvent("Service Restarted",false);
+	}
+	
+	public void servicePause()
+	{
+		isRecording = false;
+		if (updateTimer != null)
+			updateTimer.cancel();
+		logEvent("Service Paused",false);
+	}
+	
+	public int countActivePayloads()
+	{
+		int count=0;
+		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
+		{
+			if (entry.getValue().isActivePayload())
+				count++;
+		}	
+		return count;
 	}
 	
     private void EnableLocation()
@@ -200,11 +264,27 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	private void startUpdateTimer()
 	{
+		
 		if (updateTimer == null){
+			logEvent("Starting Update Timer",false);
 			updateTimer = new Timer();
-			int interval = 3 * 60 * 1000;
+			int interval = 20 * 60 * 1000;
 			updateTimer.scheduleAtFixedRate(new UpdateTimerTask(), interval,interval);
 		}
+	}
+	private void startInactiveTimer()
+	{
+		
+		if (serviceInactiveTimer == null)
+			serviceInactiveTimer = new Timer();		
+		else		
+			serviceInactiveTimer.cancel();
+		
+		logEvent("Starting Inactivity Timer",false);
+		
+		int interval = 3 * 60 * 1000;
+		serviceInactiveTimer.scheduleAtFixedRate(new InactiveTimerTask(), interval,interval);
+		
 	}
 	
 	class UpdateTimerTask extends TimerTask {
@@ -212,6 +292,14 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	public void run() {
 	    	 updateActivePayloadsHabitat();
 	    	 logEvent("Starting Habitat Refresh",true);
+    	}
+    }
+	
+	class InactiveTimerTask extends TimerTask {
+    	
+    	public void run() {
+	    	 servicePause();
+
     	}
     }
 	
@@ -401,14 +489,22 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 	public void updateActivePayloadsHabitat()
 	{		
+		int count=0;
 		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
 		{
 			if (entry.getValue().isActivePayload()){
+				count++;
 				long start = entry.getValue().getUpdateStart(false);      //TODO: if flight and enabled query flight DB here
 				if ( start + 30 < (System.currentTimeMillis() / 1000L) )
 					hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), entry.getValue().getMaxRecords());
 			}
-		}		
+		}	
+		if (count < 1){
+			if (updateTimer != null){
+				updateTimer.cancel();
+				logEvent("Cancelling habitat update timer - no active payloads", false);
+			}
+		}
 	}
 
 	public void StringRx(Telemetry_string str, boolean checksum)
@@ -422,6 +518,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		if (checksum){
 			hab_con.upload_payload_telem(str);    //upload received string to server
+			
+			if (serviceInactiveTimer != null){
+				startInactiveTimer();
+			}
 			
 			if (mapPayloads.containsKey(call)){
 				mapPayloads.get(call).setIsActivePayload(true);
@@ -475,10 +575,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		else
 		{
 			logEvent("Habitat Query Failed",true);
-		}
-		
-		
-		
+		}		
 	}
 	
 	

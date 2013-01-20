@@ -253,5 +253,9 @@ public class Telemetry_string {
 			return false;
 		
 	}
+	
+	public boolean isZeroGPS(){
+		return (coords.latitude == 0 || coords.longitude == 0);
+	}
 
 }

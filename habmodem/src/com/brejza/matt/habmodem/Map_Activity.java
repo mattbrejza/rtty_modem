@@ -256,6 +256,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             unbindService(mConnection);
             mBound = false;
         }
+        System.out.println("DEBUG : MAP UNBOUND from activity");
     }
     
     @Override
@@ -411,6 +412,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	if (map_balloon_overlays.containsKey(callsign) && coord.latlong_valid)
     	{
     		map_balloon_overlays.get(callsign).setPoint(new GeoPoint(coord.latitude,coord.longitude));
+    		array_img_balloons.requestRedraw();
     	}
     	else
     	{
@@ -453,7 +455,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 				    	TreeMap.Entry pairs = (TreeMap.Entry)it.next();
 				    	Telemetry_string ts = (Telemetry_string) pairs.getValue();
 				    	if (ts != null){
-	            		if (ts.coords != null)
+	            		if (ts.coords != null && !ts.isZeroGPS())
 	            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
 		            	}      
 		            	points[0][size_org+i] = lp;
@@ -470,12 +472,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     			{
     				 //wipe and start again, so get the data from the service
     				System.out.println("Update track - wipe old array");
-    				OverlayWay way = map_path_overlays.get(callsign);
+    				
     				
 	    			TreeMap<Long, Telemetry_string> tm = mService.getPayloadData(callsign);
 	    			if (tm != null){
 	    				GeoPoint[][] points = new GeoPoint[1][tm.size()];
-	    				
+	    				OverlayWay way = map_path_overlays.get(callsign);
 	    				//add new points to array
 	    				int i=0;
 						Iterator it = telem.entrySet().iterator();
@@ -483,7 +485,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 					    	TreeMap.Entry pairs = (TreeMap.Entry)it.next();
 					    	Telemetry_string ts = (Telemetry_string) pairs.getValue();
 					    	if (ts != null){
-		            		if (ts.coords != null)
+		            		if (ts.coords != null && !ts.isZeroGPS())
 		            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
 			            	}      
 			            	points[0][i] = lp;
@@ -501,9 +503,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 			            			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
 			            	}      
 			            	points[0][i] = lp;
-			            }
+			            } */
 	    				way.setWayNodes(points);
-	    				array_waypoints.requestRedraw(); */
+	    				array_waypoints.requestRedraw();
     				}
     			}
     			else
@@ -540,7 +542,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		    	TreeMap.Entry pairs = (TreeMap.Entry)it.next();
 		    	Telemetry_string ts = (Telemetry_string) pairs.getValue();
 		    	if (ts != null){
-        		if (ts.coords != null)
+        		if (ts.coords != null && !ts.isZeroGPS())
         			lp =  new GeoPoint(ts.coords.latitude,ts.coords.longitude);  
             	}      
             	points[0][i] = lp;
