@@ -491,6 +491,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		sendBroadcast(i);		
 	}
 	
+	public String getFromSettingsCallsign()
+	{
+		return PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
+		
+	}
+	
 	public class Location_handler implements LocationListener  {
 
 		public Location_handler() {
@@ -504,7 +510,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			
 			
 			if ((lastChasecarUpdate + chasecarUpdateSecs < System.currentTimeMillis() / 1000L) && _enableChase){
-				hab_con.updateChaseCar(new Listener("MATT_XOOM", new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude()),true));
+				String call_u = getFromSettingsCallsign();
+
+				hab_con.updateChaseCar(new Listener(call_u, new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude()),true));
 				lastChasecarUpdate = System.currentTimeMillis() / 1000L;
 			}
 			
