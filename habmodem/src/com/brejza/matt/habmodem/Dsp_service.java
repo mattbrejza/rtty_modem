@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,8 +45,10 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.widget.TextView;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
@@ -72,7 +76,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	boolean _enableChase = false;
 	boolean _enablePosition = false;
 	
-	
+
+	Timer updateTimer;
 	
 	
 	public double currentLatitude = 0;
@@ -192,7 +197,22 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	//	isRecording = false;
 	//}
 	
+	private void startUpdateTimer()
+	{
+		if (updateTimer == null){
+			updateTimer = new Timer();
+			int interval = 3 * 60 * 1000;
+			updateTimer.scheduleAtFixedRate(new UpdateTimerTask(), interval,interval);
+		}
+	}
 	
+	class UpdateTimerTask extends TimerTask {
+    	
+    	public void run() {
+	    	 updateActivePayloadsHabitat();
+	    	 logEvent("Starting Habitat Refresh");
+    	}
+    }
 	
 	public Telemetry_string getLastString()
 	{
@@ -237,6 +257,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 	} */
 	public void addActivePayload(String call, int lookBehind){
+		startUpdateTimer();
 		String callu = call.toUpperCase();
 		if (!payloadExists(callu)) {
 			Payload p = new Payload(call,true, lookBehind);
