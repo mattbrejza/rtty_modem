@@ -101,7 +101,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         setContentView(R.layout.activity_map);
       //  getActionBar().setDisplayHomeAsUpEnabled(true);
         
-        mapView = (MapView) findViewById(R.id.mapView);
+         mapView = (MapView) findViewById(R.id.mapView);
     	 mapView.setClickable(true);
     	 mapView.setBuiltInZoomControls(true);
         
@@ -619,10 +619,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	//itemizedOverlay.requestRedraw();
             	UpdateBalloonLocation(mService.getLastString().coords,mService.getLastString().callsign);
    
-            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
-				l.put(mService.getLastString().time.getTime(),mService.getLastString());
-				UpdateBalloonTrack(l,mService.getLastString().callsign, false, true);//, 0, System.currentTimeMillis() / 1000L );
-            	
+            	if (mService.getLastString().checksum_valid){
+	            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
+					l.put(mService.getLastString().time.getTime(),mService.getLastString());
+					UpdateBalloonTrack(l,mService.getLastString().callsign, false, true);//, 0, System.currentTimeMillis() / 1000L );
+            	}
             	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
             	fragment.updatePayload(mService.getLastString(),mService.getAscentRate(mService.getLastString().callsign));
             }

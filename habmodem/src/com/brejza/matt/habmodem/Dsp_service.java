@@ -243,7 +243,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			isRecording = true;
 			
 			buffsize = AudioRecord.getMinBufferSize(8000,AudioFormat.CHANNEL_IN_MONO ,AudioFormat.ENCODING_PCM_16BIT);
-	    	buffsize = Math.max(buffsize, 8000);
+	    	buffsize = Math.max(buffsize, 3000);
 	    	
 	    	mRecorder = new AudioRecord(AudioSource.MIC,8000,
 	    			AudioFormat.CHANNEL_IN_MONO ,
@@ -682,7 +682,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public int getBaud(){
 		return _baud;
 	}
-
+	
 	
 
 }

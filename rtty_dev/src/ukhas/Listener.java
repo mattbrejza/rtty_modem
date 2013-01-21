@@ -46,7 +46,8 @@ public class Listener {
 			if (_coords.latlong_valid){
 				data.put("latitude", _coords.latitude);
 				data.put("longitude", _coords.longitude);
-				data.put("chase", true);
+				if (_isChase)
+					data.put("chase", true);
 			}
 			if (_coords.alt_valid)
 				data.put("altitude",_coords.altitude);

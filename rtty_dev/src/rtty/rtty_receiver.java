@@ -659,6 +659,28 @@ public class rtty_receiver implements StringRxEvent {
 	{
 		return _fft_updated;
 	}
+	//IG_LOST,SIG_JUST_FOUND,SIG_TRACKING,SIG_DROPPED};
+	public String statusToString()
+	{
+		switch (cc.state)
+		{
+			case SIG_LOST : 
+				return "Searching";		
+			case SIG_JUST_FOUND :
+				return "Found Signal";
+			case SIG_TRACKING :
+				return "Tracking Signal";
+			case SIG_DROPPED :
+				return "Dropped Signal";
+			default : 
+				return "Inactive";
+		}
+	}
+	
+	public boolean paramsValid()
+	{
+		return (current_state == State.IDLE);
+	}
 	
 	
 	

@@ -120,7 +120,7 @@ public class Payload {
 
 		public void putPacket(Telemetry_string str) {
 			data.put(str.time.getTime(), str);
-			if (str.coords.alt_valid)
+			if (str.coords.alt_valid && str.checksum_valid)
 				ascentRate.AddData(str.time.getTime(), str.coords.altitude);
 		}
 		

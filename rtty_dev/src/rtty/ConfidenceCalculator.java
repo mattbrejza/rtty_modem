@@ -36,6 +36,7 @@ public class ConfidenceCalculator {
 	public void samplesElapsed(int samples)
 	{
 		samplesSinceFullSearch += samples;
+		samplesSinceStateChange += samples;
 	}
 	
 	public boolean putFrequencies ( double f1, double f2)
@@ -136,6 +137,7 @@ public class ConfidenceCalculator {
 			samplesSinceStateChange = 0;
 			System.out.println("STATE : " + state);
 		}
+			
 		return out;
 	}
 	

@@ -213,7 +213,7 @@ public class Habitat_interface {
 			}
 		
 			List<Document> docsout;
-			View v = new View("flight/launch_time_including_payloads");
+			View v = new View("flight/end_start_including_payloads");
 			
 			v.setStartKey("[" + Long.toString((System.currentTimeMillis() / 1000L)-(2*60*60)) + "]");
 			

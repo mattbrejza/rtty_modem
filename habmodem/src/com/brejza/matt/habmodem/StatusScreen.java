@@ -20,6 +20,7 @@ import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.app.Activity;
@@ -31,6 +32,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -55,7 +58,7 @@ public class StatusScreen extends Activity  {
 //	rtty_receiver rcv = new rtty_receiver();
 //	TextView t;
 	ListView list;
-	EditText txtchars;
+	TextView txtchars;
 	ImageView wfview;
 
 //	private GraphView graphView;
@@ -75,8 +78,13 @@ public class StatusScreen extends Activity  {
     
     Waterfall wf;
 
+    Handler handler;
+    
+    int lastScrollLength = 0;
   
 
+    final int txtViewLines = 15;
+    
     /////////////////////
     //////// MENU ///////
     /////////////////////
@@ -139,22 +147,23 @@ public class StatusScreen extends Activity  {
         
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         
-        
+        handler = new Handler();
         
         
       //  rcv.addStringRecievedListener(this);
       //  handler = new Handler();
        // t = (TextView)findViewById(R.id.txttest);
         wfview = (ImageView)findViewById(R.id.imgViWF);
-        list = (ListView)findViewById(R.id.listRxStrings);
-        txtchars = (EditText)findViewById(R.id.txtRawChars);
-        txtchars.setEnabled(false);
+      //  list = (ListView)findViewById(R.id.listRxDecodedStrings);
+        txtchars = (TextView)findViewById(R.id.txtRawRxChars);
+       // txtchars.setEnabled(false);
         initGraph();
         
         
         wf = new Waterfall(BitmapFactory.decodeResource(this.getResources(), R.drawable.grad), 200);
         
-        
+  
+        txtchars.setMovementMethod(ScrollingMovementMethod.getInstance());
        
 
     }
@@ -191,24 +200,24 @@ public class StatusScreen extends Activity  {
    		super.onResume();
 
    		
-   	 // Bind to LocalService
+   		// Bind to LocalService
    		if (!mBound){
 	        Intent intent = new Intent(this, Dsp_service.class);
 	        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
    		}
         
      
-      //string receiver
+   		//string receiver
    		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
    		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
    		if (!isReg) { registerReceiver(strrxReceiver, intentFilter1); }
    		
-   	//char receiver
+   		//char receiver
    		if (charrxReceiver == null) charrxReceiver = new CharRxReceiver();
    		IntentFilter intentFilter2 = new IntentFilter(Dsp_service.CHAR_RX);
    		if (!isReg) { registerReceiver(charrxReceiver, intentFilter2); }
    		
-   	//fftreceiver
+   		//fftreceiver
    		if (fftupdateReceiver == null) fftupdateReceiver = new FFTUpdateReceiver();
    		IntentFilter intentFilter3 = new IntentFilter(Dsp_service.FFT_UPDATED);
    		if (!isReg) { registerReceiver(fftupdateReceiver, intentFilter3); }
@@ -250,7 +259,7 @@ public class StatusScreen extends Activity  {
     {
     	if (!initList)
     	{
-	    	 list = (ListView) findViewById(R.id.listRxStrings);
+	    	 list = (ListView) findViewById(R.id.listRxDecodedStrings);
 	     
 	
 	         // First paramenter - Context
@@ -266,10 +275,8 @@ public class StatusScreen extends Activity  {
 	         initList = true;
     	}
     	else
-    	{
-    		
     		adapter.notifyDataSetChanged();
-    	}
+
     }
     
 	private void initGraph()
@@ -400,6 +407,20 @@ public class StatusScreen extends Activity  {
             	String ch = intent.getStringExtra(Dsp_service.CHARS);
             	System.out.println(ch);
             	txtchars.append(ch);
+            	  final int scrollAmount = txtchars.getLayout().getLineTop(txtchars.getLineCount())
+            	            -txtchars.getHeight();
+            	 // System.out.println(txtchars.getScrollY());
+            	 
+            	 // System.out.println(txtchars.getLayout().getLineTop(Math.max(0,txtchars.getLineCount() - 15)));
+            	 // System.out.println(lastScrollLength);
+            	    // if there is no need to scroll, scrollAmount will be <=0
+            	  int currentpos = txtchars.getLayout().getLineTop(Math.max(0,txtchars.getLineCount() - txtViewLines));
+            	    if(scrollAmount>0 && (lastScrollLength < txtchars.getLineCount()) && (txtchars.getScrollY() + 20 > currentpos))
+            	    	txtchars.scrollTo(0, scrollAmount);
+            	   // else
+            	   // 	txtchars.scrollTo(0,0);
+            	  
+            	  lastScrollLength = txtchars.getLineCount();
             }
         }
     }
@@ -412,6 +433,30 @@ public class StatusScreen extends Activity  {
             	//TODO: HERE
             	wfview.setImageBitmap(wf.UpdateLine(mService.getFFT(),mService.get_f1_FFTbin(),mService.get_f2_FFTbin()));
             	wfview.invalidate();
+            	
+            	
+            	
+            	//tdata.setTe
+            	
+            	 handler.post(new Runnable() {
+                     @Override
+                     public void run() {
+                    	
+                    	 TextView tdata = (TextView) findViewById(R.id.txtDataBits);
+                     	TextView tstops = (TextView) findViewById(R.id.txtStopBits);
+                     	TextView tstat = (TextView) findViewById(R.id.txtStatus);
+                     	
+                     	if (mService.rcv.paramsValid()){
+                    	 tdata.setText(Integer.toString(mService.rcv.current_data_bits));
+                    	 tstops.setText(Integer.toString(mService.rcv.current_stop_bits));
+                     	}else{
+                       	 tdata.setText("-");
+                       	 tstops.setText("-");
+                     	}
+                    	 tstat.setText(mService.rcv.statusToString());
+                    	 
+                     }
+                 	});
             	
             }
         }
