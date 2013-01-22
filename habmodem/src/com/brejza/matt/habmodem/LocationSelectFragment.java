@@ -38,6 +38,10 @@ public class LocationSelectFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         //builder//.setMessage("")
                
+        if (enPos)
+        	mSelectedItems.add(0);
+        if (enChase)
+        	mSelectedItems.add(1);
         
         builder.setMultiChoiceItems(R.array.location_dialog_items, new boolean[]  { enPos, enChase },
         		 new DialogInterface.OnMultiChoiceClickListener() {
@@ -47,7 +51,7 @@ public class LocationSelectFragment extends DialogFragment {
                 if (isChecked) {
                     // If the user checked the item, add it to the selected items
                     mSelectedItems.add(which);
-                } else if (mSelectedItems.contains(which)) {
+                } else if (mSelectedItems.contains(Integer.valueOf(which))) {
                     // Else, if the item is already in the array, remove it 
                     mSelectedItems.remove(Integer.valueOf(which));
                 }
