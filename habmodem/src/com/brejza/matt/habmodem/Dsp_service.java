@@ -268,7 +268,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		if (updateTimer == null){
 			logEvent("Starting Update Timer",false);
 			updateTimer = new Timer();
-			int interval = 20 * 60 * 1000;
+			int interval = 3 * 60 * 1000;
 			updateTimer.scheduleAtFixedRate(new UpdateTimerTask(), interval,interval);
 		}
 	}
@@ -282,7 +282,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		logEvent("Starting Inactivity Timer",false);
 		
-		int interval = 3 * 60 * 1000;
+		int interval = 20 * 60 * 1000;
 		serviceInactiveTimer.scheduleAtFixedRate(new InactiveTimerTask(), interval,interval);
 		
 	}
