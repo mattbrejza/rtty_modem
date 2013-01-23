@@ -51,7 +51,8 @@ public class Payload {
 		
 		public Payload(Telemetry_string str){
 			callsign = str.callsign;
-			data.put(Long.valueOf(str.time.getTime()), str);
+			if (str.time != null)
+				data.put(Long.valueOf(str.time.getTime()), str);
 			_activePayload = true;
 		}		
 		
@@ -119,9 +120,11 @@ public class Payload {
 		}
 
 		public void putPacket(Telemetry_string str) {
-			data.put(str.time.getTime(), str);
-			if (str.coords.alt_valid && str.checksum_valid)
-				ascentRate.AddData(str.time.getTime(), str.coords.altitude);
+			if (str.time != null){
+				data.put(str.time.getTime(), str);
+				if (str.coords.alt_valid && str.checksum_valid)
+					ascentRate.AddData(str.time.getTime(), str.coords.altitude);
+			}
 		}
 		
 		public void putPackets( TreeMap<Long,Telemetry_string> in){

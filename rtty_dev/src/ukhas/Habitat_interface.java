@@ -331,7 +331,7 @@ public class Habitat_interface {
 					{
 					 if (str.equals("_sentence") && !str1.equals("_sentence")){
 						 Telemetry_string ts = new Telemetry_string(str1,lasttime);
-						 if (!ts.isZeroGPS())
+						 if (!ts.isZeroGPS() && ts.time != null)
 							 out.put(new Long(ts.time.getTime()),ts);  
 					 }
 					 
