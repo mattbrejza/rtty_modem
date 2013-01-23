@@ -510,7 +510,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void StringRx(Telemetry_string str, boolean checksum)
 	{
 		String call = str.callsign.toUpperCase();
-		if (!checksum) return;
+		if (!checksum && !mapPayloads.containsKey(call))
+			return;
 		last_str = str;
 		listRxStr.add(str.getSentence().trim());
 		
@@ -535,6 +536,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				//l.put(Long.valueOf(str.time.getTime()),str);
 				//listPayloadData.put(str.callsign.toUpperCase(),l);
 				mapPayloads.put(call,new Payload(str));
+				startUpdateTimer();
+				updateActivePayloadsHabitat();
 			}
 		}
 		else

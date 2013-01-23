@@ -62,11 +62,23 @@ public class Data_snippet_fragment extends Fragment {
 		TextView txtlong = (TextView)getView().findViewById(R.id.txtLongitude);
 		TextView txtalt  = (TextView)getView().findViewById(R.id.txtAltitude);
 
-		txtTime.setText(tf.format(in_str.time));
+		if (in_str.time != null)
+			txtTime.setText(tf.format(in_str.time));
+		else
+			txtTime.setText("--:--:--");
 		
-		txtlat.setText(df.format(in_str.coords.latitude));
-		txtalt.setText(Integer.toString((int)in_str.coords.altitude) + "m");
-		txtlong.setText(df.format(in_str.coords.longitude));
+		if (in_str.coords != null){
+			if (in_str.coords.latlong_valid){
+				txtlat.setText(df.format(in_str.coords.latitude));
+				txtlong.setText(df.format(in_str.coords.longitude));
+			}
+			if (in_str.coords.alt_valid)
+				txtalt.setText(Integer.toString((int)in_str.coords.altitude) + "m");
+		}
+		
+		
+		
+		
 	}
 	
 	public void setCallsign(String Callsign)

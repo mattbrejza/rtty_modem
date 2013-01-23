@@ -613,12 +613,15 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Dsp_service.TELEM_RX)) {
             //Do stuff
-            	System.out.println("GOT INTENT telem  " + mService.getLastString().coords.latitude + "  " + mService.getLastString().coords.longitude);
+            //	System.out.println("GOT INTENT telem  " + mService.getLastString().coords.latitude + "  " + mService.getLastString().coords.longitude);
             //	list.add
             	//item.setPoint(new GeoPoint(mService.getLastString().coords.latitude,mService.getLastString().coords.longitude));
             	//itemizedOverlay.requestRedraw();
-            	UpdateBalloonLocation(mService.getLastString().coords,mService.getLastString().callsign);
-   
+            	if (mService.getLastString().coords != null ){
+            		if (mService.getLastString().coords.latlong_valid)
+            			UpdateBalloonLocation(mService.getLastString().coords,mService.getLastString().callsign);
+            	}
+            	
             	if (mService.getLastString().checksum_valid){
 	            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
 					l.put(mService.getLastString().time.getTime(),mService.getLastString());
