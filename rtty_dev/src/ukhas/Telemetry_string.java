@@ -27,7 +27,7 @@ public class Telemetry_string {
 
 	public String callsign = "";
 	
-	public Date time;
+	public Date time = null;
 	
 	public int packetID=0;
 	

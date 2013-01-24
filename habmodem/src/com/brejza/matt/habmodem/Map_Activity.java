@@ -622,7 +622,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             			UpdateBalloonLocation(mService.getLastString().coords,mService.getLastString().callsign);
             	}
             	
-            	if (mService.getLastString().checksum_valid){
+            	if (mService.getLastString().checksum_valid && mService.getLastString().time != null){
 	            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
 					l.put(mService.getLastString().time.getTime(),mService.getLastString());
 					UpdateBalloonTrack(l,mService.getLastString().callsign, false, true);//, 0, System.currentTimeMillis() / 1000L );
@@ -677,7 +677,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
                 	//itemizedOverlay.requestRedraw();
             		
             		//TODO: check that our data is actually new
-            		if (mService.payloadExists(str.callsign)){
+            		if (mService.payloadExists(str.callsign) && str.time != null){
             			if (str.time.getTime()>= mService.getMostRecent(str.callsign).time.getTime())
             				UpdateBalloonLocation(str.coords,str.callsign);
             			
