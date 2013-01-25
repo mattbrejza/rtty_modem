@@ -24,6 +24,8 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.brejza.matt.habmodem.Map_Activity.LoggingTimerTask;
+
 import rtty.StringRxEvent;
 import rtty.moving_average;
 import rtty.rtty_receiver;
@@ -34,19 +36,24 @@ import ukhas.Listener;
 import ukhas.Payload;
 import ukhas.Telemetry_string;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.widget.TextView;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
@@ -64,8 +71,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     private final IBinder mBinder = new LocalBinder();
     rtty_receiver rcv = new rtty_receiver();
     private AudioRecord mRecorder;
+    private AudioTrack mPlayer;
 	int buffsize;
 	boolean isRecording = false;
+	boolean usingMic = false;
+	HeadsetReceiver headsetReceiver;
 	
 	private int _baud = 300;
 	
@@ -115,6 +125,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		System.out.println("DEBUG : something bound");
 		
+		
+		  //string receiver
+   		if (headsetReceiver == null) headsetReceiver = new HeadsetReceiver();
+   		IntentFilter intentFilter1 = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+   		registerReceiver(headsetReceiver, intentFilter1);
 		
 		if (hab_con == null){
 			String call_u = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
@@ -248,6 +263,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	    	mRecorder = new AudioRecord(AudioSource.MIC,8000,
 	    			AudioFormat.CHANNEL_IN_MONO ,
 	    			AudioFormat.ENCODING_PCM_16BIT,buffsize);
+	    	
+	    	mPlayer = new AudioTrack(AudioManager.STREAM_MUSIC,8000,AudioFormat.CHANNEL_OUT_MONO,
+	    			AudioFormat.ENCODING_PCM_16BIT,2*buffsize,AudioTrack.MODE_STREAM);
+	    	
+	    	AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+	    	manager.setMode(AudioManager.MODE_IN_CALL);
+	    	manager.setSpeakerphoneOn(true);
 	    	
 	    	mRecorder.startRecording();
 	    	System.out.println("STARTING THREAD");
@@ -431,14 +453,28 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             double[] s = new double[buffsize];
             mRecorder.startRecording();
             isRecording = true;
+            AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+            boolean lastHead = false;
             
             logEvent("Starting Audio. Buffer Size: " + buffsize,true);
  
           //  setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
-
+            
+            buffsize =  mRecorder.read(buffer, 0, buffsize);  
+        	mPlayer.write(buffer, 0, buffsize);
+        	
             while(isRecording) 
             {
             	buffsize =  mRecorder.read(buffer, 0, buffsize);  
+            	if (usingMic){	            	
+	            	mPlayer.write(buffer, 0, buffsize);
+	            	if (mPlayer.getPlayState() != AudioTrack.PLAYSTATE_PLAYING && lastHead==true)
+	            		mPlayer.play();
+	            	lastHead = true;
+            	}
+            	else
+            		lastHead = false;
+            	
             	if (buffsize >= 512)
             	{
 	                s = new double [buffsize];
@@ -540,7 +576,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				updateActivePayloadsHabitat();
 			}
 		}
-		else
+		else if (str.getSentence().length() > 10)
 			mapPayloads.put(call,new Payload(call,true));
 		
 		sendBroadcast(new Intent(TELEM_RX));
@@ -602,6 +638,35 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		return PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
 		
 	}
+	
+    private class HeadsetReceiver extends BroadcastReceiver  {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+    		usingMic = false;
+            if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+            //Do stuff
+            	if (intent.hasExtra("microphone"))
+            	{            		
+            		if (intent.getIntExtra("microphone", 0) == 1){
+            			logEvent("Using Line In",true);
+            			usingMic = true;
+            			return;
+            		}
+            		else{
+            			logEvent("Not Using Line In",true);
+            			usingMic = false;
+            		}
+            	}
+            	else
+            	{
+            		logEvent("Headset: Not Using Line In",true);
+            		usingMic = false;
+            	}
+            }
+        }
+    }
+    
 	
 	public class Location_handler implements LocationListener  {
 
