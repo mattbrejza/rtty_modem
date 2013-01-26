@@ -153,7 +153,7 @@
                     android:id="@+id/txtAscentRate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 m/s"
+                    android:text="-.-m/s"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </TableRow>
         </TableLayout>
