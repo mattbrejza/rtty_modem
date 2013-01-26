@@ -227,9 +227,9 @@ public class StatusScreen extends Activity  {
    		
    		boolean mic = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
         if (mic)
-        	Toast.makeText(this, "MIC AVALIABLE", Toast.LENGTH_LONG).show();
+        	Toast.makeText(this, "MIC AVAILABLE", Toast.LENGTH_LONG).show();
         else
-        	Toast.makeText(this, "MIC NOT AVALIABLE :o", Toast.LENGTH_LONG).show();
+        	Toast.makeText(this, "MIC NOT AVAILABLE :o", Toast.LENGTH_LONG).show();
         
         updateListView();
         refreshButtons();

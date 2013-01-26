@@ -15,20 +15,30 @@ public class AscentRate {
 		
 	}
 
-	public void AddData(long timestamp, double altitude)
+	public void addData(long timestamp, double altitude)
 	{
 		if (timestamp > time1){
 			if (time1>time2){
 				time2 = time1;
+				alt2 = alt1;
+				
 				time1 = timestamp;
+				alt1 = altitude;
+				
+				valid2 = true;
+				valid1 = true;
 			}
 			else
 			{
 				time1 = timestamp;
+				alt1 = altitude;
+				valid1 = true;
 			}				
 		}
 		else if(timestamp > time2){
-			time2 = timestamp;							
+			time2 = timestamp;
+			alt2 = altitude;
+			valid2 = true;
 		} 
 	}
 	
@@ -37,6 +47,10 @@ public class AscentRate {
 		long dt = (time2-time1)/1000L;
 		if (!valid1 || !valid2)
 			return 0;
-		return Math.abs((alt2-alt1)/dt);
+		return (alt2-alt1)/dt;
+	}
+	public boolean valid()
+	{
+		return valid1 && valid2;
 	}
 }

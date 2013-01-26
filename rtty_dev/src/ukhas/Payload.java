@@ -18,7 +18,7 @@ public class Payload {
 		long _lastUpdated = 0;
 		public TreeMap<Long,Telemetry_string> data = new TreeMap<Long,Telemetry_string>();
 		
-		AscentRate ascentRate = new AscentRate();
+		public AscentRate ascentRate = new AscentRate();
 		
 		public Payload(String call, boolean activePayload, int lookBehind)
 		{
@@ -115,6 +115,14 @@ public class Payload {
 			else
 				return null;
 		}
+		public long getLastTime()	{
+			if (data.size() > 0)
+			{
+				return Long.valueOf(data.lastKey());
+			}
+			else
+				return 0;
+		}
 		public double getAscentRate(){
 			return ascentRate.getAscentRate();
 		}
@@ -123,15 +131,19 @@ public class Payload {
 			if (str.time != null){
 				data.put(str.time.getTime(), str);
 				if (str.coords.alt_valid && str.checksum_valid)
-					ascentRate.AddData(str.time.getTime(), str.coords.altitude);
+					ascentRate.addData(str.time.getTime(), str.coords.altitude);
 			}
 		}
 		
 		public void putPackets( TreeMap<Long,Telemetry_string> in){
+			if (in == null)
+				return;
+			if (in.size() < 1)
+				return;
 			data.putAll(in);
 			Gps_coordinate c = data.lastEntry().getValue().coords;
 			if (c.alt_valid)
-				ascentRate.AddData(data.lastEntry().getValue().time.getTime(),c.altitude);
+				ascentRate.addData(data.lastEntry().getValue().time.getTime(),c.altitude);
 		}
 		public void clearUserData(){
 			data = new TreeMap<Long,Telemetry_string>();

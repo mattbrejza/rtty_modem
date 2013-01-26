@@ -268,6 +268,8 @@ public class Habitat_interface {
 	//TODO: if flight doc exists, query that view instead
 	private boolean getPayloadDataSince(long timestampStart, long timestampStop, int limit, String payloadID, String callsign)
 	{
+		double prevAltitude = -99999999;
+		 long prevtime = -1;
 		try
 		{
 
@@ -308,6 +310,7 @@ public class Habitat_interface {
 				 boolean gotkey = false;
 				 boolean keypt1 = false;
 				 long lasttime = 0;
+				 
 				while(jp.nextToken() != null )// || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
 				 {
 					//jp.nextToken();
@@ -331,8 +334,15 @@ public class Habitat_interface {
 					{
 					 if (str.equals("_sentence") && !str1.equals("_sentence")){
 						 Telemetry_string ts = new Telemetry_string(str1,lasttime);
-						 if (!ts.isZeroGPS() && ts.time != null)
-							 out.put(new Long(ts.time.getTime()),ts);  
+						 if (!ts.isZeroGPS() && ts.time != null) {
+							 if (out.size() > 0){
+								 if (out.lastEntry().getValue().coords.alt_valid) {
+									 prevAltitude = out.lastEntry().getValue().coords.altitude;
+									 prevtime = out.lastEntry().getValue().time.getTime();
+								 }
+							 }
+							 out.put(new Long(ts.time.getTime()),ts);  							 
+						 }
 					 }
 					 
 					 	//nullcount = 0;
@@ -348,13 +358,28 @@ public class Habitat_interface {
 			
 			
 			System.out.println("DEBUG: DATABASE PROCESSING DONE");
-			fireDataReceived(out,true,callsign,timestampStart, timestampStop); 
+			
+			AscentRate as = new AscentRate();
+			
+			if (out.size() >= 2 && prevAltitude > -9999){
+				as = new AscentRate();
+				as.addData(prevtime, prevAltitude);
+				 if (out.lastEntry().getValue().coords.alt_valid) {
+					 as.addData(out.lastEntry().getValue().time.getTime(),
+							 out.lastEntry().getValue().coords.altitude);
+
+				 }
+				 else
+					 as = new AscentRate();
+			}
+			
+			fireDataReceived(out,true,callsign,timestampStart, timestampStop,as); 
 			return true;
 		}
 		
 		catch (Exception e)
 		{
-			fireDataReceived(null,false,callsign,timestampStart, timestampStop);
+			fireDataReceived(null,false,e.toString(),timestampStart, timestampStop,null);
 			return false;
 		}
 	}
@@ -673,11 +698,11 @@ public class Habitat_interface {
 		return false;
 	}
 	
-	protected void fireDataReceived(TreeMap<Long, Telemetry_string> out, boolean success, String callsign, long startTime, long endTime)
+	protected void fireDataReceived(TreeMap<Long, Telemetry_string> out, boolean success, String callsign, long startTime, long endTime, AscentRate as)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
-			_listeners.get(i).HabitatRx(out, success, callsign, startTime, endTime);
+			_listeners.get(i).HabitatRx(out, success, callsign, startTime, endTime,as);
 		}
 	}
 	

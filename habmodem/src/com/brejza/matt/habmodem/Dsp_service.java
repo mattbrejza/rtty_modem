@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import rtty.StringRxEvent;
 import rtty.moving_average;
 import rtty.rtty_receiver;
+import ukhas.AscentRate;
 import ukhas.Gps_coordinate;
 import ukhas.HabitatRxEvent;
 import ukhas.Habitat_interface;
@@ -99,7 +100,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private long chasecarUpdateSecs = 45;
 	private long lastChasecarUpdate = 0;
 	
-	moving_average ascent_rates;
+	//moving_average ascent_rates;
 	
 	LoggingQueue log = new LoggingQueue(200);
 	
@@ -585,19 +586,31 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
-			long startTime, long endTime) {
+			long startTime, long endTime, AscentRate as) {
 		// TODO Auto-generated method stub
-		String call = callsign.toUpperCase();
+		
 		
 		if (success)
 		{
+			String call = callsign.toUpperCase();
 			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
 			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign,true);
 			
 			if (mapPayloads.containsKey(call)){
+				long lt = mapPayloads.get(call).getLastTime();
+				
 				mapPayloads.get(call).setLastUpdated(endTime);
 				mapPayloads.get(call).putPackets(data);
 				mapPayloads.get(call).setIsActivePayload(true);
+				
+				if (data.size() > 0){
+					if (lt < Long.valueOf(data.lastKey())){
+						if (as != null){
+							if (as.valid())
+								mapPayloads.get(call).ascentRate = as;
+						}
+					}
+				}
 			}
 			else
 			{
@@ -605,7 +618,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				p.setLastUpdated(endTime);
 				p.data = data;
 				mapPayloads.put(call, p);
+				if (as != null){
+					if (as.valid())
+						mapPayloads.get(call).ascentRate = as;
+				}
 			}
+			
+			
 			
 			Intent i = new Intent(HABITAT_NEW_DATA);
 			if (data.size() > 0)
@@ -614,7 +633,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 		else
 		{
-			logEvent("Habitat Query Failed",true);
+			logEvent("Habitat Query Failed - " + callsign,true);
 		}		
 	}
 	
