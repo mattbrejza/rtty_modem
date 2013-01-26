@@ -232,6 +232,7 @@ public class StatusScreen extends Activity  {
         	Toast.makeText(this, "MIC NOT AVALIABLE :o", Toast.LENGTH_LONG).show();
         
         updateListView();
+        refreshButtons();
    	}
     
    
