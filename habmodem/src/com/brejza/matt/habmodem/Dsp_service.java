@@ -39,6 +39,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -148,6 +149,20 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			loc_han = new Location_handler();
 			this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		}
+		
+		hab_con.device = android.os.Build.BRAND + " " + android.os.Build.MODEL;
+		hab_con.device_software = android.os.Build.VERSION.RELEASE;
+		hab_con.application = "HAB Modem for Android";
+		String vers = "unknown";
+		try{
+			Context cn = getApplicationContext();
+			vers = cn.getPackageManager().getPackageInfo(cn.getPackageName(), 0).versionName;
+		}
+		catch (NameNotFoundException e){
+			System.out.println("Cannot get version number - " + e.toString());
+		}
+		hab_con.application_version = vers;
+
 		//System.out.println("Starting audio");
 		return mBinder;
 	}
@@ -702,8 +717,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			
 			if ((lastChasecarUpdate + chasecarUpdateSecs < System.currentTimeMillis() / 1000L) && _enableChase){
 				String call_u = getFromSettingsCallsign();
-
-				hab_con.updateChaseCar(new Listener(call_u, new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude()),true));
+				float speed = location.getSpeed();
+				hab_con.updateChaseCar(new Listener(call_u, new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude()),speed,true));
 				lastChasecarUpdate = System.currentTimeMillis() / 1000L;
 			}
 			

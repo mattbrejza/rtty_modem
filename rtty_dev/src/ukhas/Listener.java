@@ -14,6 +14,8 @@ public class Listener {
 
 	private String _callsign;
 	private Gps_coordinate _coords;
+	private float _speed = 0.0f;
+	private boolean _speedValid = false;
 	private Date _time_created;
 	private boolean _changed;
 	private boolean _isChase = false;
@@ -34,6 +36,16 @@ public class Listener {
 		_changed = true;
 		_isChase  = isChase;
 	}
+	public Listener(String callsign, Gps_coordinate coords, float speed, boolean isChase) {
+		// TODO Auto-generated constructor stub
+		_callsign = callsign;
+		_coords = coords;
+		_time_created = new Date();
+		_changed = true;
+		_isChase  = isChase;
+		_speed = speed;
+		_speedValid = true;
+	}
 
 	public JSONObject getJSONDataField()
 	{
@@ -51,6 +63,8 @@ public class Listener {
 			}
 			if (_coords.alt_valid)
 				data.put("altitude",_coords.altitude);
+			if (_speedValid)
+				data.put("speed",_speed);
 			
 			
 		}

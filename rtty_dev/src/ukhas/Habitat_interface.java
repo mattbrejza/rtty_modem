@@ -52,8 +52,8 @@ public class Habitat_interface {
 	private Database db;
 	private Thread sdThread;
 	
-	public String device = "XOOM";
-	public String device_software = "4.0.x";
+	public String device = "device";//"XOOM";
+	public String device_software = "";//"4.0.x";
 	public String application = "HAB Modem";
 	public String application_version = "pre-alpha";
 	
