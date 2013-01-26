@@ -24,10 +24,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_margin="10dp" 
+            android:background="@drawable/status_background" 
+            android:orientation="horizontal" >
 
             <TableLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp" >
 
@@ -43,12 +45,29 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
+                        android:text="ECHO" />
+                    
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="ALERTS" />
+                    
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="5dp"
                         android:text="BAUD" />
 
                     <TextView
                         android:id="@+id/textView1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginRight="5dp"
                         android:text="DATA" />
 
@@ -73,12 +92,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
+                    <ImageButton
+                        android:id="@+id/btnEcho"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="toggleEcho"
+                        android:src="@drawable/ic_action_echo_off" />
+
+                    <ImageButton
+                        android:id="@+id/btnBell"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="toggleBell"
+                        android:src="@drawable/ic_action_bell_off" />
+
                     <Button
                         android:id="@+id/btnBaud"
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
                         android:onClick="setBaud"
                         android:text="300" />
 
@@ -86,30 +120,29 @@
                         android:id="@+id/txtDataBits"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium" 
-                        android:text="7" />
+                        android:layout_marginLeft="20dp"
+                        android:text="7"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <TextView
                         android:id="@+id/txtStopBits"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium" 
-                        android:text="2" />
+                        android:text="2"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <TextView
                         android:id="@+id/txtStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium" 
-                        android:text="Found" />
-
+                        android:text="Found"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/tableRow3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
-
                 </TableRow>
 
                 <TableRow
@@ -118,28 +151,32 @@
                     android:layout_height="wrap_content" >
                 </TableRow>
             </TableLayout>
+
         </LinearLayout>
 
       
 <!--                 android:scrollbars="vertical" -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/txtRawRxChars"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:maxLines="15"
-            android:scrollbars="vertical"
-            android:text="hello tttffffotfutyg;yfgpifiyfiy;" />
-        
-            <ListView
-                android:id="@+id/listRxDecodedStrings"
+            <TextView
+                android:id="@+id/txtRawRxChars"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_margin="10dp"
-                android:layout_weight=".1" >
- 
-        </ListView>
+                android:background="@drawable/status_background"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent">
+            <ListView android:layout_width="fill_parent" 
+                android:layout_weight=".1" 
+                android:id="@+id/listRxDecodedStrings"
+                android:layout_height="wrap_content" 
+                android:layout_margin="10dp" 
+                android:background="@drawable/status_background">
+                
+            </ListView>
+        </LinearLayout>
         
      
 

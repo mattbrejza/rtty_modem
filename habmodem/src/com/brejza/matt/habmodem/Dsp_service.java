@@ -24,8 +24,6 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.brejza.matt.habmodem.Map_Activity.LoggingTimerTask;
-
 import rtty.StringRxEvent;
 import rtty.moving_average;
 import rtty.rtty_receiver;
@@ -83,6 +81,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	boolean _enableChase = false;
 	boolean _enablePosition = false;
+	
+	public boolean enableEcho = false;
+	public boolean enableBell = false;
 
 	Timer updateTimer;
 	Timer serviceInactiveTimer;
@@ -466,7 +467,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             while(isRecording) 
             {
             	buffsize =  mRecorder.read(buffer, 0, buffsize);  
-            	if (usingMic){	            	
+            	if (usingMic && enableEcho){	            	
 	            	mPlayer.write(buffer, 0, buffsize);
 	            	if (mPlayer.getPlayState() != AudioTrack.PLAYSTATE_PLAYING && lastHead==true)
 	            		mPlayer.play();

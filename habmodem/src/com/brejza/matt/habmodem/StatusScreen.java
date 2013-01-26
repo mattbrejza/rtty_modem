@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -229,6 +230,8 @@ public class StatusScreen extends Activity  {
         	Toast.makeText(this, "MIC AVALIABLE", Toast.LENGTH_LONG).show();
         else
         	Toast.makeText(this, "MIC NOT AVALIABLE :o", Toast.LENGTH_LONG).show();
+        
+        updateListView();
    	}
     
    
@@ -472,6 +475,41 @@ public class StatusScreen extends Activity  {
     		mService.setBaud(300);
     	
     	setBaudButton();
+    }
+    
+    public void toggleEcho(View view)
+    {
+    	if (mService.enableEcho)
+    		mService.enableEcho = false;
+    	else
+    		mService.enableEcho = true;
+    	
+    	refreshButtons();
+    }
+    
+    public void toggleBell(View view)
+    {
+    	if (mService.enableBell)
+    		mService.enableBell = false;
+    	else
+    		mService.enableBell = true;
+    	
+    	refreshButtons();
+    }
+    
+    private void refreshButtons()
+    {
+    	ImageButton btnbell = (ImageButton) findViewById(R.id.btnBell);
+    	ImageButton btnecho = (ImageButton) findViewById(R.id.btnEcho);
+    	if (mService.enableBell)
+    		btnbell.setImageResource(R.drawable.ic_action_bell_on);
+    	else
+    		btnbell.setImageResource(R.drawable.ic_action_bell_off);
+    	
+    	if (mService.enableEcho)
+    		btnecho.setImageResource(R.drawable.ic_action_echo_on);
+    	else
+    		btnecho.setImageResource(R.drawable.ic_action_echo_off);
     }
     
     private void setBaudButton()
