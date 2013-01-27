@@ -761,9 +761,19 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	
 	public void removePayload(String callsign)
 	{
-		if (mService.payloadExists(callsign.toUpperCase()))
-			mService.removeActivePayload(callsign.toUpperCase());
+		String call = callsign.toUpperCase();
+		if (mService.payloadExists(call))
+			mService.removeActivePayload(call);
 		System.out.println("REMOVED PAYLOAD: " + callsign);
+		if (map_balloon_overlays.containsKey(call)){
+			array_img_balloons.removeItem(map_balloon_overlays.get(call));
+			map_balloon_overlays.remove(call);
+		}
+		if (map_path_overlays.containsKey(call)){
+			array_waypoints.removeWay(map_path_overlays.get(call));
+			map_path_overlays.remove(call);
+		}
+			
 	}
 	
 
