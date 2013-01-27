@@ -25,7 +25,6 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import rtty.StringRxEvent;
-import rtty.moving_average;
 import rtty.rtty_receiver;
 import ukhas.AscentRate;
 import ukhas.Gps_coordinate;
@@ -53,7 +52,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.widget.TextView;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
@@ -369,6 +367,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		else
 			return 0;
 	}
+	public double getMaxAltitude(String callsign){
+		if (payloadExists(callsign))
+			return mapPayloads.get(callsign.toUpperCase()).getMaxAltitude();
+		else
+			return 0;
+	}
 	//public long getLastUpsddate(String callsign){
 	//	if (payloadExists(callsign))
 	//		return mapPayloads.get(callsign.toUpperCase()).getLastUpdated();
@@ -470,7 +474,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             double[] s = new double[buffsize];
             mRecorder.startRecording();
             isRecording = true;
-            AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+            //AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             boolean lastHead = false;
             
             logEvent("Starting Audio. Buffer Size: " + buffsize,true);
@@ -592,6 +596,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				startUpdateTimer();
 				updateActivePayloadsHabitat();
 			}
+			if (str.coords.alt_valid)
+				mapPayloads.get(call).putMaxAltitude(str.coords.altitude);
 		}
 		else if (str.getSentence().length() > 10)
 			mapPayloads.put(call,new Payload(call,true));
@@ -601,7 +607,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
-			long startTime, long endTime, AscentRate as) {
+			long startTime, long endTime, AscentRate as, double maxAltitude) {
 		// TODO Auto-generated method stub
 		
 		
@@ -639,7 +645,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				}
 			}
 			
-			
+			mapPayloads.get(call).putMaxAltitude(maxAltitude);
 			
 			Intent i = new Intent(HABITAT_NEW_DATA);
 			if (data.size() > 0)

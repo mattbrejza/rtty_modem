@@ -4,8 +4,6 @@ package com.brejza.matt.habmodem;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Queue;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

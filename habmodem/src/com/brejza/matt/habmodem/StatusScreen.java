@@ -13,8 +13,6 @@
 
 package com.brejza.matt.habmodem;
 
-import ukhas.Telemetry_string;
-
 import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
@@ -38,7 +36,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -231,8 +228,8 @@ public class StatusScreen extends Activity  {
         else
         	Toast.makeText(this, "MIC NOT AVAILABLE :o", Toast.LENGTH_LONG).show();
         
-        updateListView();
-        refreshButtons();
+        
+        
    	}
     
    
@@ -261,6 +258,10 @@ public class StatusScreen extends Activity  {
 	
     public void updateListView()
     {
+    	if (mService.listRxStr == null)
+    		return;
+    	if (mService.listRxStr.size() < 1)
+    		return;
     	if (!initList)
     	{
 	    	 list = (ListView) findViewById(R.id.listRxDecodedStrings);
@@ -378,6 +379,8 @@ public class StatusScreen extends Activity  {
             mBound = true;
             mService.rcv.enableFFT = true;
             setBaudButton();
+            updateListView();
+            refreshButtons();
         }
 
         @Override

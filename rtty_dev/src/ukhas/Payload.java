@@ -13,6 +13,8 @@ public class Payload {
 		int _total300 = 0;
 		int _total50 = 0;
 		
+		double maxAltitude = -9999999;
+		
 		int _maxLookBehind = 4*24*60*60;
 		int _maxRecords = 3000;
 		long _lastUpdated = 0;
@@ -150,5 +152,13 @@ public class Payload {
 			_activePayload = false;
 			_lastUpdated = 0;
 			ascentRate = new AscentRate();
+		}
+		public void putMaxAltitude(double altitude)
+		{
+			maxAltitude = Math.max(maxAltitude, altitude);
+		}
+		public double getMaxAltitude()
+		{
+			return maxAltitude;
 		}
 }

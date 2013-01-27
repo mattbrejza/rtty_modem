@@ -269,6 +269,7 @@ public class Habitat_interface {
 	private boolean getPayloadDataSince(long timestampStart, long timestampStop, int limit, String payloadID, String callsign)
 	{
 		double prevAltitude = -99999999;
+		double maxAltitude =  -99999999;
 		 long prevtime = -1;
 		try
 		{
@@ -337,11 +338,13 @@ public class Habitat_interface {
 						 if (!ts.isZeroGPS() && ts.time != null) {
 							 if (out.size() > 0){
 								 if (out.lastEntry().getValue().coords.alt_valid) {
-									 prevAltitude = out.lastEntry().getValue().coords.altitude;
+									 prevAltitude = out.lastEntry().getValue().coords.altitude;									 
 									 prevtime = out.lastEntry().getValue().time.getTime();
 								 }
 							 }
-							 out.put(new Long(ts.time.getTime()),ts);  							 
+							 out.put(new Long(ts.time.getTime()),ts);  		
+							 if (ts.coords.alt_valid)
+								 maxAltitude = Math.max(ts.coords.altitude, maxAltitude);
 						 }
 					 }
 					 
@@ -373,13 +376,13 @@ public class Habitat_interface {
 					 as = new AscentRate();
 			}
 			
-			fireDataReceived(out,true,callsign,timestampStart, timestampStop,as); 
+			fireDataReceived(out,true,callsign,timestampStart, timestampStop,as,maxAltitude); 
 			return true;
 		}
 		
 		catch (Exception e)
 		{
-			fireDataReceived(null,false,e.toString(),timestampStart, timestampStop,null);
+			fireDataReceived(null,false,e.toString(),timestampStart, timestampStop,null,-99999999);
 			return false;
 		}
 	}
@@ -698,11 +701,11 @@ public class Habitat_interface {
 		return false;
 	}
 	
-	protected void fireDataReceived(TreeMap<Long, Telemetry_string> out, boolean success, String callsign, long startTime, long endTime, AscentRate as)
+	protected void fireDataReceived(TreeMap<Long, Telemetry_string> out, boolean success, String callsign, long startTime, long endTime, AscentRate as, double maxAltitude)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
-			_listeners.get(i).HabitatRx(out, success, callsign, startTime, endTime,as);
+			_listeners.get(i).HabitatRx(out, success, callsign, startTime, endTime,as,maxAltitude);
 		}
 	}
 	

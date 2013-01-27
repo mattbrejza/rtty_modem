@@ -70,7 +70,8 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:text="--:--:--"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textColor="#FFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </TableRow>
 
             <TableRow
@@ -91,7 +92,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--.-----"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textColor="#FFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </TableRow>
 
             <TableRow
@@ -112,7 +114,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="---.-----"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textColor="#FFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </TableRow>
 
             <TableRow
@@ -133,8 +136,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="--- m"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textColor="#FFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </TableRow>
+            
+             <TableRow
+                     android:id="@+id/tableRodw4"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" >
+                 
+
+	                 <TextView
+	                     android:id="@+id/textViewd1"
+	                     android:layout_width="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     android:layout_marginLeft="20dp"
+	                     android:text="@+string/altitude_max"
+	                     android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	                 <TextView
+	                     android:id="@+id/txtAltMax"
+	                     android:layout_width="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     android:textColor="#FFFFFF"
+	                     android:text="---m" 
+	                     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                 </TableRow>
 
             <TableRow
                 android:id="@+id/tableRow4"
@@ -154,7 +182,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="-.-m/s"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textColor="#FFFFFF"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
             </TableRow>
         </TableLayout>
 

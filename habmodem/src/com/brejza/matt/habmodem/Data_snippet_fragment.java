@@ -21,19 +21,20 @@ public class Data_snippet_fragment extends Fragment {
 	private boolean _loaded = false;
 	private Telemetry_string onLoad;
 	private double onLoadAR = 0;
+	private double onLoadMax = -99999999;
 	
 	private int _colour = 0x00FF0000;
 	
 	public Balloon_data_fragment containg_fragment;
 	
 	public Data_snippet_fragment() {
-		// TODO Auto-generated constructor stub
+
 		
 	}
 	
-	public void updateDisplay(Telemetry_string in_str, double ascent_rate)
+	public void updateDisplay(Telemetry_string in_str, double ascent_rate, double maxAltitude)
 	{
-		updateDisplay(in_str);
+		updateDisplay(in_str, maxAltitude);
 		if (!_loaded)
 		{
 			onLoadAR = ascent_rate;
@@ -45,22 +46,28 @@ public class Data_snippet_fragment extends Fragment {
 		txtasc.setText(df.format(ascent_rate) + "m/s");
 	}
 	
-	public void updateDisplay(Telemetry_string in_str)
+	public void updateDisplay(Telemetry_string in_str, double maxAltitude)
 	{
 		
 		if (!_loaded)
 		{
+			onLoadMax = maxAltitude;
 			onLoad = in_str;
 			return;
 		}
 		_callsign = in_str.callsign;
 		DecimalFormat df = new DecimalFormat("#.######");
-		DateFormat tf = new SimpleDateFormat("HH:mm:ss");
+		DateFormat tf = new SimpleDateFormat("HH:mm:ss");		
 		
 		TextView txtTime = (TextView)getView().findViewById(R.id.txtTime);
 		TextView txtlat  = (TextView)getView().findViewById(R.id.txtLatitude);
 		TextView txtlong = (TextView)getView().findViewById(R.id.txtLongitude);
 		TextView txtalt  = (TextView)getView().findViewById(R.id.txtAltitude);
+		TextView txtMalt  = (TextView)getView().findViewById(R.id.txtAltMax);
+		
+		if (maxAltitude < -100000)
+			maxAltitude = 0;
+		txtMalt.setText(Integer.toString((int)maxAltitude) + "m");
 
 		if (in_str.time != null)
 			txtTime.setText(tf.format(in_str.time));
@@ -128,7 +135,7 @@ public class Data_snippet_fragment extends Fragment {
     	lin1.invalidate();
 
     	if (onLoad != null)
-    		updateDisplay(onLoad,onLoadAR);
+    		updateDisplay(onLoad,onLoadAR,onLoadMax);
     	
     }
     

@@ -24,6 +24,7 @@
     <string name="pref_map_path_summ">Enter the path to the .map file</string>
     <string name="time">TIME</string>
     <string name="altitude">ALTITUDE</string>
+    <string name="altitude_max">MAX</string>
 	<string name="latitude">LATITUDE</string>
 	<string name="longitude">LONGITUDE</string>
 	<string name="ascent_rate">ASCENT RATE</string>
