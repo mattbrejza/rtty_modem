@@ -61,22 +61,15 @@
                          android:layout_marginRight="2dp"
                          android:text="@+string/time"
                          android:textAppearance="?android:attr/textAppearanceSmall" />
-
+
                      <TextView
-                         android:id="@+id/txtLatitudename"
+                         android:id="@+id/txtTime"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
-                         android:layout_marginRight="2dp"
-                         android:text="@+string/latitude"
-                         android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                     <TextView
-                         android:id="@+id/textView44"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:layout_marginRight="2dp"
-                         android:text="@+string/longitude"
-                         android:textAppearance="?android:attr/textAppearanceSmall" />
+                         android:layout_column="1"
+                         android:text="--:--:--"
+                         android:textAppearance="?android:attr/textAppearanceSmall"
+                         android:textColor="#FFFFFF" />
 
                  </TableRow>
 
@@ -85,13 +78,17 @@
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content" >
 
+
+
                      <TextView
-                         android:id="@+id/txtTime"
+                         android:id="@+id/txtLatitudename"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
-                         android:text="--:--:--"
-                         android:textAppearance="?android:attr/textAppearanceSmall"
-                         android:textColor="#FFFFFF" />
+                         android:text="@+string/latitude"
+                          android:layout_marginRight="2dp"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
 
                      <TextView
                          android:id="@+id/txtLatitude"
@@ -101,35 +98,105 @@
                          android:textColor="#FFFFFF"
                          android:textAppearance="?android:attr/textAppearanceSmall" />
 
+                 </TableRow>
+
+                 <TableRow
+                     android:id="@+id/tableRow33"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" >
+                    
+
+                     <TextView
+                         android:id="@+id/textView44"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@+string/longitude"
+                         android:layout_marginRight="2dp"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
                      <TextView
                          android:id="@+id/txtLongitude"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:text="---.-----"
-                         android:textAppearance="?android:attr/textAppearanceSmall"
-                         android:textColor="#FFFFFF" />
+                         android:textColor="#FFFFFF"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
 
                  </TableRow>
                  
                  <TableRow
-                  android:id="@+id/tableRowd1"
-                  android:layout_width="400dp"
-                  android:layout_height="wrap_content" >
-                     <TextView android:id="@+id/textView444" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="2dp" android:text="@+string/altitude" android:textAppearance="?android:attr/textAppearanceSmall"/>
-                     <TextView android:id="@+id/textViewd1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="20dp" android:text="@+string/altitude_max" android:textAppearance="?android:attr/textAppearanceSmall"/>
-                     <TextView android:id="@+id/textView7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="2dp" android:text="@+string/ascent_rate" android:textAppearance="?android:attr/textAppearanceSmall"/>
-                     
-                  </TableRow>
-                  
+                     android:id="@+id/tableRow333"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" >
+                 
+	  
+
+                     <TextView
+                         android:id="@+id/textView444"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@+string/altitude"
+                         android:layout_marginRight="2dp"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+                     <TextView
+                         android:id="@+id/txtAltitude"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="---m"
+                         android:textColor="#FFFFFF"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
+                 </TableRow>
+                 
                  <TableRow
-                  android:id="@+id/tablseRow1"
-                  android:layout_width="400dp"
-                  android:layout_height="wrap_content" >
-                     <TextView android:id="@+id/txtAltitude" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="---m" android:textAppearance="?android:attr/textAppearanceSmall" android:textColor="#FFFFFF"/>
-                     <TextView android:id="@+id/txtAltMax" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="---m" android:textAppearance="?android:attr/textAppearanceSmall" android:textColor="#FFFFFF"/>
-                     <TextView android:id="@+id/txtAscentRate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-.- m/s" android:textAppearance="?android:attr/textAppearanceSmall" android:textColor="#FFFFFF"/>
-                     
-                  </TableRow>
+                     android:id="@+id/tableRodw4"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" >
+                 
+	                 <TextView
+	                     android:id="@+id/textViewd1"
+	                     android:layout_width="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     android:layout_marginLeft="20dp"
+	                     android:text="@+string/altitude_max"
+	                     android:textAppearance="?android:attr/textAppearanceSmall" />
+	
+	                 <TextView
+	                     android:id="@+id/txtAltMax"
+	                     android:layout_width="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     android:textColor="#FFFFFF"
+	                     android:text="---m" 
+	                     android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                 </TableRow>
+
+                 <TableRow
+                     android:id="@+id/tableRow4"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" >
+
+
+                     <TextView
+                         android:id="@+id/textView7"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@+string/ascent_rate"
+                         android:layout_marginRight="2dp"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+                     <TextView
+                         android:id="@+id/txtAscentRate"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="-.- m/s"
+                         android:textColor="#FFFFFF"
+                         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                </TableRow>
                  
                   <TableRow
                      android:id="@+id/tableRow4u"
