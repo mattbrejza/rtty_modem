@@ -84,6 +84,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public boolean enableEcho = false;
 	public boolean enableBell = false;
+	public boolean enableUploader = true;
 
 	Timer updateTimer;
 	Timer serviceInactiveTimer;
@@ -575,7 +576,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		logEvent("Decoded String - " + str.getSentence().trim(),true);
 		
 		if (checksum){
-			hab_con.upload_payload_telem(str);    //upload received string to server
+			if (enableUploader)
+				hab_con.upload_payload_telem(str);    //upload received string to server
 			
 			if (serviceInactiveTimer != null){
 				startInactiveTimer();

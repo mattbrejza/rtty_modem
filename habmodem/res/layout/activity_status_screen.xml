@@ -54,6 +54,13 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:text="ALERTS" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="ONLINE" />
                     
                     <TextView
                         android:id="@+id/textView2"
@@ -105,6 +112,14 @@
                         android:layout_height="wrap_content"
                         android:onClick="toggleBell"
                         android:src="@drawable/ic_action_bell_off" />
+
+                    <ImageButton
+                        android:id="@+id/btnConnected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:onClick="toggleConnected"
+                        android:src="@drawable/ic_action_connected" />
 
                     <Button
                         android:id="@+id/btnBaud"

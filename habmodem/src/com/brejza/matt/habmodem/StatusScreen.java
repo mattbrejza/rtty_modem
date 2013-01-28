@@ -501,19 +501,35 @@ public class StatusScreen extends Activity  {
     	refreshButtons();
     }
     
+    public void toggleConnected(View view)
+    {
+    	if (mService.enableUploader)
+    		mService.enableUploader = false;
+    	else
+    		mService.enableUploader = true;
+    	
+    	refreshButtons();
+    }
+    
     private void refreshButtons()
     {
     	ImageButton btnbell = (ImageButton) findViewById(R.id.btnBell);
     	ImageButton btnecho = (ImageButton) findViewById(R.id.btnEcho);
+    	ImageButton btnconn = (ImageButton) findViewById(R.id.btnConnected);
     	if (mService.enableBell)
     		btnbell.setImageResource(R.drawable.ic_action_bell_on);
     	else
     		btnbell.setImageResource(R.drawable.ic_action_bell_off);
-    	
+
     	if (mService.enableEcho)
     		btnecho.setImageResource(R.drawable.ic_action_echo_on);
     	else
     		btnecho.setImageResource(R.drawable.ic_action_echo_off);
+
+    	if (mService.enableUploader)
+    		btnconn.setImageResource(R.drawable.ic_action_connected);
+    	else
+    		btnconn.setImageResource(R.drawable.ic_action_disconnected);
     }
     
     private void setBaudButton()
