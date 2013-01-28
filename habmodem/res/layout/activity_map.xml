@@ -18,7 +18,7 @@
              android:id="@+id/balloon_data_holder"
              android:name="com.brejza.matt.habmodem.Balloon_data_fragment"
              android:layout_width="match_parent"
-             android:layout_height="190dp"
+             android:layout_height="126dp"
              tools:layout="@layout/fragment_balloon_data" />
 
          <RelativeLayout

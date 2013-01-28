@@ -16,13 +16,13 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:orientation="horizontal" >
-
+
             <ImageButton
                 android:id="@+id/imageButton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="30dp"
+                android:layout_marginLeft="30dp"
                 android:contentDescription="@+string/add_button_description"
                 android:onClick="btnAddPayload"
                 android:src="@drawable/ic_ui_add" />
