@@ -460,7 +460,10 @@ public class StatusScreen extends Activity  {
                        	 tdata.setText("-");
                        	 tstops.setText("-");
                      	}
-                    	 tstat.setText(mService.rcv.statusToString());
+                     	if (mService.getDecoderRunning())
+                     		tstat.setText(mService.rcv.statusToString());
+                     	else
+                     		tstat.setText("Paused");
                     	 
                      }
                  	});
@@ -511,11 +514,25 @@ public class StatusScreen extends Activity  {
     	refreshButtons();
     }
     
+    public void toggleRunning(View view)
+    {
+    	if (mService.getDecoderRunning()){
+    		mService.disableDecoder();
+    		TextView tstat = (TextView) findViewById(R.id.txtStatus);
+    		tstat.setText("Paused");
+    	}
+    	else
+    		mService.enableDecoder();
+    	
+    	refreshButtons();
+    }
+    
     private void refreshButtons()
     {
     	ImageButton btnbell = (ImageButton) findViewById(R.id.btnBell);
     	ImageButton btnecho = (ImageButton) findViewById(R.id.btnEcho);
     	ImageButton btnconn = (ImageButton) findViewById(R.id.btnConnected);
+    	ImageButton btnplay = (ImageButton) findViewById(R.id.btnRunning);
     	if (mService.enableBell)
     		btnbell.setImageResource(R.drawable.ic_action_bell_on);
     	else
@@ -530,6 +547,11 @@ public class StatusScreen extends Activity  {
     		btnconn.setImageResource(R.drawable.ic_action_connected);
     	else
     		btnconn.setImageResource(R.drawable.ic_action_disconnected);
+
+    	if (mService.getDecoderRunning())
+    		btnplay.setImageResource(R.drawable.ic_action_play);
+    	else
+    		btnplay.setImageResource(R.drawable.ic_action_pause);
     }
     
     private void setBaudButton()

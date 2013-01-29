@@ -33,6 +33,9 @@ import ukhas.Habitat_interface;
 import ukhas.Listener;
 import ukhas.Payload;
 import ukhas.Telemetry_string;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -52,6 +55,8 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
@@ -85,9 +90,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public boolean enableEcho = false;
 	public boolean enableBell = false;
 	public boolean enableUploader = true;
+	private boolean _enableDecoder = true;
 
 	Timer updateTimer;
 	Timer serviceInactiveTimer;
+	
+	NotificationManager nm;
 	
 	
 	public double currentLatitude = 0;
@@ -202,13 +210,28 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	{
 		 //TODO: work out why diabling one disables both
 		if (!_enablePosition && !_enableChase && (enablePos  || enableChase))
-			EnableLocation();
+			enableLocation();
 		
 		if ((_enablePosition || _enableChase) && !enablePos && !enableChase)
-			DisableLocation();
+			disableLocation();
 		
 		_enablePosition = enablePos;
 		_enableChase = enableChase;
+		
+	
+		Intent intent = new Intent(this, Map_Activity.class);
+		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
+		
+		//icon at the bottom
+        if (_enableChase)
+        {
+        	
+        }
+        else
+        {
+        	nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        	nm.cancel(0);
+        }
 		
 	}
 	
@@ -243,7 +266,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		return count;
 	}
 	
-    private void EnableLocation()
+    private void enableLocation()
     {
     	//my location part
         Criteria criteria = new Criteria();
@@ -255,9 +278,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
         System.out.println("STARTING GPS WITH: "+bestProvider);
         this.locationManager.requestLocationUpdates(bestProvider, 1000, 0, this.loc_han);
         
+        
+        
     }
     
-    private void DisableLocation()
+    private void disableLocation()
     {
     	if (locationManager != null)
     	{
@@ -485,7 +510,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             buffsize =  mRecorder.read(buffer, 0, buffsize);  
         	mPlayer.write(buffer, 0, buffsize);
         	
-            while(isRecording) 
+            while(isRecording && _enableDecoder) 
             {
             	buffsize =  mRecorder.read(buffer, 0, buffsize);  
             	if (usingMic && enableEcho){	            	
@@ -544,7 +569,22 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
        }	
     	
     }
+	
+	public void enableDecoder()
+	{
+		_enableDecoder = true;
+		startAudio();
+	}
 
+	public void disableDecoder()
+	{
+		_enableDecoder = false;
+	}
+	public boolean getDecoderRunning()
+	{
+		return _enableDecoder;
+	}
+	
 	public void updateActivePayloadsHabitat()
 	{		
 		int count=0;
@@ -710,6 +750,35 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
         }
     }
     
+    public void setChaseCarNotification()    
+    {
+    	String body = "Uploading Chase Car Positions";
+    	String title = "Chase Car";
+    	NotificationCompat.Builder mBuilder =
+    	        new NotificationCompat.Builder(this)
+    	        .setSmallIcon(R.drawable.ic_stat_car)
+    	        .setContentTitle(title)
+    	        .setContentText(body);
+    	// Creates an explicit intent for an Activity in your app
+   /* 	Intent resultIntent = new Intent(this, Map_Activity.class);
+
+    	
+    	TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+    	// Adds the back stack for the Intent (but not the Intent itself)
+    	stackBuilder.addParentStack(Map_Activity.class);
+    	// Adds the Intent that starts the Activity to the top of the stack
+    	stackBuilder.addNextIntent(resultIntent);
+    	PendingIntent resultPendingIntent =
+    	        stackBuilder.getPendingIntent(
+    	            0,
+    	            PendingIntent.FLAG_UPDATE_CURRENT
+    	        );
+    	mBuilder.setContentIntent(resultPendingIntent); */
+    	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    	// mId allows you to update the notification later on.
+    	mNotificationManager.notify(0, mBuilder.build());
+	
+    }
 	
 	public class Location_handler implements LocationListener  {
 
@@ -728,6 +797,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				float speed = location.getSpeed();
 				hab_con.updateChaseCar(new Listener(call_u, new Gps_coordinate(location.getLatitude(), location.getLongitude(),location.getAltitude()),speed,true));
 				lastChasecarUpdate = System.currentTimeMillis() / 1000L;
+				
+				setChaseCarNotification();
 			}
 			
 			

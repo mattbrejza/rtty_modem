@@ -6,6 +6,7 @@
           android:title="@string/status_screen" />
      <item android:id="@+id/map_screen"
           android:showAsAction="ifRoom|withText"
+          android:icon="@drawable/ic_action_map"
           android:title="@string/map_screen" />   
     <item android:id="@+id/location_dialog"
           android:icon="@drawable/ic_action_location"

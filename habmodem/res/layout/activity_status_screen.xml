@@ -59,8 +59,15 @@
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="12dp"
                         android:text="ONLINE" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="ACTIVE" />
                     
                     <TextView
                         android:id="@+id/textView2"
@@ -120,6 +127,14 @@
                         android:layout_marginLeft="10dp"
                         android:onClick="toggleConnected"
                         android:src="@drawable/ic_action_connected" />
+
+                    <ImageButton
+                        android:id="@+id/btnRunning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:onClick="toggleRunning"
+                        android:src="@drawable/ic_action_play" />
 
                     <Button
                         android:id="@+id/btnBaud"
