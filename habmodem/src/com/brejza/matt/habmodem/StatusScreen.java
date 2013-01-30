@@ -412,7 +412,7 @@ public class StatusScreen extends Activity  {
             if (intent.getAction().equals(Dsp_service.CHAR_RX)) {
             //Do stuff
             	String ch = intent.getStringExtra(Dsp_service.CHARS);
-            	System.out.println(ch);
+            //	System.out.println(ch);
             	txtchars.append(ch);
             	  final int scrollAmount = txtchars.getLayout().getLineTop(txtchars.getLineCount())
             	            -txtchars.getHeight();

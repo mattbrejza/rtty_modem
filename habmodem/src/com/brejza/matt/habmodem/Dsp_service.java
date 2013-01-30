@@ -53,10 +53,12 @@ import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.widget.Toast;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
 
@@ -97,7 +99,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	NotificationManager nm;
 	
+	Handler handler;
 	
+	Toast toast;
+		
 	public double currentLatitude = 0;
 	public double currentLongitude = 0;
 	public boolean currentLocationValid = false;
@@ -120,6 +125,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public Dsp_service() {
 		rcv.addStringRecievedListener(this);		
 	}
+	
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+		System.out.println("Service started");
+	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -134,6 +146,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 		
 		System.out.println("DEBUG : something bound");
+		
+		handler = new Handler();
 		
 		
 		  //string receiver
@@ -204,6 +218,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	{
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	nm.cancel(0);
+    	System.out.println("Destroying service");
     	super.onDestroy(); 
 	}
 	
@@ -295,6 +310,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	if (locationManager != null)
     	{
     		locationManager.removeUpdates(this.loc_han);
+    		System.out.println("Disabling location");
     	}
     }
 	
@@ -346,11 +362,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private void startInactiveTimer()
 	{
 		
-		if (serviceInactiveTimer == null)
-			serviceInactiveTimer = new Timer();		
-		else		
+		if (serviceInactiveTimer != null)					
 			serviceInactiveTimer.cancel();
 		
+		serviceInactiveTimer = new Timer();	
 		logEvent("Starting Inactivity Timer",false);
 		
 		int interval = 20 * 60 * 1000;
@@ -510,6 +525,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             isRecording = true;
             //AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
             boolean lastHead = false;
+            int clippingCount = 0;
+            int samplesSinceToast = 0;
             
             logEvent("Starting Audio. Buffer Size: " + buffsize,true);
  
@@ -517,6 +534,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             
             buffsize =  mRecorder.read(buffer, 0, buffsize);  
         	mPlayer.write(buffer, 0, buffsize);
+        	
+        	
         	
             while(isRecording && _enableDecoder) 
             {
@@ -532,42 +551,51 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             	
             	if (buffsize >= 512)
             	{
+            		int i;
 	                s = new double [buffsize];
-	                for (int i = 0; i < buffsize; i++)
+	                for (i = 0; i < buffsize; i++)
 	            	    s[i] = (double) buffer[i];
+	                
+	                i=0;
+	                clippingCount = 0;
+	                while (i < buffsize)
+	                {
+	                	if (buffer[i] > 30000 || buffer[i] < -30000)
+	                		clippingCount++;
+	                	
+	                	i += 10;
+	                }
+	                
+	                if (clippingCount > 10){
+	                	if (samplesSinceToast <= 0 || samplesSinceToast > 8000*3)
+	                	{
+	                		samplesSinceToast = buffsize;
+		                	System.out.println("Clipping detected");
+		                	handler.post(new Runnable(){
+		                		@Override
+		                		public void run() {
+		                			if (toast != null){
+		                				toast.cancel();
+		                				toast = null;
+		                			}
+		                			toast = Toast.makeText(getApplicationContext(), "Clipping Detected", Toast.LENGTH_SHORT);
+		                			toast.show();
+		                		}
+		                	});
+	                	}
+	                }
+	                samplesSinceToast += buffsize;
+	                
 	                String rxchar =  rcv.processBlock(s,_baud);
-	                Intent i = new Intent(CHAR_RX);
-	                i.putExtra(CHARS, rxchar);
-	                sendBroadcast(i);
+	                Intent it = new Intent(CHAR_RX);
+	                it.putExtra(CHARS, rxchar);
+	                sendBroadcast(it);
 	                
 	                if (rcv.get_fft_updated())
 	                	sendBroadcast(new Intent(FFT_UPDATED));
 	                
-	                
-	               /*
-	               handler.post(new Runnable() {
-	                   @Override
-	                   public void run() {
-	                     t.setText(rcv.current_state.toString());
-	                   }
-	               	});
-	               
-	               System.out.print("                     ");
-	               if (rcv.get_peaklocs() != null)
-	               {
-		               for (int i = 0; i < rcv.get_peaklocs().length; i++)
-		            	   System.out.print("  " + rcv.get_peaklocs()[i]);
-	               }
-	               System.out.println();
-	               
-	               handler.post(new Runnable() {
-	                   @Override
-	                   public void run() {
-	                	   showFFT();
-	                   }
-	               	});*/
             	}
-            //   System.out.println("Got some samples");
+
              }
 
             mRecorder.stop();
