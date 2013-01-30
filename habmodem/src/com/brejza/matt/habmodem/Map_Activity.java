@@ -306,10 +306,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         else if (item.getItemId() ==  R.id.refresh_button) {
         	mService.updateActivePayloadsHabitat();
         	return true; }
-        else if (item.getItemId() ==  R.id.fft_screen) {
+      /*  else if (item.getItemId() ==  R.id.fft_screen) {
         	intent = new Intent(this, FFTActivity.class);
         	startActivity(intent);
-            return true; }
+            return true; } */
         else if (item.getItemId() == R.id.log_screen) {
         	FragmentManager fm = getFragmentManager();
         	ViewLogFragment di = new ViewLogFragment();

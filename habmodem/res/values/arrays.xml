@@ -2,6 +2,6 @@
 <resources>
 <string-array name="location_dialog_items">
     <item>Show my location on the map</item>
-    <item>Enable chasecar location reporting</item>
+    <item>Enable chase car location reporting</item>
 </string-array>
 </resources>

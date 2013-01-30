@@ -199,6 +199,14 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		return true;
 	}
 	
+	@Override
+	public void onDestroy()
+	{
+		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    	nm.cancel(0);
+    	super.onDestroy(); 
+	}
+	
 	public class LocalBinder extends Binder {
 		Dsp_service getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -811,7 +819,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		@Override
 		public void onProviderDisabled(String provider) {
 			// TODO Auto-generated method stub
-			
+			nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	    	nm.cancel(0);
 		}
 
 		@Override
@@ -823,7 +832,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			// TODO Auto-generated method stub
-			
+		//	System.out.println("DA STATUS : " + status);
 		}
 
 	}

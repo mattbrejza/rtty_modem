@@ -139,7 +139,6 @@ public final class R {
         public static final int btnRunning=0x7f0d0010;
         public static final int colourID=0x7f0d004c;
         public static final int colourID1=0x7f0d004d;
-        public static final int fft_screen=0x7f0d0061;
         public static final int horizontalScrollView1=0x7f0d0037;
         public static final int imageButton1=0x7f0d0039;
         public static final int imgViWF=0x7f0d0004;
@@ -148,13 +147,13 @@ public final class R {
         public static final int listRxDecodedStrings=0x7f0d0018;
         public static final int listvLog=0x7f0d0052;
         public static final int location_dialog=0x7f0d005f;
-        public static final int log_screen=0x7f0d0062;
+        public static final int log_screen=0x7f0d0061;
         public static final int mapView=0x7f0d0002;
         public static final int map_rel_lay=0x7f0d0001;
         public static final int map_screen=0x7f0d005e;
         public static final int menu_settings=0x7f0d0053;
         public static final int refresh_button=0x7f0d0060;
-        public static final int settings_screen=0x7f0d0063;
+        public static final int settings_screen=0x7f0d0062;
         public static final int status_screen=0x7f0d005d;
         public static final int tableRodw4=0x7f0d0051;
         public static final int tableRow1=0x7f0d0005;
