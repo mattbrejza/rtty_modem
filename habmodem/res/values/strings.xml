@@ -11,7 +11,7 @@
     <string name="map_screen">Map</string>
     <string name="settings_screen">Settings</string>
     <string name="log_screen">Logs</string>
-    <string name="title_activity_map">Map</string>
+    <string name="title_activity_map">HAB Tracker</string>
     <string name="title_activity_fft">FFTActivity</string>
     <string name="pref_callsign">Callsign</string>
     <string name="pref_callsign_summ">Enter a callsign to identify your receiver</string>
