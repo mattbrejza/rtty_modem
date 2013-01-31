@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -160,7 +161,9 @@ public class StatusScreen extends Activity  {
         
         wf = new Waterfall(BitmapFactory.decodeResource(this.getResources(), R.drawable.grad), 200);
         
-  
+      
+        
+       
         txtchars.setMovementMethod(ScrollingMovementMethod.getInstance());
        
 
@@ -413,21 +416,33 @@ public class StatusScreen extends Activity  {
             //Do stuff
             	String ch = intent.getStringExtra(Dsp_service.CHARS);
             //	System.out.println(ch);
-            	txtchars.append(ch);
-            	  final int scrollAmount = txtchars.getLayout().getLineTop(txtchars.getLineCount())
-            	            -txtchars.getHeight();
-            	 // System.out.println(txtchars.getScrollY());
-            	 
-            	 // System.out.println(txtchars.getLayout().getLineTop(Math.max(0,txtchars.getLineCount() - 15)));
-            	 // System.out.println(lastScrollLength);
-            	    // if there is no need to scroll, scrollAmount will be <=0
-            	  int currentpos = txtchars.getLayout().getLineTop(Math.max(0,txtchars.getLineCount() - txtViewLines));
-            	    if(scrollAmount>0 && (lastScrollLength < txtchars.getLineCount()) && (txtchars.getScrollY() + 20 > currentpos))
-            	    	txtchars.scrollTo(0, scrollAmount);
-            	   // else
-            	   // 	txtchars.scrollTo(0,0);
-            	  
-            	  lastScrollLength = txtchars.getLineCount();
+            	try
+            	{
+	            	txtchars.append(ch);
+	            	  final int scrollAmount = txtchars.getLayout().getLineTop(txtchars.getLineCount())
+	            	            -txtchars.getHeight();
+	            	
+	            	   
+	            	  int currentpos = txtchars.getLayout().getLineTop(Math.max(0,txtchars.getLineCount() - txtViewLines));
+	            	  boolean enScroll = (txtchars.getScrollY() + 20 > currentpos);
+	            	  
+	            	  
+	            	  if ((getResources().getConfiguration().screenLayout & 
+	                  	    Configuration.SCREENLAYOUT_SIZE_MASK) < Configuration.SCREENLAYOUT_SIZE_LARGE) 
+	            		  enScroll = true;
+	            	  
+	            	   // if there is no need to scroll, scrollAmount will be <=0
+	            	    if(scrollAmount>0 && (lastScrollLength < txtchars.getLineCount()) && enScroll)
+	            	    	txtchars.scrollTo(0, scrollAmount);
+	            	   // else
+	            	   // 	txtchars.scrollTo(0,0);
+	            	  
+	            	  lastScrollLength = txtchars.getLineCount();
+            	}
+            	catch (Exception e)
+            	{
+            		
+            	}
             }
         }
     }

@@ -160,6 +160,8 @@ public class Habitat_interface {
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
 		
 			List<Document> docsout;
 			View v = new View("payload_configuration/callsign_time_created_index");
@@ -211,6 +213,8 @@ public class Habitat_interface {
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
 		
 			List<Document> docsout;
 			View v = new View("flight/end_start_including_payloads");
@@ -280,6 +284,8 @@ public class Habitat_interface {
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
 
 			 View v = new View("payload_telemetry/payload_time");
 
@@ -398,6 +404,8 @@ public class Habitat_interface {
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
 			
 			 List<Document> foodoc;
 			 View v = new View("payload_telemetry/time");
@@ -456,6 +464,8 @@ public class Habitat_interface {
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
 			
 			if (_listener_info != null)
 			{
@@ -512,6 +522,8 @@ public class Habitat_interface {
 				 s = new Session(_habitat_url,80);
 				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
 			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
 			
 			if (_listener_info != null)
 			{
