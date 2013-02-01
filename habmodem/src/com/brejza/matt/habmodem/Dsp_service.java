@@ -661,13 +661,28 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void updateActivePayloadsHabitat()
 	{		
 		int count=0;
+		int maxRec = 3000;
+		String smr = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_habitat_max_lines", "3000");
+		try
+		{
+			maxRec = Integer.parseInt(smr);
+		}
+		catch (Exception e)
+		{
+			maxRec = 3000;
+		}		
+		if (maxRec < 10 || maxRec > 99999999)
+		{
+			maxRec = 3000;
+		}
+		
 		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
 		{
 			if (entry.getValue().isActivePayload()){
 				count++;
 				long start = entry.getValue().getUpdateStart(false);      //TODO: if flight and enabled query flight DB here
 				if ( start + 30 < (System.currentTimeMillis() / 1000L) )
-					hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), entry.getValue().getMaxRecords());
+					hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), maxRec);//entry.getValue().getMaxRecords());
 			}
 		}	
 		if (count < 1){
