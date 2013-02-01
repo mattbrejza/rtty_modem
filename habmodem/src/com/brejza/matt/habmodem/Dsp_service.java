@@ -96,6 +96,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 	Timer updateTimer;
 	Timer serviceInactiveTimer;
+	private int lastHabitatFreq=0;
 	
 	NotificationManager nm;
 	
@@ -349,6 +350,27 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	//	isRecording = false;
 	//}
 	
+	private void updateTimerPeriod()
+	{
+		int interval = 3 * 60 * 1000;
+		
+		String inter = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_habitat_update_freq", "3");
+		try
+		{
+			interval = Integer.parseInt(inter) * 60 * 1000;
+			if (interval != lastHabitatFreq && updateTimer != null){
+				updateTimer.cancel();
+				updateTimer.purge();
+				updateTimer = null;
+				startUpdateTimer();
+			}				
+		}
+		catch (Exception e)
+		{
+
+		}
+	}
+	
 	private void startUpdateTimer()
 	{
 		
@@ -356,6 +378,20 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			logEvent("Starting Update Timer",false);
 			updateTimer = new Timer();
 			int interval = 3 * 60 * 1000;
+			
+			String inter = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_habitat_update_freq", "3");
+			try
+			{
+				interval = Integer.parseInt(inter) * 60 * 1000;
+			}
+			catch (Exception e)
+			{
+				interval = 3 * 60 * 1000;
+			}
+			
+			if (interval < 30*1000)
+				interval = 30*1000;
+			lastHabitatFreq = interval;
 			updateTimer.scheduleAtFixedRate(new UpdateTimerTask(), interval,interval);
 		}
 	}
@@ -378,6 +414,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	public void run() {
 	    	 updateActivePayloadsHabitat();
 	    	 logEvent("Starting Habitat Refresh",true);
+	    	 updateTimerPeriod();	    	 
     	}
     }
 	

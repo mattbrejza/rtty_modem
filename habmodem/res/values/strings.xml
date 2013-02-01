@@ -14,6 +14,10 @@
     <string name="title_activity_map">HAB Tracker</string>
     <string name="title_activity_fft">FFTActivity</string>
     <string name="pref_callsign">Callsign</string>
+    <string name="pref_habitat_update_title">Habitat Update Period (minutes)</string>
+    <string name="pref_habitat_update_summ">Enter time between querying server for new data</string>
+    <string name="pref_habitat_lines_title">Max Database Entries Returned</string>
+    <string name="pref_habitat_lines_summ">Set the maximum number of lines returned by a data fetch query</string>
     <string name="pref_callsign_summ">Enter a callsign to identify your receiver</string>
     <string name="pref_habitat_server">Habitat Server URL</string>
     <string name="pref_habitat_db">Habitat Database Name</string>
