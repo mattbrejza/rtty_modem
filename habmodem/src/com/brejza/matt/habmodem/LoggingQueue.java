@@ -4,6 +4,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class LoggingQueue extends ConcurrentLinkedQueue<String> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int _maxLen;
 	long _lastStrTime = 0;
 	String _lastString = "";

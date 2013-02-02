@@ -262,37 +262,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection 
-    	/*
-    	Intent intent;
-        switch (item.getItemId()) {
-        	case android.R.id.home:
-        		NavUtils.navigateUpFromSameTask(this);
-            case R.id.status_screen:
-            	intent = new Intent(this, StatusScreen.class);
-            	startActivity(intent);
-                return true;
-            case R.id.location_dialog:
-            	FragmentManager fm = getFragmentManager();
-            	LocationSelectFragment di = new LocationSelectFragment();
-            	di.enChase = mService.getEnableChase();
-            	di.enPos = mService.getEnablePosition();
-             	di.show(fm, "Location Settings");
-            	return true;
-            case R.id.refresh_button:
-            	mService.updateActivePayloadsHabitat();
-            	return true;
-            case R.id.fft_screen:
-            	intent = new Intent(this, FFTActivity.class);
-            	startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        } */
+    	
     	Intent intent;
 
-    	/*if (item.getItemId() == android.R.id.home)
-    		NavUtils.navigateUpFromSameTask(this);
-    	else */ if (item.getItemId() == R.id.status_screen) {
+    	if (item.getItemId() == R.id.status_screen) {
         	intent = new Intent(this, StatusScreen.class);
         	startActivity(intent);
             return true; }
@@ -306,10 +279,6 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         else if (item.getItemId() ==  R.id.refresh_button) {
         	mService.updateActivePayloadsHabitat();
         	return true; }
-      /*  else if (item.getItemId() ==  R.id.fft_screen) {
-        	intent = new Intent(this, FFTActivity.class);
-        	startActivity(intent);
-            return true; } */
         else if (item.getItemId() == R.id.log_screen) {
         	FragmentManager fm = getFragmentManager();
         	ViewLogFragment di = new ViewLogFragment();
@@ -331,6 +300,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		
    		if (mapView.getMapFile() == null)
    			showMapChooser();
+   		else
+   		{
+   			if (mapView.getMapFile().getAbsolutePath() != 
+   					PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_map_path", ""))
+   			{
+   				mService.logEvent("Changing map file", false);
+   				mapView.setMapFile(new File(PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_map_path", "")));
+   				
+   			}
+   		}
    		
    		if (!mBound){
 	        Intent intent = new Intent(this, Dsp_service.class);

@@ -33,9 +33,7 @@ import ukhas.Habitat_interface;
 import ukhas.Listener;
 import ukhas.Payload;
 import ukhas.Telemetry_string;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,7 +55,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
@@ -243,8 +240,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		_enableChase = enableChase;
 		
 	
-		Intent intent = new Intent(this, Map_Activity.class);
-		PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
+		//Intent intent = new Intent(this, Map_Activity.class);
+		//PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
 		
 		//icon at the bottom
         if (_enableChase)
