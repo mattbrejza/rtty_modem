@@ -19,6 +19,20 @@
 		  android:numeric="integer"
 		  android:defaultValue="3"/>
     
+    <EditTextPreference
+		  android:key="pref_chase_update_freq" 
+		  android:title="@string/pref_chase_update_title"
+		  android:summary="@string/pref_chase_update_summ"
+		  android:numeric="integer"
+		  android:defaultValue="45"/>
+    
+    <EditTextPreference
+		  android:key="pref_inactive" 
+		  android:title="@string/pref_inactive_title"
+		  android:summary="@string/pref_inactive_summ"
+		  android:numeric="integer"
+		  android:defaultValue="15"/>
+    
    
     <PreferenceScreen
         android:key="button_advanced_settings"

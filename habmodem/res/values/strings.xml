@@ -17,7 +17,11 @@
     <string name="pref_habitat_update_title">Habitat Update Period (minutes)</string>
     <string name="pref_habitat_update_summ">Enter time between querying server for new data</string>
     <string name="pref_habitat_lines_title">Max Database Entries Returned</string>
+    <string name="pref_chase_update_title">Chase Car Update Period (seconds)</string>
+    <string name="pref_chase_update_summ">Enter seconds between chase car position update</string>
     <string name="pref_habitat_lines_summ">Set the maximum number of lines returned by a data fetch query</string>
+    <string name="pref_inactive_title">Inactivity Timeout Period (minutes)</string>
+    <string name="pref_inactive_summ">Set the inactive period for the decoder and data fetch queries</string>
     <string name="pref_callsign_summ">Enter a callsign to identify your receiver</string>
     <string name="pref_habitat_server">Habitat Server URL</string>
     <string name="pref_habitat_db">Habitat Database Name</string>

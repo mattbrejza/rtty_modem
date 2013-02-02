@@ -111,7 +111,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private Location_handler loc_han;
 	private LocationManager locationManager;
 	
-	private long chasecarUpdateSecs = 45;
+	//private long chasecarUpdateSecs = 45;
 	private long lastChasecarUpdate = 0;
 	
 	//moving_average ascent_rates;
@@ -300,7 +300,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
         if (bestProvider == null)
         	return;
         System.out.println("STARTING GPS WITH: "+bestProvider);
-        this.locationManager.requestLocationUpdates(bestProvider, 1000, 0, this.loc_han);
+        this.locationManager.requestLocationUpdates(bestProvider, 2000, 0, this.loc_han);
         
         
         
@@ -402,10 +402,26 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			serviceInactiveTimer.cancel();
 		
 		serviceInactiveTimer = new Timer();	
-		logEvent("Starting Inactivity Timer",false);
+		
 		
 		int interval = 20 * 60 * 1000;
-		serviceInactiveTimer.scheduleAtFixedRate(new InactiveTimerTask(), interval,interval);
+		
+		String sin = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_inactive", "20");
+		try
+		{
+			interval = Integer.parseInt(sin) * 60 * 1000;
+		}
+		catch (Exception e)
+		{
+			interval = 20 * 60 * 1000;
+		}		
+		if (interval < 30*1000)
+		{
+			interval = 20 * 60 * 1000;
+		}
+
+		logEvent("Starting Inactivity Timer for " + interval/(60*1000) + " Minutes",false);
+		serviceInactiveTimer.schedule(new InactiveTimerTask(), interval);
 		
 	}
 	
@@ -868,6 +884,25 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
     }
 	
+    private int getChaseCarUpdatePeriod()
+    {
+    	int t = 45;
+		String st = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_chase_update_freq", "45");
+		
+		try
+		{
+			t=Integer.parseInt(st);			
+		}
+		catch (Exception e)
+		{
+			t = 45;
+		}
+		if (t < 10 || t > 60*60*24)
+			t = 45;
+		
+		return t;
+    }
+    
 	public class Location_handler implements LocationListener  {
 
 		public Location_handler() {
@@ -878,7 +913,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		public void onLocationChanged(Location location) {
 			// TODO Auto-generated method stub
 			
-			
+			int chasecarUpdateSecs = getChaseCarUpdatePeriod();
 			
 			if ((lastChasecarUpdate + chasecarUpdateSecs < System.currentTimeMillis() / 1000L) && _enableChase){
 				String call_u = getFromSettingsCallsign();
