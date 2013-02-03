@@ -92,7 +92,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public boolean enableEcho = false;
 	public boolean enableBell = false;
 	public boolean enableUploader = true;
-	private boolean _enableDecoder = true;
+	private boolean _enableDecoder = false;
 
 	Timer updateTimer;
 	Timer serviceInactiveTimer;
@@ -339,6 +339,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	    	System.out.println("STARTING THREAD");
 	    	Thread ct = new captureThread();
 	    	logEvent("Starting Audio Thread.",false);
+	    	setDecoderRunningNotification();
 	        ct.start();
 		}
 	}
@@ -658,6 +659,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             logEvent("Stopping Audio",true);
             isRecording = false;
             mRecorder = null;
+            nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm.cancel(1);
        }	
     	
     }
@@ -889,6 +892,22 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     	// mId allows you to update the notification later on.
     	mNotificationManager.notify(0, mBuilder.build());
+	
+    }
+    
+    public void setDecoderRunningNotification()    
+    {
+    	String body = "RTTY decoder is processing audio";
+    	String title = "Decoder Running";
+    	NotificationCompat.Builder mBuilder =
+    	        new NotificationCompat.Builder(this)
+    	        .setSmallIcon(R.drawable.ic_stat_decoderrunning)
+    	        .setContentTitle(title)
+    	        .setContentText(body);
+    	
+    	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    	// mId allows you to update the notification later on.
+    	mNotificationManager.notify(1, mBuilder.build());
 	
     }
     

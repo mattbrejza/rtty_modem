@@ -580,6 +580,22 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     		btnplay.setImageResource(R.drawable.ic_action_play);
     	else
     		btnplay.setImageResource(R.drawable.ic_action_pause);
+    	
+    	TextView tdata = (TextView) findViewById(R.id.txtDataBits);
+     	TextView tstops = (TextView) findViewById(R.id.txtStopBits);
+     	TextView tstat = (TextView) findViewById(R.id.txtStatus);
+     	
+     	if (mService.rcv.paramsValid()){
+     		tdata.setText(Integer.toString(mService.rcv.current_data_bits));
+     		tstops.setText(Integer.toString(mService.rcv.current_stop_bits));
+     	}else{
+     		tdata.setText("-");
+     		tstops.setText("-");
+     	}
+     	if (mService.getDecoderRunning())
+     		tstat.setText(mService.rcv.statusToString());
+     	else
+     		tstat.setText("Paused");
     }
     
     private void setBaudButton()
