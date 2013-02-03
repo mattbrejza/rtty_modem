@@ -2,6 +2,7 @@ package ukhas;
 
 import java.util.TreeMap;
 
+
 public class Payload {
 	
 		public String callsign;
@@ -12,6 +13,7 @@ public class Payload {
 		boolean _activePayload = false;
 		int _total300 = 0;
 		int _total50 = 0;
+		public int colour = 0;
 		
 		double maxAltitude = -9999999;
 		
@@ -22,17 +24,19 @@ public class Payload {
 		
 		public AscentRate ascentRate = new AscentRate();
 		
-		public Payload(String call, boolean activePayload, int lookBehind)
+		public Payload(String call, int _colour, boolean activePayload, int lookBehind)
 		{
 			callsign = call; 
 			_activePayload = activePayload;
 			_maxLookBehind = lookBehind * 24*60*60;
+			colour = _colour;
 		}
 		
-		public Payload(String call, boolean activePayload)
+		public Payload(String call, int _colour, boolean activePayload)
 		{
 			callsign = call; 
 			_activePayload = activePayload;
+			colour = _colour;
 		}
 		
 		public Payload(String call, String payloadID, String flightID)
@@ -51,15 +55,20 @@ public class Payload {
 			_activePayload = false;
 		}
 		
-		public Payload(Telemetry_string str){
+		public Payload(Telemetry_string str, int _colour){
 			callsign = str.callsign;
 			if (str.time != null)
 				data.put(Long.valueOf(str.time.getTime()), str);
 			_activePayload = true;
+			colour = _colour;
 		}		
-		
+						
 		public void setFlightID(String id){
 			_flightID = id;
+		}
+		public void setNewColour(int _colour)
+		{
+			colour = _colour;
 		}
 		public String getFlightID(){
 			return _flightID;

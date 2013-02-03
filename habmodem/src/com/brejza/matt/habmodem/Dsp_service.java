@@ -40,6 +40,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -80,6 +81,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	HeadsetReceiver headsetReceiver;
 	
 	private int _baud = 300;
+	
+	private int last_colour = 0;
 	
 	Telemetry_string last_str;
 	
@@ -229,7 +232,6 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public void changeLocationSettings(boolean enablePos, boolean enableChase)
 	{
-		 //TODO: work out why diabling one disables both
 		if (!_enablePosition && !_enableChase && (enablePos  || enableChase))
 			enableLocation();
 		
@@ -491,16 +493,20 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		startUpdateTimer();
 		String callu = call.toUpperCase();
 		if (!payloadExists(callu)) {
-			Payload p = new Payload(call,true, lookBehind);
+			
+			Payload p = new Payload(call,newColour(),true, lookBehind);
 			mapPayloads.put(callu,p);
 		}
 		else {
 			Payload p = mapPayloads.get(callu);
 			p.setIsActivePayload(true);
+			if (p.colour == 0)
+				p.setNewColour(newColour());
+			
 			p.setMaxLookBehindDays(lookBehind);
 		}
 	}
-	public void removeActivePayload(String call){  //TODO: remove data and other info, but not any IDs
+	public void removeActivePayload(String call){ 
 		mapPayloads.get(call.toUpperCase()).clearUserData();
 	}
 	public double[] getFFT()
@@ -548,7 +554,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 					mapPayloads.get(call).setFlightID(hab_con.flight_configs.get(call));
 			}
 			else
-			{
+			{	//these payloads are not active
 				if (hab_con.flight_configs.containsKey(entry.getKey().toUpperCase()))
 					mapPayloads.put(call, new Payload(entry.getKey(),hab_con.payload_configs.get(call),hab_con.flight_configs.get(call)));
 				else
@@ -652,6 +658,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             System.out.println("DONE RECORDING");
             logEvent("Stopping Audio",true);
             isRecording = false;
+            mRecorder = null;
        }	
     	
     }
@@ -693,7 +700,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		{
 			if (entry.getValue().isActivePayload()){
 				count++;
-				long start = entry.getValue().getUpdateStart(false);      //TODO: if flight and enabled query flight DB here
+				long start = entry.getValue().getUpdateStart(false); 
 				if ( start + 30 < (System.currentTimeMillis() / 1000L) )
 					hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), maxRec);//entry.getValue().getMaxRecords());
 			}
@@ -726,6 +733,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			
 			if (mapPayloads.containsKey(call)){
 				mapPayloads.get(call).setIsActivePayload(true);
+				if (mapPayloads.get(call).colour == 0)
+					mapPayloads.get(call).setNewColour(newColour());
+				
 				mapPayloads.get(call).putPacket(str);
 				if ((System.currentTimeMillis() / 1000L) -60 < mapPayloads.get(call).getLastUpdated())
 					mapPayloads.get(call).setLastUpdatedNow(); //if there are no (big) gaps since last string add current time as last update
@@ -735,15 +745,16 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				//TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
 				//l.put(Long.valueOf(str.time.getTime()),str);
 				//listPayloadData.put(str.callsign.toUpperCase(),l);
-				mapPayloads.put(call,new Payload(str));
+				mapPayloads.put(call,new Payload(str,newColour()));
 				startUpdateTimer();
 				updateActivePayloadsHabitat();
 			}
 			if (str.coords.alt_valid)
 				mapPayloads.get(call).putMaxAltitude(str.coords.altitude);
 		}
-		else if (str.getSentence().length() > 10)
-			mapPayloads.put(call,new Payload(call,true));
+		else if (str.getSentence().length() > 10 && payloadExists(str.callsign)){
+			mapPayloads.put(call,new Payload(call,newColour(),true));
+		}
 		
 		sendBroadcast(new Intent(TELEM_RX));
 	}
@@ -751,9 +762,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
 			long startTime, long endTime, AscentRate as, double maxAltitude) {
-		// TODO Auto-generated method stub
-		
-		
+	
 		if (success)
 		{
 			String call = callsign.toUpperCase();
@@ -761,24 +770,27 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign,true);
 			
 			if (mapPayloads.containsKey(call)){
-				long lt = mapPayloads.get(call).getLastTime();
+				Payload p = mapPayloads.get(call);
+				long lt = p.getLastTime();
 				
-				mapPayloads.get(call).setLastUpdated(endTime);
-				mapPayloads.get(call).putPackets(data);
-				mapPayloads.get(call).setIsActivePayload(true);
+				p.setLastUpdated(endTime);
+				p.putPackets(data);
+				p.setIsActivePayload(true);
+				if (p.colour == 0)
+					p.setNewColour(newColour());
 				
 				if (data.size() > 0){
 					if (lt < Long.valueOf(data.lastKey())){
 						if (as != null){
 							if (as.valid())
-								mapPayloads.get(call).ascentRate = as;
+								p.ascentRate = as;
 						}
 					}
 				}
 			}
 			else
 			{
-				Payload p = new Payload(callsign,true);
+				Payload p = new Payload(callsign,newColour(),true);
 				p.setLastUpdated(endTime);
 				p.data = data;
 				mapPayloads.put(call, p);
@@ -880,6 +892,23 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	mNotificationManager.notify(0, mBuilder.build());
 	
     }
+    
+    private int newColour()
+    {
+    	if (last_colour == 0)
+    	{
+    		last_colour = 0xFFFF0000;
+    		return last_colour;
+    	}
+    	else
+    	{
+    		float lasthsv[]= new float[3];
+    		Color.colorToHSV(last_colour,lasthsv);
+    		lasthsv[0] = (lasthsv[0] + (180 + 33)) % 360;
+    		last_colour = Color.HSVToColor(lasthsv);
+    		return last_colour;
+    	}
+    }
 	
     private int getChaseCarUpdatePeriod()
     {
@@ -903,12 +932,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public class Location_handler implements LocationListener  {
 
 		public Location_handler() {
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public void onLocationChanged(Location location) {
-			// TODO Auto-generated method stub
 			
 			int chasecarUpdateSecs = getChaseCarUpdatePeriod();
 			
@@ -930,21 +957,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		@Override
 		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
 			nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	    	nm.cancel(0);
 		}
 
 		@Override
 		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
+
 			
 		}
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-		//	System.out.println("DA STATUS : " + status);
+
 		}
 
 	}
@@ -984,6 +1009,18 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	public int getBaud(){
 		return _baud;
+	}
+	public int getPayloadColour(String call)
+	{
+		call = call.toUpperCase();
+		if (payloadExists(call))
+		{
+			int i = mapPayloads.get(call).colour;
+			if (i == 0)
+				i = 0xFF000000;
+			return i;
+		}
+		return 0;
 	}
 	
 	

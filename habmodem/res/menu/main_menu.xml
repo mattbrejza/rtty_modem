@@ -16,6 +16,8 @@
           android:icon="@drawable/ic_action_refresh"
           android:showAsAction="ifRoom"
           android:title="@string/refresh_button" />
+    <item android:id="@+id/graphs_button"
+          android:title="Graphs"/>
   <!--   <item android:id="@+id/fft_screen"
           android:showAsAction="ifRoom|withText"
           android:title="@string/fft_screen" /> -->

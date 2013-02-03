@@ -144,30 +144,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	         _mapFile_set = true;
 	
          }
-      /*   else if (!_drawFileButton)
-         {
-        	 _mapFile_set = false;
-        	 _drawFileButton = true;
-        	 btnMapPath = new Button(this);
-        	 btnMapPath.setText("Select Map File");
-        	// android:id="@+id/balloon_data_holder"
-        			 
-        	 RelativeLayout ll = (RelativeLayout)findViewById(R.id.map_rel_lay);
-        	 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-        			 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        	 lp.addRule(RelativeLayout.CENTER_VERTICAL);
-        	 lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        	 
-        	 btnMapPath.setOnClickListener(new OnClickListener() {
-     			@Override
-     			public void onClick(View v) {
-     				// Display the file chooser dialog
-     				showMapChooser();
-     			}
-     		});
-        	 
-        	ll.addView(btnMapPath, lp);
-         } */
+      
     }
     
     private void showMapChooser()
@@ -279,6 +256,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         else if (item.getItemId() ==  R.id.refresh_button) {
         	mService.updateActivePayloadsHabitat();
         	return true; }
+        else if (item.getItemId() == R.id.graphs_button) {
+        	List<String> ls = mService.getActivePayloadList();
+        	if (ls.size() > 0){
+	        	FragmentManager fm = getFragmentManager();
+	        	GraphsFragment di = new GraphsFragment();	        	
+	        	di.setActivePayloads(ls,mService.getPayloadList());
+	          	di.show(fm, "View Graphs");}}
         else if (item.getItemId() == R.id.log_screen) {
         	FragmentManager fm = getFragmentManager();
         	ViewLogFragment di = new ViewLogFragment();
@@ -302,10 +286,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    			showMapChooser();
    		else
    		{
-   			if (mapView.getMapFile().getAbsolutePath() != 
-   					PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_map_path", ""))
+   			String p1 = mapView.getMapFile().getAbsolutePath();
+   			String p2 = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_map_path", "");
+   			if (!p1.equals(p2))
    			{
-   				mService.logEvent("Changing map file", false);
+   				if (mService != null)
+   					mService.logEvent("Changing map file", false);
    				mapView.setMapFile(new File(PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_map_path", "")));
    				
    			}
@@ -339,7 +325,6 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		
    		isReg = true;
    	
-   		
    	}
        
     @Override
@@ -354,35 +339,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
        	}
         isReg = false;  
     }
-    
-    protected int getColour(String callsign)
-    {
-    	if (path_colours.containsKey(callsign.toUpperCase()))
-    		return path_colours.get(callsign.toUpperCase()).intValue();
-    	else {
-    		int c = newColour();
-    		path_colours.put(callsign.toUpperCase(), Integer.valueOf(c));
-    		return c;
-    	}    		
-    }
-    
-    private int newColour()
-    {
-    	if (last_colour == 0)
-    	{
-    		last_colour = 0xFFFF0000;
-    		return last_colour;
-    	}
-    	else
-    	{
-    		float lasthsv[]= new float[3];
-    		Color.colorToHSV(last_colour,lasthsv);
-    		lasthsv[0] = (lasthsv[0] + (180 + 33)) % 360;
-    		last_colour = Color.HSVToColor(lasthsv);
-    		return last_colour;
-    	}
-    }
-    
+       
     private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
     {
     	callsign = callsign.toUpperCase();
@@ -533,7 +490,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             
     		Paint linepaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     		linepaint.setStyle(Paint.Style.STROKE);
-    		linepaint.setColor(getColour(callsign));
+    		linepaint.setColor(mService.getPayloadColour(callsign));
     		linepaint.setAlpha(128);
     		linepaint.setStrokeWidth(4);
     		linepaint.setStrokeJoin(Paint.Join.ROUND);
@@ -565,7 +522,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	    	for (int i = 0; i < flights.size(); i++)
 	    	{
 	    		String call = flights.get(i).toUpperCase();
-	    		fragment.AddPayload(flights.get(i),getColour(call));
+	    		fragment.AddPayload(flights.get(i),mService.getPayloadColour(call));
 	    		TreeMap <Long, Telemetry_string> tm = mService.getPayloadData(call);
 	    		if (tm.size() > 0){
 	        		UpdateBalloonTrack(tm,call,true, false);
@@ -731,10 +688,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog, String callsign, int lookBehind) {
 		// TODO Auto-generated method stub
+		mService.addActivePayload(callsign,lookBehind);
     	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
     	    	
-    	fragment.AddPayload(callsign,getColour(callsign));
-    	mService.addActivePayload(callsign,lookBehind);
+    	fragment.AddPayload(callsign,mService.getPayloadColour(callsign));
+    	
     	mService.updateActivePayloadsHabitat();
 	}
 	
@@ -761,16 +719,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {
 		
 		mService.changeLocationSettings(enPos,enChase);
-		 /*
-		if (!mService.enablePosition && enPos)
-			mService.EnableLocation();
 		
-		if (mService.enablePosition && !enPos)
-			mService.DisableLocation();
-		
-		mService.enablePosition = enPos;
-		mService.enableChase = enChase;
-		*/
 	}
 
 }

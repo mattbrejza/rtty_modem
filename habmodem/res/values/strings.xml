@@ -13,7 +13,8 @@
     <string name="log_screen">Logs</string>
     <string name="title_activity_map">HAB Tracker</string>
     <string name="title_activity_fft">FFTActivity</string>
-    <string name="pref_callsign">Callsign</string>
+    <string name="dialog_graphs_title">Graphs</string>
+    <string name="pref_callsign">Callsign</string>   
     <string name="pref_habitat_update_title">Habitat Update Period (minutes)</string>
     <string name="pref_habitat_update_summ">Enter time between querying server for new data</string>
     <string name="pref_habitat_lines_title">Max Database Entries Returned</string>

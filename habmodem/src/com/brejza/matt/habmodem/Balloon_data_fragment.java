@@ -63,7 +63,7 @@ public class Balloon_data_fragment extends Fragment {
 		
 		if (dsf == null)
 		{
-			int colour = ((Map_Activity)getActivity()).getColour(str.callsign);
+			int colour = ((Map_Activity)getActivity()).mService.getPayloadColour(str.callsign);
 			AddPayload(str.callsign,colour);
 			dsf = info_boxes.get(call.toUpperCase());
 			if (dsf == null)
