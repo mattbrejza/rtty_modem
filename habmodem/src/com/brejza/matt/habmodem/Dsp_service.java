@@ -262,7 +262,6 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void serviceRestart()
 	{
 		startAudio();
-		updateActivePayloadsHabitat();
 		if (countActivePayloads() > 0){
 			startUpdateTimer();
 			updateActivePayloadsHabitat();
