@@ -308,6 +308,8 @@ public class Habitat_interface {
 			 
 			 JsonFactory fac = new JsonFactory();
 			 InputStream is = db.view_dont_parse(v);
+			 long lasttime = 0;
+			 
 			 if (is != null)
 			 {
 				 
@@ -316,7 +318,7 @@ public class Habitat_interface {
 				 String str,str1;
 				 boolean gotkey = false;
 				 boolean keypt1 = false;
-				 long lasttime = 0;
+				 
 				 
 				while(jp.nextToken() != null )// || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
 				 {
@@ -382,7 +384,11 @@ public class Habitat_interface {
 					 as = new AscentRate();
 			}
 			
-			fireDataReceived(out,true,callsign,timestampStart, timestampStop,as,maxAltitude); 
+			if (lasttime >= timestampStart && lasttime <= timestampStop)
+				fireDataReceived(out,true,callsign,timestampStart, lasttime,as,maxAltitude); 
+			else
+				fireDataReceived(out,true,callsign,timestampStart, timestampStop,as,maxAltitude); 
+			
 			return true;
 		}
 		

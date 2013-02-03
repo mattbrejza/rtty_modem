@@ -238,11 +238,11 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
    		
    		isReg = true;
    		
-   		boolean mic = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
-        if (mic)
-        	Toast.makeText(this, "MIC AVAILABLE", Toast.LENGTH_LONG).show();
-        else
-        	Toast.makeText(this, "MIC NOT AVAILABLE :o", Toast.LENGTH_LONG).show();
+   		//boolean mic = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
+        //if (mic)
+        //	Toast.makeText(this, "MIC AVAILABLE", Toast.LENGTH_LONG).show();
+        //else
+        //	Toast.makeText(this, "MIC NOT AVAILABLE :o", Toast.LENGTH_LONG).show();
         
         
         

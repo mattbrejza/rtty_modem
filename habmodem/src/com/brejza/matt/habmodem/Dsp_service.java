@@ -39,6 +39,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -315,8 +316,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public void startAudio()
 	{
+		if (!_enableDecoder)
+			return;
+		
+		boolean mic = this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
+		
 		System.out.println("isRecording: " + isRecording);
-		logEvent("Starting Audio. Already listening: " + isRecording,false);
+		logEvent("Starting Audio. Mic avaliable: " + mic,false);
 		if (!isRecording)
 		{
 			isRecording = true;
@@ -703,7 +709,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			if (entry.getValue().isActivePayload()){
 				count++;
 				long start = entry.getValue().getUpdateStart(false); 
-				if ( start + 30 < (System.currentTimeMillis() / 1000L) )
+				if ( start + 15 < (System.currentTimeMillis() / 1000L) )
 				{
 					if (entry.getValue().getQueryOngoing() == 0 ||
 							entry.getValue().getQueryOngoing() < System.currentTimeMillis()-(60*1000)){
