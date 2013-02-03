@@ -94,17 +94,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="552.01728"
-     inkscape:cy="725.57401"
+     inkscape:zoom="1.4"
+     inkscape:cx="558.17781"
+     inkscape:cy="556.88392"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer4"
      showgrid="false"
      inkscape:window-width="1440"
      inkscape:window-height="847"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
+     inkscape:window-x="-32000"
+     inkscape:window-y="-32000"
+     inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -291,7 +291,7 @@
        inkscape:export-ydpi="1000" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 569.03125,298.625 c -12.85715,-0.0502 -36.1875,0.15625 -36.1875,0.15625 0,0 -9.71847,10.57042 -13.03125,14.28125 -2.97212,3.32924 -3.90625,8.40625 -3.90625,8.40625 l -0.1875,18.40625 64.28125,1.0625 33.21875,0 0.17857,-18.92857 c 0,0 -0.85275,-6.45389 -6.08928,-6.4375 -2.02231,0.006 -9.80357,1.43304 -16.58929,-2.85268 -6.78571,-4.28571 -10.70536,-13.58035 -13.5625,-13.9375 -0.71429,-0.0893 -3.83928,-0.13951 -8.125,-0.15625 z m -30.3125,3.96875 35.84375,0 11,15.15625 -61.21875,0 z"
+       d="m 553.31696,221.48214 c -12.85715,-0.0502 -36.1875,0.15625 -36.1875,0.15625 0,0 -9.71847,10.57042 -13.03125,14.28125 -2.97212,3.32924 -3.90625,8.40625 -3.90625,8.40625 l -0.1875,18.40625 64.28125,1.0625 33.21875,0 0.17857,-18.92857 c 0,0 -0.85275,-6.45389 -6.08928,-6.4375 -2.02231,0.006 -9.80357,1.43304 -16.58929,-2.85268 -6.78571,-4.28571 -10.70536,-13.58035 -13.5625,-13.9375 -0.71429,-0.0893 -3.83928,-0.13951 -8.125,-0.15625 z m -30.3125,3.96875 35.84375,0 11,15.15625 -61.21875,0 z"
        id="path4158"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\car.png"
        inkscape:export-xdpi="1000"
@@ -300,27 +300,27 @@
        sodipodi:nodetypes="scscccccssssccccc" />
     <path
        sodipodi:type="arc"
-       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.09999990000000030;stroke-miterlimit:4;stroke-opacity:0.07978725000000000;stroke-dasharray:none"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
        id="path4164"
        sodipodi:cx="598.21429"
        sodipodi:cy="363.43362"
        sodipodi:rx="9.2857141"
        sodipodi:ry="9.2857141"
        d="m 607.50001,363.43362 a 9.2857141,9.2857141 0 1 1 -18.57143,0 9.2857141,9.2857141 0 1 1 18.57143,0 z"
-       transform="translate(-6.7857143,-21.25)"
+       transform="translate(-22.5,-98.392857)"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\car.png"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
     <path
        sodipodi:type="arc"
-       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.09999990000000030;stroke-miterlimit:4;stroke-opacity:0.07978725000000000;stroke-dasharray:none;display:inline"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
        id="path4164-1"
        sodipodi:cx="598.21429"
        sodipodi:cy="363.43362"
        sodipodi:rx="9.2857141"
        sodipodi:ry="9.2857141"
        d="m 607.50001,363.43362 a 9.2857141,9.2857141 0 1 1 -18.57143,0 9.2857141,9.2857141 0 1 1 18.57143,0 z"
-       transform="translate(-63.035723,-21.428585)"
+       transform="translate(-78.750009,-98.571442)"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\car.png"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
@@ -329,9 +329,30 @@
        id="rect4186"
        width="4.4642854"
        height="17.5"
-       x="555.35718"
-       y="301.82648"
+       x="539.64288"
+       y="224.68362"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\car.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.84436524px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 531.33943,475.85751 -9.64711,131.57517 16.37319,0 2.26765,0 16.35397,0 -9.64711,-131.57517 -6.70686,0 -2.26765,0 -6.72608,0 z"
+       id="path3087"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoderrunning.png"
+       inkscape:export-xdpi="1000"
+       inkscape:export-ydpi="1000" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path3876"
+       sodipodi:cx="539.28571"
+       sodipodi:cy="408.43362"
+       sodipodi:rx="18.928572"
+       sodipodi:ry="18.928572"
+       d="m 558.21428,408.43362 a 18.928572,18.928572 0 1 1 -37.85715,0 18.928572,18.928572 0 1 1 37.85715,0 z"
+       transform="translate(-3.9540592e-7,56.428571)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoderrunning.png"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
   </g>
@@ -366,7 +387,7 @@
        inkscape:export-ydpi="1000" />
     <path
        style="fill:none;stroke:#000000;stroke-width:6.5999999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 585.80952,586.20935 c 3.51177,6.33139 7.90713,10.79354 13.31106,10.80239 5.38717,0.009 9.71101,-4.45589 13.13577,-10.80556"
+       d="m 690.80952,719.06649 c 3.51177,6.33139 7.90713,10.79354 13.31106,10.80239 5.38717,0.009 9.71101,-4.45589 13.13577,-10.80556"
        id="path3864-4"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoder_bw.png"
        inkscape:export-xdpi="1000"
@@ -669,7 +690,7 @@
        inkscape:export-ydpi="1000" />
     <path
        sodipodi:type="arc"
-       style="fill:none;stroke:#000000;stroke-width:7.39838028;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       style="fill:none;stroke:#000000;stroke-width:8.77675056;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        id="path3822-76-8"
        sodipodi:cx="181.95372"
        sodipodi:cy="668.883"
@@ -678,14 +699,14 @@
        d="m 191.41312,640.2492 a 23.864853,31.188461 0 0 1 -1.56593,58.06684"
        sodipodi:start="5.1199525"
        sodipodi:end="7.5168761"
-       transform="matrix(0.53876684,0,0,0.54255754,82.660691,119.15387)"
+       transform="matrix(-0.97843914,0,0,1.3771351,1055.9793,-463.17928)"
        sodipodi:open="true"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\vol_echo_on.png"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
     <path
        sodipodi:type="arc"
-       style="fill:none;stroke:#000000;stroke-width:4.07144451;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       style="fill:none;stroke:#000000;stroke-width:4.82998276;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        id="path3822-7-1-1"
        sodipodi:cx="181.95372"
        sodipodi:cy="668.883"
@@ -694,14 +715,14 @@
        d="m 191.41312,640.2492 a 23.864853,31.188461 0 0 1 -1.56593,58.06684"
        sodipodi:start="5.1199525"
        sodipodi:end="7.5168761"
-       transform="matrix(1.0250237,0,0,0.94164906,-4.9243793,-147.71941)"
+       transform="matrix(-1.8615164,0,0,2.3901207,1215.04,-1140.5645)"
        sodipodi:open="true"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\vol_echo_on.png"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
     <path
        sodipodi:type="arc"
-       style="fill:none;stroke:#000000;stroke-width:2.62687373;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       style="fill:none;stroke:#000000;stroke-width:3.11627865;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
        id="path3822-7-4-4-2"
        sodipodi:cx="181.95372"
        sodipodi:cy="668.883"
@@ -710,7 +731,7 @@
        d="m 191.41312,640.2492 a 23.864853,31.188461 0 0 1 -1.56593,58.06684"
        sodipodi:start="5.1199525"
        sodipodi:end="7.5168761"
-       transform="matrix(1.7511335,0,0,1.3241048,-138.97851,-403.56418)"
+       transform="matrix(-3.1801837,0,0,3.3608808,1458.4918,-1789.9571)"
        sodipodi:open="true"
        inkscape:export-filename="C:\Users\Matt\git\rtty_modem\vol_echo_on.png"
        inkscape:export-xdpi="1000"
@@ -813,10 +834,10 @@
        id="rect3825-0-8" />
     <path
        style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.20849013;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 368.21278,513.24138 0,27.93341 0,19.90193 0,27.93341 85.7311,-37.37925 -3.94485,-0.50513 3.8893,-0.45461 -85.67555,-37.42976 z"
+       d="m 593.21278,494.66995 0,27.93341 0,19.90193 0,27.93341 85.7311,-37.37925 -3.94485,-0.50513 3.8893,-0.45461 -85.67555,-37.42976 z"
        id="rect3968"
        inkscape:connector-curvature="0"
-       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\play.png"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\decoderrunning.png"
        inkscape:export-xdpi="1000"
        inkscape:export-ydpi="1000" />
   </g>
