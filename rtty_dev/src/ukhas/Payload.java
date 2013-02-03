@@ -20,6 +20,7 @@ public class Payload {
 		int _maxLookBehind = 4*24*60*60;
 		int _maxRecords = 3000;
 		long _lastUpdated = 0;
+		long _query_ongoing = 0;    //set to 0 for no query (datafetch), otherwise timestamp of query
 		public TreeMap<Long,Telemetry_string> data = new TreeMap<Long,Telemetry_string>();
 		
 		public AscentRate ascentRate = new AscentRate();
@@ -172,5 +173,13 @@ public class Payload {
 		public double getMaxAltitude()
 		{
 			return maxAltitude;
+		}
+		public long getQueryOngoing()
+		{
+			return _query_ongoing;
+		}
+		public void setQueryOngoing(long l)
+		{
+			_query_ongoing = l;
 		}
 }

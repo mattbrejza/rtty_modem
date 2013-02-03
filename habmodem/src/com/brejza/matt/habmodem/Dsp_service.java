@@ -704,7 +704,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				count++;
 				long start = entry.getValue().getUpdateStart(false); 
 				if ( start + 30 < (System.currentTimeMillis() / 1000L) )
-					hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), maxRec);//entry.getValue().getMaxRecords());
+				{
+					if (entry.getValue().getQueryOngoing() == 0 ||
+							entry.getValue().getQueryOngoing() < System.currentTimeMillis()-(60*1000)){
+						hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), maxRec);//entry.getValue().getMaxRecords());
+						entry.getValue().setQueryOngoing(System.currentTimeMillis());
+					}
+				}
 			}
 		}	
 		if (count < 1){
@@ -764,7 +770,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
 			long startTime, long endTime, AscentRate as, double maxAltitude) {
-	
+		
+		mapPayloads.get(callsign.toUpperCase()).setQueryOngoing(0);
 		if (success)
 		{
 			String call = callsign.toUpperCase();
