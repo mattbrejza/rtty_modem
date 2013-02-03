@@ -503,7 +503,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			if (p.colour == 0)
 				p.setNewColour(newColour());
 			
-			p.setMaxLookBehindDays(lookBehind);
+			p.setMaxLookBehindSecs(lookBehind);
 		}
 	}
 	public void removeActivePayload(String call){ 

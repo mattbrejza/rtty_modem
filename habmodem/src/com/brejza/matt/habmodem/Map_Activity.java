@@ -340,6 +340,18 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         isReg = false;  
     }
        
+    protected void showGraphDialog(String call_startup)
+    {
+    	List<String> ls = mService.getActivePayloadList();
+    	if (ls.size() > 0){
+        	FragmentManager fm = getFragmentManager();
+        	GraphsFragment di = new GraphsFragment();	        	
+        	di.setActivePayloads(ls,mService.getPayloadList());
+        	di.toggleCallsign(call_startup);
+          	di.show(fm, "View Graphs");
+         }
+    }
+
     private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
     {
     	callsign = callsign.toUpperCase();

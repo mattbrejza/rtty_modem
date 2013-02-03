@@ -33,6 +33,7 @@ public class AddPayloadFragment extends DialogFragment {
 	List<String> _list_active_payloads = new ArrayList<String>();
 	AutoCompleteTextView s;
 	EditText et ;
+	EditText et_h ;
 	//View v;
 	    
 	
@@ -57,15 +58,18 @@ public class AddPayloadFragment extends DialogFragment {
                        // add payload
                 	   //et = (EditText)v.findViewById(R.id.txtLookDays);
                 	   int i=4;
+                	   int j = 0;
                 	   try{
                 		   i = Integer.parseInt(et.getText().toString());
+                		   j = Integer.parseInt(et_h.getText().toString());
                 	   }
                 	   catch (Exception e)
                 	   {
                 		   i = 4;
+                		   j=0;
                 	   }
                 	   
-                	   mListener.onDialogPositiveClick(AddPayloadFragment.this, s.getText().toString(), i);
+                	   mListener.onDialogPositiveClick(AddPayloadFragment.this, s.getText().toString(), 60*60*(i*24+j));
                    }
                })
                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -76,6 +80,7 @@ public class AddPayloadFragment extends DialogFragment {
         
         s = (AutoCompleteTextView) v.findViewById(R.id.auto_payload);
         et = (EditText)v.findViewById(R.id.txtLookDays);
+        et_h = (EditText)v.findViewById(R.id.txtLookHours);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _list_active_payloads);
         s.setAdapter(adapter);
        

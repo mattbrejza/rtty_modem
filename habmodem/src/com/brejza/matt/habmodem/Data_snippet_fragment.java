@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 public class Data_snippet_fragment extends Fragment {
 
@@ -104,15 +106,29 @@ public class Data_snippet_fragment extends Fragment {
         ImageButton btn = (ImageButton) view.findViewById(R.id.btnClose);
         
 
-        btn.setOnClickListener(new OnClickListener() {
-            
+        btn.setOnClickListener(new OnClickListener() {            
             @Override
             public void onClick(View v) {
-            	if (containg_fragment != null)
+            	if (containg_fragment != null) {
             		((Map_Activity)getActivity()).removePayload(_callsign);
             		containg_fragment.removePayload(_callsign);
+            	}
             }            
         });
+        
+        
+        RelativeLayout rl = (RelativeLayout)view.findViewById(R.id.rlPayloadInfo);
+    	rl.setOnLongClickListener(new OnLongClickListener(){
+			@Override
+			public boolean onLongClick(View v){
+				if (containg_fragment != null){
+					((Map_Activity)getActivity()).showGraphDialog(_callsign);
+					
+				}
+				
+				return true;
+			}
+		});
         
         return view;
         
@@ -136,6 +152,9 @@ public class Data_snippet_fragment extends Fragment {
 
     	if (onLoad != null)
     		updateDisplay(onLoad,onLoadAR,onLoadMax);
+    	
+    	
+		
     	
     }
     

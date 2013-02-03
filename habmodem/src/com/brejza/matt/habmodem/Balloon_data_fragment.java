@@ -11,6 +11,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -37,6 +38,7 @@ public class Balloon_data_fragment extends Fragment {
 		FrameLayout  innerLayout1 = new FrameLayout (getView().getContext());
 		
 		info_boxes.put(callsign.toUpperCase(), dsf);
+		
  
     	innerLayout1.setId(id_counter);
     	FragmentManager fragmentManager = getFragmentManager();

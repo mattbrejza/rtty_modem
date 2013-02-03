@@ -74,7 +74,6 @@ public class GraphsFragment extends DialogFragment {
                    public void onClick(DialogInterface dialog, int id) {
                        // FIRE ZE MISSILES!
                 	    
-                	  
                 	  // mListener.onDialogPositiveClick(LocationSelectFragment.this, enPos, enChase); 
                    }
                })
@@ -103,8 +102,20 @@ public class GraphsFragment extends DialogFragment {
         	  }
         	}); 
         
+        if (line != null)			
+		  drawGraph();
+        
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+    
+    
+    public void toggleCallsign(String call)
+    {
+    	 if (line == null)
+			  line = new LineGraph(_data);
+		 
+    	 line.togglePayload(call);
     }
     
     public void drawGraph()
@@ -128,8 +139,6 @@ public class GraphsFragment extends DialogFragment {
     	
     	viewGraph = vg;
     	ll.invalidate();
-    	
-    	
     }
     
     public void setActivePayloads(List<String> ap, ConcurrentHashMap<String,Payload> data)
