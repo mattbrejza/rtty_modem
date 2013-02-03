@@ -32,6 +32,9 @@ public class GraphsFragment extends DialogFragment {
 	boolean[] selected;
 	View v;
 	ConcurrentHashMap<String,Payload> _data;
+	LineGraph line;
+	int id_counter = 0x2d065000;
+	View viewGraph;
 	
 	
 	public void onAttach(Activity activity) {
@@ -90,12 +93,13 @@ public class GraphsFragment extends DialogFragment {
         
         lv.setOnItemClickListener(new OnItemClickListener() {
         	  @Override
-        	  public void onItemClick(AdapterView<?> parent, View view,
-        	    int position, long id) {
-        	    Toast.makeText(getActivity().getApplicationContext(),
-        	      "Click ListItem Number " + position, Toast.LENGTH_LONG)
-        	      .show();
-        	    drawGraph();
+        	  public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+        	    
+        		  if (line == null)
+        			  line = new LineGraph(_data);
+        		  if (activePayloads.size() > position)
+        			  line.togglePayload(activePayloads.get(position));
+        		  drawGraph();
         	  }
         	}); 
         
@@ -106,12 +110,26 @@ public class GraphsFragment extends DialogFragment {
     public void drawGraph()
     {
     	//LinearLayout ll = (LinearLayout) getActivity().findViewById(R.id.llGraphsN);
-    	LineGraph line = new LineGraph(_data);
-    	for (int i = 0; i < activePayloads.size(); i++)
-    		line.putPayload(activePayloads.get(i));
+    	//line = new LineGraph(_data);
+    	//for (int i = 0; i < activePayloads.size(); i++)
+    	//	line.putPayload(activePayloads.get(i));
     	View vg = line.getView(getActivity());
+    	if (vg == null)
+    		return;
     	//v.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-    	((LinearLayout)v.findViewById(R.id.llGraphsN)).addView(vg);
+    	LinearLayout ll = ((LinearLayout)v.findViewById(R.id.llGraphsN));
+    	
+    	if (viewGraph == null)
+    		ll.addView(vg);
+    	else {
+    		ll.removeView(viewGraph);
+    		ll.addView(vg);
+    	}
+    	
+    	viewGraph = vg;
+    	ll.invalidate();
+    	
+    	
     }
     
     public void setActivePayloads(List<String> ap, ConcurrentHashMap<String,Payload> data)

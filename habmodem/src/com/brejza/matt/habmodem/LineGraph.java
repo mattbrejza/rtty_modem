@@ -38,6 +38,15 @@ public class LineGraph {
 		listpayloads.add(call);
 	}
 	
+	public void togglePayload(String call)
+	{
+		call = call.toUpperCase();
+		if (listpayloads.contains(call))
+			listpayloads.remove(call);
+		else
+			listpayloads.add(call);
+	}
+	
 	
 	public View getView(Context context)
 	{
@@ -50,36 +59,40 @@ public class LineGraph {
 		
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer();
-		
+		int cnt = 0;
 		for (int i = 0; i < listpayloads.size(); i++)
 		{
 			String call = listpayloads.get(i);
 			if (_data.containsKey(call))
 			{
 				TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
-
-				if (sen.firstKey().longValue() < minTime)
-					minTime = sen.firstKey().longValue();
-				if (sen.lastKey().longValue() > maxTime)
-					maxTime = sen.lastKey().longValue();
-				
-				TimeSeries series = new TimeSeries(_data.get(call).callsign);
-				
-				for (TreeMap.Entry<Long,Telemetry_string> entry : sen.entrySet())
-				{					
-					if (entry.getValue().coords.alt_valid)						
-						series.add(entry.getKey(),(int)entry.getValue().coords.altitude);	
+				if (sen.size() > 1)
+				{
+					if (sen.firstKey().longValue() < minTime)
+						minTime = sen.firstKey().longValue();
+					if (sen.lastKey().longValue() > maxTime)
+						maxTime = sen.lastKey().longValue();
+					
+					TimeSeries series = new TimeSeries(_data.get(call).callsign);
+					
+					for (TreeMap.Entry<Long,Telemetry_string> entry : sen.entrySet())
+					{					
+						if (entry.getValue().coords.alt_valid)						
+							series.add(entry.getKey(),(int)entry.getValue().coords.altitude);	
+					}
+								
+					dataset.addSeries(series);			
+					XYSeriesRenderer renderer = new XYSeriesRenderer();
+					renderer.setColor(_data.get(call).colour);
+					renderer.setLineWidth(4);
+					mrend.addSeriesRenderer(renderer);
+					cnt++;
 				}
-							
-				dataset.addSeries(series);			
-				XYSeriesRenderer renderer = new XYSeriesRenderer();
-				renderer.setColor(_data.get(call).colour);
-				renderer.setLineWidth(4);
-				mrend.addSeriesRenderer(renderer);
 			}
 		}
 		
-		
+		if (cnt == 0)
+			return null;
 
 		//mrend.addXTextLabel(System.currentTimeMillis(), "custom label");
 		int steps = 13;
