@@ -13,6 +13,8 @@
 
 package com.brejza.matt.habmodem;
 
+import java.util.List;
+
 import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
@@ -22,6 +24,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -46,7 +50,7 @@ import android.widget.Toast;
 
 
 
-public class StatusScreen extends Activity  {
+public class StatusScreen extends Activity implements AddPayloadFragment.NoticeDialogListener,LocationSelectFragment.NoticeDialogListener  {
 	
 
 	
@@ -98,31 +102,40 @@ public class StatusScreen extends Activity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
     	Intent intent;
-    	/*
-        switch (item.getItemId()) {
-            case R.id.fft_screen:
-            //	intent = new Intent(this, FFTActivity.class);
-            //	startActivity(intent);
-                return true;
-            case R.id.map_screen:
-            	finish();
-                return true;
-            case R.id.settings_screen:
-            	intent = new Intent(this,Preferences_activity.class);
-            	startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        } */
-        if (item.getItemId() == R.id.status_screen)
-        	return true;
-        else if (item.getItemId() == R.id.map_screen) {
+    	
+
+    	if (item.getItemId() == R.id.status_screen) {
+            return true; }
+    	else if (item.getItemId() == R.id.map_screen) {
         	finish();
             return true; }
+        else if (item.getItemId() ==  R.id.location_dialog) {
+        	FragmentManager fm = getFragmentManager();
+        	LocationSelectFragment di = new LocationSelectFragment();
+        	di.enChase = mService.getEnableChase();
+        	di.enPos = mService.getEnablePosition();
+         	di.show(fm, "Location Settings");
+        	return true; }
+        else if (item.getItemId() ==  R.id.refresh_button) {
+        	mService.updateActivePayloadsHabitat();
+        	return true; }
+        else if (item.getItemId() == R.id.graphs_button) {
+        	List<String> ls = mService.getActivePayloadList();
+        	if (ls.size() > 0){
+	        	FragmentManager fm = getFragmentManager();
+	        	GraphsFragment di = new GraphsFragment();	        	
+	        	di.setActivePayloads(ls,mService.getPayloadList());
+	          	di.show(fm, "View Graphs");}}
+        else if (item.getItemId() == R.id.log_screen) {
+        	FragmentManager fm = getFragmentManager();
+        	ViewLogFragment di = new ViewLogFragment();
+          	di.setLogList(mService.getLog());
+          	di.show(fm, "View Logs");}
         else if (item.getItemId() ==  R.id.settings_screen) {
         	intent = new Intent(this,Preferences_activity.class);
         	startActivity(intent); 
             return true;}
+    	
        
        return super.onOptionsItemSelected(item); 
     }
@@ -574,5 +587,23 @@ public class StatusScreen extends Activity  {
     	Button btn = (Button) findViewById(R.id.btnBaud);
     	btn.setText(Integer.toString(mService.getBaud()));
     }
+    
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {
+		
+		mService.changeLocationSettings(enPos,enChase);
+		
+	}
+	
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog, String callsign, int lookBehind) {
+		// TODO Auto-generated method stub
+		mService.addActivePayload(callsign,lookBehind);
+    	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
+    	    	
+    	fragment.AddPayload(callsign,mService.getPayloadColour(callsign));
+    	
+    	mService.updateActivePayloadsHabitat();
+	}
     
 }

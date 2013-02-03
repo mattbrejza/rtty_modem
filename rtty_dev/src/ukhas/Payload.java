@@ -28,7 +28,7 @@ public class Payload {
 		{
 			callsign = call; 
 			_activePayload = activePayload;
-			_maxLookBehind = lookBehind * 24*60*60;
+			_maxLookBehind = lookBehind;// * 24*60*60;
 			colour = _colour;
 		}
 		
@@ -81,6 +81,9 @@ public class Payload {
 		}
 		public void setMaxLookBehindDays(int t){
 			_maxLookBehind = t * 60*60*24;
+		}
+		public void setMaxLookBehindSecs(int t){
+			_maxLookBehind = t;
 		}
 		public void setMaxLookBehind(int t){
 			_maxLookBehind = t;
