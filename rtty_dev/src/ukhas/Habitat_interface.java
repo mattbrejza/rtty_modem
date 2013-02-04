@@ -383,7 +383,7 @@ public class Habitat_interface {
 				 else
 					 as = new AscentRate();
 			}
-			
+			lasttime += 1000;
 			if (lasttime >= timestampStart && lasttime <= timestampStop)
 				fireDataReceived(out,true,callsign,timestampStart, lasttime,as,maxAltitude); 
 			else

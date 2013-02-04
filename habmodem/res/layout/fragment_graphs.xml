@@ -4,12 +4,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/lvActivePayloadsGraph"
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/llGraphsPayloads"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
 
-    </ListView>
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <LinearLayout
         android:id="@+id/llGraphsN"

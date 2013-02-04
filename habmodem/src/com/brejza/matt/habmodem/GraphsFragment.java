@@ -22,6 +22,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -35,6 +37,7 @@ public class GraphsFragment extends DialogFragment {
 	LineGraph line;
 	int id_counter = 0x2d065000;
 	View viewGraph;
+	String startupPayload = "";
 	
 	
 	public void onAttach(Activity activity) {
@@ -54,53 +57,47 @@ public class GraphsFragment extends DialogFragment {
         builder.setTitle(R.string.dialog_graphs_title);
         builder.setView(v);
     	
-        builder /*.setMultiChoiceItems(R.array.location_dialog_items, new boolean[]  { enPos, enChase },
-        		 new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which,
-                    boolean isChecked) {
-                if (isChecked) {
-                    // If the user checked the item, add it to the selected items
-                    mSelectedItems.add(which);
-                } else if (mSelectedItems.contains(Integer.valueOf(which))) {
-                    // Else, if the item is already in the array, remove it 
-                    mSelectedItems.remove(Integer.valueOf(which));
-                }
-            }
-        }) */
-        
-     
-        .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                        // FIRE ZE MISSILES!
                 	    
                 	  // mListener.onDialogPositiveClick(LocationSelectFragment.this, enPos, enChase); 
                    }
-               })
-               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                       // User cancelled the dialog
-                   }
                });
         
+       
         
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-        		  android.R.layout.simple_list_item_1, activePayloads);
-        ListView lv = (ListView) v.findViewById(R.id.lvActivePayloadsGraph);
-        lv.setAdapter(adapter);
+        for (int i = 0; i < activePayloads.size(); i++)
+        {
+        	LinearLayout ll = (LinearLayout)v.findViewById(R.id.llGraphsPayloads);
+        	CheckBox ck = new CheckBox(v.getContext());
+        	ck.setText(activePayloads.get(i));
+        	if (activePayloads.get(i).equals(startupPayload)){
+        		ck.setChecked(true);
+        		 if (line == null)
+          			  line = new LineGraph(_data);
+          		 line.addPayload(activePayloads.get(i));
+        	}
+        	ck.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        	{
+        		 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+           
+	           		  if (line == null)
+	           			  line = new LineGraph(_data);
+	           		  if (isChecked)
+	           			line.addPayload(buttonView.getText().toString());
+	           		  else
+	           			line.clearPayload(buttonView.getText().toString());
+	           		  
+	           		  drawGraph();
+        		 }
+        	});
+        	ll.addView(ck);
+        }
+        
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _list_log);
         
-        lv.setOnItemClickListener(new OnItemClickListener() {
-        	  @Override
-        	  public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-        	    
-        		  if (line == null)
-        			  line = new LineGraph(_data);
-        		  if (activePayloads.size() > position)
-        			  line.togglePayload(activePayloads.get(position));
-        		  drawGraph();
-        	  }
-        	}); 
+       
         
         if (line != null)			
 		  drawGraph();
@@ -109,13 +106,10 @@ public class GraphsFragment extends DialogFragment {
         return builder.create();
     }
     
-    
-    public void toggleCallsign(String call)
+      
+    public void setStartCall(String call)
     {
-    	 if (line == null)
-			  line = new LineGraph(_data);
-		 
-    	 line.togglePayload(call);
+    	startupPayload = call;
     }
     
     public void drawGraph()

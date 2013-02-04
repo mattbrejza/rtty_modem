@@ -122,8 +122,7 @@ public class Data_snippet_fragment extends Fragment {
 			@Override
 			public boolean onLongClick(View v){
 				if (containg_fragment != null){
-					((Map_Activity)getActivity()).showGraphDialog(_callsign);
-					
+					((Map_Activity)getActivity()).showGraphDialog(_callsign);					
 				}
 				
 				return true;

@@ -345,9 +345,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	List<String> ls = mService.getActivePayloadList();
     	if (ls.size() > 0){
         	FragmentManager fm = getFragmentManager();
-        	GraphsFragment di = new GraphsFragment();	        	
-        	di.setActivePayloads(ls,mService.getPayloadList());
-        	di.toggleCallsign(call_startup);
+        	GraphsFragment di = new GraphsFragment();	 
+        	di.setStartCall(call_startup);
+        	di.setActivePayloads(ls,mService.getPayloadList());        	
           	di.show(fm, "View Graphs");
          }
     }

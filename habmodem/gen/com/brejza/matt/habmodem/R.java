@@ -149,9 +149,9 @@ public final class R {
         public static final int listRxDecodedStrings=0x7f0d0018;
         public static final int listvLog=0x7f0d0057;
         public static final int llGraphsN=0x7f0d0056;
+        public static final int llGraphsPayloads=0x7f0d0055;
         public static final int location_dialog=0x7f0d0066;
         public static final int log_screen=0x7f0d0069;
-        public static final int lvActivePayloadsGraph=0x7f0d0055;
         public static final int lvcheck_checkbox=0x7f0d0058;
         public static final int lvcheck_text=0x7f0d0059;
         public static final int mapView=0x7f0d0002;

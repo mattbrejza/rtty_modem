@@ -47,6 +47,24 @@ public class LineGraph {
 			listpayloads.add(call);
 	}
 	
+	public void addPayload(String call)
+	{
+		call = call.toUpperCase();
+		if (listpayloads.contains(call))
+			;
+		else
+			listpayloads.add(call);
+	}
+	
+	public void clearPayload(String call)
+	{
+		call = call.toUpperCase();
+		if (listpayloads.contains(call))
+			listpayloads.remove(call);
+		else
+			;
+	}
+	
 	
 	public View getView(Context context)
 	{
