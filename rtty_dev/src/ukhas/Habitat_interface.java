@@ -229,6 +229,7 @@ public class Habitat_interface {
 			JSONObject obj;
 			JSONArray sentences;
 			JSONArray fields;
+			JSONArray filters;
 			
 			TelemetryConfig tc = new TelemetryConfig();
 			
@@ -251,6 +252,7 @@ public class Habitat_interface {
 							String name = fields.getJSONObject(j).getString("name");
 							String sensor = "";
 							String format = "";
+							TelemetryConfig.DataType dt = TelemetryConfig.DataType.IGNORE;
 							if (fields.getJSONObject(j).containsKey("sensor"))
 								sensor = fields.getJSONObject(j).getString("sensor");
 							if (fields.getJSONObject(j).containsKey("format"))
@@ -279,17 +281,66 @@ public class Habitat_interface {
 								break;
 							default :
 								extraFields++;
+								if (sensor.equals("base.ascii_int"))
+								{
+									dt = TelemetryConfig.DataType.INT;
+								}
+								else if (sensor.equals("base.string"))
+								{
+									dt = TelemetryConfig.DataType.STRING;
+								}
+								else if (sensor.equals("base.ascii_float"))
+								{
+									dt = TelemetryConfig.DataType.FLOAT;
+								}
 								break;	
 							}
+							
+							tc.addField(name, dt);							
 						}
 						
-						//add to list of telem info
+						
+						if (sentences.getJSONObject(i).containsKey("filters")){
+							if (sentences.getJSONObject(i).getJSONObject("filters").containsKey("post")){
+								filters = sentences.getJSONObject(i).getJSONObject("filters").getJSONArray("post");
+								for (int j = 0; j < filters.size(); j++)
+								{
+									String filtertype = "";
+									String source = "";
+									String factor = "";
+									String offset = "";
+									String round = "";
+									String type = "";
+									
+									if (filters.getJSONObject(j).containsKey("filter"))
+										filtertype = filters.getJSONObject(j).getString("filter");
+									if (filters.getJSONObject(j).containsKey("source"))
+										source = filters.getJSONObject(j).getString("source");
+									if (filters.getJSONObject(j).containsKey("factor"))
+										factor = filters.getJSONObject(j).getString("factor");
+									if (filters.getJSONObject(j).containsKey("type"))
+										type = filters.getJSONObject(j).getString("type");
+									if (filters.getJSONObject(j).containsKey("offset"))
+										offset = filters.getJSONObject(j).getString("offset");
+									if (filters.getJSONObject(j).containsKey("round"))
+										round = filters.getJSONObject(j).getString("round");
+									
+									switch (filtertype) {
+									case "common.numeric_scale" :
+										tc.addFilter(source,factor,offset,round);
+										break;										
+									default :
+										break;
+									}									
+								}
+							}
+						}				
+					
 					}
+					//save tc to some sort of data structure
+					
 				}				
-			}
-			
-			
-			
+			}			
 		}
 		catch (Exception e)
 		{
