@@ -203,6 +203,104 @@ public class Habitat_interface {
 	
 	}
 	
+	public boolean queryPayloadConfig(String docID)
+	{
+
+		try
+		{
+			//open DB connection
+			if (s == null)
+			{
+				 s = new Session(_habitat_url,80);
+				 db = s.getDatabase(_habitat_db);// + "/_design/payload_telemetry/_update/add_listener");
+			}
+			else if (db == null)
+				db = s.getDatabase(_habitat_db);
+		
+			
+			Document doc = db.getDocument(docID);
+
+			if (doc == null)
+				return false;			
+			CouchResponse cr = s.getLastResponse();		
+			if (!cr.isOk())
+				return false;		
+			
+			JSONObject obj;
+			JSONArray sentences;
+			JSONArray fields;
+			
+			TelemetryConfig tc = new TelemetryConfig();
+			
+			obj = doc.getJSONObject();
+			if (obj.containsKey("sentences")){
+				sentences = obj.getJSONArray("sentences");
+				for (int i = 0; i < sentences.size(); i++){
+					int extraFields = 0;
+					String call = "";
+					if (sentences.getJSONObject(i).containsKey("callsign")){
+						call = sentences.getJSONObject(i).getString("callsign");
+					}
+					else
+						return false;
+					
+					if (sentences.getJSONObject(i).containsKey("fields")){
+						fields = sentences.getJSONObject(i).getJSONArray("fields");
+						for (int j = 0; j < fields.size(); j++)
+						{
+							String name = fields.getJSONObject(j).getString("name");
+							String sensor = "";
+							String format = "";
+							if (fields.getJSONObject(j).containsKey("sensor"))
+								sensor = fields.getJSONObject(j).getString("sensor");
+							if (fields.getJSONObject(j).containsKey("format"))
+								format = fields.getJSONObject(j).getString("format");
+									
+							switch (name) {
+							case "sentence_id" :
+								break;
+							case "time" :
+								break;
+							case "latitude" :
+								if (sensor.equals("base.ascii_int"))
+								{
+									//TODO
+									tc.gpsFormat = TelemetryConfig.GPSFormat.INT;
+								}
+								break;
+							case "longitude" :
+								if (sensor.equals("base.ascii_int"))
+								{
+									//TODO
+									tc.gpsFormat = TelemetryConfig.GPSFormat.INT;
+								}
+								break;
+							case "altitude" :
+								break;
+							default :
+								extraFields++;
+								break;	
+							}
+						}
+						
+						//add to list of telem info
+					}
+				}				
+			}
+			
+			
+			
+		}
+		catch (Exception e)
+		{
+			System.out.println("ERROR: "+ e.toString());
+			return false;
+		}
+			
+			
+		return true;
+	}
+	
 	private boolean queryActiveFlights()
 	{
 		try

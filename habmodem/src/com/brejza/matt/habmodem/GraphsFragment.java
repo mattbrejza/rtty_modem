@@ -97,8 +97,6 @@ public class GraphsFragment extends DialogFragment {
         
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _list_log);
         
-       
-        
         if (line != null)			
 		  drawGraph();
         

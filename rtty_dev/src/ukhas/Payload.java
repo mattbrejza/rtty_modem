@@ -15,6 +15,8 @@ public class Payload {
 		int _total50 = 0;
 		public int colour = 0;
 		
+		private int _extraFields;
+		
 		double maxAltitude = -9999999;
 		
 		int _maxLookBehind = 4*24*60*60;
@@ -181,5 +183,9 @@ public class Payload {
 		public void setQueryOngoing(long l)
 		{
 			_query_ongoing = l;
+		}
+		public int getNumberExtraFields()
+		{
+			return _extraFields;
 		}
 }
