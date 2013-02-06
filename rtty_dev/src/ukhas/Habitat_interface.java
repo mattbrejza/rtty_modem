@@ -47,6 +47,9 @@ public class Habitat_interface {
 	
 	public ConcurrentHashMap<String,String> payload_configs = new ConcurrentHashMap<String,String>();
 	public ConcurrentHashMap<String,String> flight_configs = new ConcurrentHashMap<String,String>();
+	private ConcurrentHashMap<String,TelemetryConfig> telem_configs = new ConcurrentHashMap<String,TelemetryConfig>();
+	
+	private boolean _newTelemConfigs = false;
 	
 	private Session s;
 	private Database db;
@@ -203,9 +206,8 @@ public class Habitat_interface {
 	
 	}
 	
-	public boolean queryPayloadConfig(String docID)
+	private boolean queryPayloadConfig(String docID)
 	{
-
 		try
 		{
 			//open DB connection
@@ -237,7 +239,6 @@ public class Habitat_interface {
 			if (obj.containsKey("sentences")){
 				sentences = obj.getJSONArray("sentences");
 				for (int i = 0; i < sentences.size(); i++){
-					int extraFields = 0;
 					String call = "";
 					if (sentences.getJSONObject(i).containsKey("callsign")){
 						call = sentences.getJSONObject(i).getString("callsign");
@@ -258,29 +259,28 @@ public class Habitat_interface {
 							if (fields.getJSONObject(j).containsKey("format"))
 								format = fields.getJSONObject(j).getString("format");
 									
-							switch (name) {
-							case "sentence_id" :
-								break;
-							case "time" :
-								break;
-							case "latitude" :
+							
+							if (name.equals("sentence_id")){
+							}
+							else if  (name.equals("time")){
+							}
+							else if (name.equals("latitude" )){
 								if (sensor.equals("base.ascii_int"))
 								{
 									//TODO
 									tc.gpsFormat = TelemetryConfig.GPSFormat.INT;
 								}
-								break;
-							case "longitude" :
+							}
+							else if (name.equals("longitude" )){
 								if (sensor.equals("base.ascii_int"))
 								{
 									//TODO
 									tc.gpsFormat = TelemetryConfig.GPSFormat.INT;
 								}
-								break;
-							case "altitude" :
-								break;
-							default :
-								extraFields++;
+							}
+							else if (name.equals("altitude" )){
+							}
+							else {
 								if (sensor.equals("base.ascii_int"))
 								{
 									dt = TelemetryConfig.DataType.INT;
@@ -293,8 +293,8 @@ public class Habitat_interface {
 								{
 									dt = TelemetryConfig.DataType.FLOAT;
 								}
-								break;	
-							}
+							}	
+							
 							
 							tc.addField(name, dt);							
 						}
@@ -325,20 +325,22 @@ public class Habitat_interface {
 									if (filters.getJSONObject(j).containsKey("round"))
 										round = filters.getJSONObject(j).getString("round");
 									
-									switch (filtertype) {
-									case "common.numeric_scale" :
+									
+									if (filtertype.equals("common.numeric_scale")){
 										tc.addFilter(source,factor,offset,round);
-										break;										
-									default :
-										break;
-									}									
+									}
+									else{
+										
+									}
+																	
 								}
 							}
 						}				
 					
 					}
 					//save tc to some sort of data structure
-					
+					telem_configs.put(call.toUpperCase(), tc);
+					_newTelemConfigs = true;
 				}				
 			}			
 		}
@@ -911,6 +913,8 @@ public class Habitat_interface {
 						  else if (qi.type == 1)
 						  {			//get data
 							  String id = resolvePayloadID(qi.callsign);
+							  if (!telem_configs.containsKey(qi.callsign.toUpperCase()))
+								  queryPayloadConfig(id);
 							  if (id != null)
 								  getPayloadDataSince(qi.startTime, qi.stopTime,qi.count, id, qi.callsign);
 						  }
@@ -957,6 +961,16 @@ public class Habitat_interface {
 		  }
 	}
 	
+	public boolean newTelemConfigs()
+	{
+		return _newTelemConfigs;
+	}
+	
+	public ConcurrentHashMap<String,TelemetryConfig> getTelemConfigs()
+	{
+		_newTelemConfigs = false;
+		return telem_configs;
+	}
 	
 	class QueueItem
 	{

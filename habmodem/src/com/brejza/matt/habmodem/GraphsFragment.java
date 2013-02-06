@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import ukhas.Payload;
+import ukhas.TelemetryConfig;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -65,10 +66,24 @@ public class GraphsFragment extends DialogFragment {
                    }
                });
         
-       
-        
+        List<String> fields = new ArrayList<String>();
+        fields.add("altitude");
         for (int i = 0; i < activePayloads.size(); i++)
         {
+        	String call = activePayloads.get(i).toUpperCase();
+        	//get a list of fields that can be displayed for this payload
+			if (_data.get(call).telemetryConfig != null){
+				for (int j = 0; j < _data.get(call).telemetryConfig.getTotalFields(); j++){
+					TelemetryConfig.DataType dt = _data.get(call).telemetryConfig.getFieldDataType(j);
+					if (dt == TelemetryConfig.DataType.FLOAT || dt == TelemetryConfig.DataType.INT){
+						String f = _data.get(call).telemetryConfig.getFieldName(j);
+						if (!fields.contains(f))
+							fields.add(f);
+					}
+				}
+			}
+        	
+        	
         	LinearLayout ll = (LinearLayout)v.findViewById(R.id.llGraphsPayloads);
         	CheckBox ck = new CheckBox(v.getContext());
         	ck.setText(activePayloads.get(i));
@@ -91,6 +106,34 @@ public class GraphsFragment extends DialogFragment {
 	           		  
 	           		  drawGraph();
         		 }
+        	});
+        	ll.addView(ck);
+        }
+        
+        for (int i = 0; i < fields.size(); i++){
+        	
+        	LinearLayout ll = (LinearLayout)v.findViewById(R.id.llGraphsFields);
+        	CheckBox ck = new CheckBox(v.getContext());
+        	ck.setText(fields.get(i));
+        	if (fields.get(i).equals("altitude")){
+        		ck.setChecked(true);
+        		// if (line == null)
+          		//	  line = new LineGraph(_data);
+          		// line.addPayload(activePayloads.get(i));
+        	}
+        	ck.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        	{
+        		 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+           /*
+	           		  if (line == null)
+	           			  line = new LineGraph(_data);
+	           		  if (isChecked)
+	           			line.addPayload(buttonView.getText().toString());
+	           		  else
+	           			line.clearPayload(buttonView.getText().toString());
+	           		  
+	           		  drawGraph();*/
+        		 } 
         	});
         	ll.addView(ck);
         }

@@ -780,12 +780,26 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		mapPayloads.get(callsign.toUpperCase()).setQueryOngoing(0);
 		if (success)
 		{
+			
+			
+			
+			
 			String call = callsign.toUpperCase();
 			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
 			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign,true);
 			
 			if (mapPayloads.containsKey(call)){
 				Payload p = mapPayloads.get(call);
+				
+				
+				//if havnt already got a telem_config, see if one exists in hab_con
+				if (p.telemetryConfig == null){
+					if (hab_con.getTelemConfigs().containsKey(call)){
+						p.telemetryConfig = hab_con.getTelemConfigs().get(call);
+					}
+				}
+					
+				
 				long lt = p.getLastTime();
 				
 				p.setLastUpdated(endTime);
@@ -806,6 +820,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			else
 			{
 				Payload p = new Payload(callsign,newColour(),true);
+
+				if (hab_con.getTelemConfigs().containsKey(call)){
+					p.telemetryConfig = hab_con.getTelemConfigs().get(call);
+				}
+
 				p.setLastUpdated(endTime);
 				p.data = data;
 				mapPayloads.put(call, p);

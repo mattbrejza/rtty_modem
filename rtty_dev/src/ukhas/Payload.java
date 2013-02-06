@@ -19,6 +19,8 @@ public class Payload {
 		
 		double maxAltitude = -9999999;
 		
+		public TelemetryConfig telemetryConfig = null;
+		
 		int _maxLookBehind = 4*24*60*60;
 		int _maxRecords = 3000;
 		long _lastUpdated = 0;

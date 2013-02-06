@@ -240,7 +240,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 			public void actionPerformed(ActionEvent e) {
 				hi = new Habitat_interface(_habitat_url, _habitat_db, new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0"),false));
 				//hi.queryAllPayloadDocs("APEX");
-				hi.queryPayloadConfig("48cd815cc274d4a0b1d99ea387476512");
+				//hi.queryPayloadConfig("48cd815cc274d4a0b1d99ea387476512");
 				hi.updateChaseCar(new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0"),true));
 				hi.addDataFetchTask("NANU",(System.currentTimeMillis() / 1000L)-(15*24*60*60),(System.currentTimeMillis() / 1000L),3000);
 			
