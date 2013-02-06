@@ -766,7 +766,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			if (str.coords.alt_valid)
 				mapPayloads.get(call).putMaxAltitude(str.coords.altitude);
 		}
-		else if (str.getSentence().length() > 10 && payloadExists(str.callsign)){
+		else if (str.getSentence().length() > 10 && !payloadExists(str.callsign)){
 			mapPayloads.put(call,new Payload(call,newColour(),true));
 		}
 		
