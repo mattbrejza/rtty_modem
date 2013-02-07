@@ -13,6 +13,7 @@ import org.achartengine.ChartFactory;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.BasicStroke;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -20,6 +21,7 @@ import ukhas.Payload;
 import ukhas.Telemetry_string;
 
 import android.content.Context;
+import android.graphics.Paint.Align;
 import android.view.View;
 
 public class LineGraph {
@@ -67,12 +69,45 @@ public class LineGraph {
 			;
 	}
 	
-	public void addField(String field)
+	public boolean addField(String field)
 	{
+		int differentFields = 0;
+		boolean gotTemp = false;
+		
 		if (!listfields.contains(field))
 		{
-			listfields.add(field);
+			for (int i = 0; i < listfields.size(); i++)
+			{
+				if (isTemperature(listfields.get(i)))
+				{
+					if (!gotTemp)
+					{
+						gotTemp = true;
+						differentFields++;
+					}
+				}
+				else
+				{
+					differentFields++;
+				}				
+			}
+			
+			
+			if (differentFields < 2 || (differentFields == 2 && isTemperature(field)))
+				{
+					listfields.add(field);
+					return true;
+				}
+				else
+					return false;	
 		}
+		
+		return true;
+	}
+		
+	private boolean isTemperature(String str)
+	{
+		return (str.contains("temperature"));
 	}
 	
 	public void clearField(String field)
@@ -94,10 +129,25 @@ public class LineGraph {
 		if (Math.min(2, listfields.size()) == 0)
 			return null;
 		
+		int differentFields = 0;
+		int tempLoc = -1;
+		for (int i = 0; i < listfields.size(); i++){
+			if (isTemperature(listfields.get(i))){
+				if (tempLoc < 0){
+					tempLoc = i;
+					differentFields++;
+				}
+			}
+			else
+				differentFields++;						
+		}
+		
+		
+		
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer(Math.min(2, listfields.size()));
+		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer(Math.min(2, differentFields));
 		int cnt = 0;
-		for (int f = 0; f < Math.min(2, listfields.size()); f++)
+		for (int f = 0; f < differentFields; f++)
 		{
 			String field = listfields.get(f);
 			for (int i = 0; i < listpayloads.size(); i++)
@@ -130,11 +180,16 @@ public class LineGraph {
 										series.add(entry.getKey(),entry.getValue().getExtraFields(findex));
 								}
 							}
-										
-							dataset.addSeries(series);			
+									
+							if (!isTemperature(listfields.get(f)))
+								dataset.addSeries(f,series);	
+							else
+								dataset.addSeries(tempLoc,series);
 							XYSeriesRenderer renderer = new XYSeriesRenderer();
 							renderer.setColor(_data.get(call).colour);
 							renderer.setLineWidth(4);
+
+							//stroke style
 							mrend.addSeriesRenderer(renderer);
 							
 							cnt++;
@@ -159,11 +214,17 @@ public class LineGraph {
 		}
 		
 		mrend.setChartTitle("Altitude Plot");
-		mrend.setYTitle("Altitude (m)");
+		mrend.setYTitle("Altitude (m)",0);
+		if (Math.min(2, differentFields) > 1){
+			mrend.addYTextLabel(10, "New Test", 1);
+			mrend.setYTitle("Hours", 1);
+		}
 		
 		mrend.setShowGrid(true);
 		
 		mrend.setYLabelsAngle(270);
+		
+		
 		
 		mrend.setXLabels(0);
 				

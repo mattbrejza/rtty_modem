@@ -127,8 +127,11 @@ public class GraphsFragment extends DialogFragment {
            
 	           		  if (line == null)
 	           			  line = new LineGraph(_data);
-	           		  if (isChecked)
-	           			line.addField(buttonView.getText().toString());
+	           		  if (isChecked){
+	           			  	boolean suc = line.addField(buttonView.getText().toString());
+	           			  	if (!suc)
+	           			  	buttonView.setChecked(false);
+	           		  }
 	           		  else
 	           			line.clearField(buttonView.getText().toString());
 	           		  
