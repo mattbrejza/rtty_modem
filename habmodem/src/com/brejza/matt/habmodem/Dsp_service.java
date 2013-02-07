@@ -32,6 +32,7 @@ import ukhas.HabitatRxEvent;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
 import ukhas.Payload;
+import ukhas.TelemetryConfig;
 import ukhas.Telemetry_string;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -571,6 +572,16 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		//	out.add(entry.getKey());		
 		return mapPayloads;
 	}
+	
+	public TelemetryConfig getTelemetryConfig(String call)
+	{
+		if (payloadExists(call))
+		{
+			return mapPayloads.get(call).telemetryConfig;
+		}
+		else
+			return null;
+	}
 
 	
 	class captureThread extends Thread
@@ -727,8 +738,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 	}
 
-	public void StringRx(Telemetry_string str, boolean checksum)
+	public void StringRx(String str_, boolean checksum)
 	{
+		Telemetry_string str = new Telemetry_string(str_,null);
+		TelemetryConfig tc = getTelemetryConfig(str.callsign);
+		if (tc != null)
+			str = new Telemetry_string(str_,tc);
+		
 		String call = str.callsign.toUpperCase();
 		if (!checksum && !mapPayloads.containsKey(call))
 			return;

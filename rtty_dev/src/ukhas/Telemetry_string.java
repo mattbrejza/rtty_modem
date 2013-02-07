@@ -40,6 +40,7 @@ public class Telemetry_string {
 	
 	public boolean checksum_valid;
 	
+	private double[] extraFields;
 	
 	public String doc_time_created;
 	
@@ -49,17 +50,17 @@ public class Telemetry_string {
 		return "$$" + raw_string + "\n";
 	}
 	
-	public Telemetry_string(String telem) {
-		parse_telem(telem, System.currentTimeMillis() / 1000L);
+	public Telemetry_string(String telem, TelemetryConfig tc) {
+		parse_telem(telem, System.currentTimeMillis() / 1000L, tc);
 		checksum_valid = check_checksum(telem,0);
 	}
-	public Telemetry_string(String telem, long timerx) {
-		parse_telem(telem,timerx);
+	public Telemetry_string(String telem, long timerx, TelemetryConfig tc) {
+		parse_telem(telem,timerx, tc);
 		checksum_valid = check_checksum(telem,0);
 	}
 	
-	public Telemetry_string(String telem, boolean _checksum_valid) {
-		parse_telem(telem, System.currentTimeMillis() / 1000L);
+	public Telemetry_string(String telem, boolean _checksum_valid, TelemetryConfig tc) {
+		parse_telem(telem, System.currentTimeMillis() / 1000L, tc);
 		checksum_valid = _checksum_valid;
 		
 		//get time created
@@ -70,7 +71,7 @@ public class Telemetry_string {
 		doc_time_created = t;
 	}
 	
-	private void parse_telem(String str, long timerx)
+	private void parse_telem(String str, long timerx, TelemetryConfig tc)
 	{
 		int start = str.lastIndexOf('$');
 		
@@ -161,7 +162,70 @@ public class Telemetry_string {
 			}
 			
 			coords = new Gps_coordinate(fields[3+offset],fields[4+offset],fields[5+offset]);			
+			
+			
+			
+			//now parse extra data
+			extraFields = new double[fields.length-1];
+			
+			for (int j = 6+offset; j < fields.length; j++)
+			{
+				if (tc == null)
+				{
+					try
+					{
+						extraFields[j-1] = Double.parseDouble(fields[j]);
+					}
+					catch (Exception e)
+					{
+						
+					}
+				}
+				else
+				{
+					if (tc.getFieldDataType(j-1) == TelemetryConfig.DataType.FLOAT)
+					{
+						try
+						{
+							extraFields[j-1] = Double.parseDouble(fields[j]);
+						}
+						catch (Exception e)
+						{
+							
+						}
+					}
+					else if (tc.getFieldDataType(j-1) == TelemetryConfig.DataType.INT)
+					{
+						try
+						{
+							extraFields[j-1] = (double)Integer.parseInt(fields[j]);
+						}
+						catch (Exception e)
+						{
+							
+						}
+					}
+				}
+			}		
 		}
+	}
+	
+	public boolean getExtraFieldExists(int index)
+	{
+		if (extraFields == null)
+			return false;
+		if (!(index < extraFields.length))
+			return false;
+		return true;
+	}
+	
+	public double getExtraFields(int index)
+	{
+		if (extraFields == null)
+			return 0;
+		if (!(index < extraFields.length))
+			return 0;
+		return extraFields[index];
 	}
 	
 	public String toSha256()

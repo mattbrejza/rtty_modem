@@ -17,6 +17,10 @@ public class TelemetryConfig {
 	private List<Double> _fieldOffset = new ArrayList<Double>();
 	private List<Integer> _fieldRound = new ArrayList<Integer>();
 	
+	public int getIndex(String field)
+	{
+		return _fieldNames.indexOf(field);
+	}
 	
 	public int getTotalFields()
 	{

@@ -91,7 +91,7 @@ public class rtty_receiver implements StringRxEvent {
 		_listeners.add(listener);
 	}
 	
-	protected void fireStringReceived(Telemetry_string str, boolean checksum)
+	protected void fireStringReceived(String str, boolean checksum)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
@@ -613,12 +613,12 @@ public class rtty_receiver implements StringRxEvent {
 	}
 
 	
-	public void StringRx(Telemetry_string str, boolean checksum)
+	public void StringRx(String str, boolean checksum)
 	{
 
-		if (!last_sha.equals(str.toSha256()))
+		if (!last_sha.equals(str))
 		{
-			last_sha = str.toSha256();		
+			last_sha = str;		
 			if (_listeners.size() > 0)
 			{
 				fireStringReceived(str, checksum);

@@ -471,6 +471,12 @@ public class Habitat_interface {
 				 boolean keypt1 = false;
 				 
 				 
+				 TelemetryConfig tc = null;
+				 if (telem_configs.containsKey(callsign))
+				 {
+					 tc = telem_configs.get(callsign);
+				 }
+				 
 				while(jp.nextToken() != null )// || (jp.getCurrentLocation().getCharOffset() < body.length()-50)) && nullcount < 20) //100000 > out.size())
 				 {
 					//jp.nextToken();
@@ -493,7 +499,7 @@ public class Habitat_interface {
 					if (str != null && str1 != null)
 					{
 					 if (str.equals("_sentence") && !str1.equals("_sentence")){
-						 Telemetry_string ts = new Telemetry_string(str1,lasttime);
+						 Telemetry_string ts = new Telemetry_string(str1,lasttime, tc);
 						 if (!ts.isZeroGPS() && ts.time != null) {
 							 if (out.size() > 0){
 								 if (out.lastEntry().getValue().coords.alt_valid) {

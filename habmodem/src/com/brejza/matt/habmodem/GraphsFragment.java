@@ -124,15 +124,15 @@ public class GraphsFragment extends DialogFragment {
         	ck.setOnCheckedChangeListener(new OnCheckedChangeListener()
         	{
         		 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-           /*
+           
 	           		  if (line == null)
 	           			  line = new LineGraph(_data);
 	           		  if (isChecked)
-	           			line.addPayload(buttonView.getText().toString());
+	           			line.addField(buttonView.getText().toString());
 	           		  else
-	           			line.clearPayload(buttonView.getText().toString());
+	           			line.clearField(buttonView.getText().toString());
 	           		  
-	           		  drawGraph();*/
+	           		  drawGraph();
         		 } 
         	});
         	ll.addView(ck);
@@ -140,8 +140,10 @@ public class GraphsFragment extends DialogFragment {
         
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, _list_log);
         
-        if (line != null)			
-		  drawGraph();
+        if (line != null){	
+        	line.addField("altitude");
+        	drawGraph();
+        }
         
         // Create the AlertDialog object and return it
         return builder.create();

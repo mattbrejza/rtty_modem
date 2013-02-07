@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.achartengine.ChartFactory;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -25,6 +26,7 @@ public class LineGraph {
 	
 	private ConcurrentHashMap<String,Payload> _data;
 	List<String> listpayloads = new ArrayList<String>();
+	List<String> listfields = new ArrayList<String>();
 
 	
 	public LineGraph(ConcurrentHashMap<String,Payload> data)
@@ -65,6 +67,22 @@ public class LineGraph {
 			;
 	}
 	
+	public void addField(String field)
+	{
+		if (!listfields.contains(field))
+		{
+			listfields.add(field);
+		}
+	}
+	
+	public void clearField(String field)
+	{
+		if (listfields.contains(field))
+		{
+			listfields.remove(field);
+		}
+	}
+	
 	
 	public View getView(Context context)
 	{
@@ -73,38 +91,55 @@ public class LineGraph {
 		
 		if(listpayloads.size() < 1)
 			return null;
-		
+		if (Math.min(2, listfields.size()) == 0)
+			return null;
 		
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer();
+		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer(Math.min(2, listfields.size()));
 		int cnt = 0;
-		for (int i = 0; i < listpayloads.size(); i++)
+		for (int f = 0; f < Math.min(2, listfields.size()); f++)
 		{
-			String call = listpayloads.get(i);
-			if (_data.containsKey(call))
+			String field = listfields.get(f);
+			for (int i = 0; i < listpayloads.size(); i++)
 			{
-				TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
-				if (sen.size() > 1)
+				String call = listpayloads.get(i);
+				if (_data.containsKey(call))
 				{
-					if (sen.firstKey().longValue() < minTime)
-						minTime = sen.firstKey().longValue();
-					if (sen.lastKey().longValue() > maxTime)
-						maxTime = sen.lastKey().longValue();
-					
-					TimeSeries series = new TimeSeries(_data.get(call).callsign);
-					
-					for (TreeMap.Entry<Long,Telemetry_string> entry : sen.entrySet())
-					{					
-						if (entry.getValue().coords.alt_valid)						
-							series.add(entry.getKey(),(int)entry.getValue().coords.altitude);	
+					int findex = _data.get(call).telemetryConfig.getIndex(field);
+					if (findex >= 0){
+						TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
+						if (sen.size() > 1)
+						{
+							if (sen.firstKey().longValue() < minTime)
+								minTime = sen.firstKey().longValue();
+							if (sen.lastKey().longValue() > maxTime)
+								maxTime = sen.lastKey().longValue();
+							
+							XYSeries series = new XYSeries(_data.get(call).callsign + " - " + field,f);
+							
+							for (TreeMap.Entry<Long,Telemetry_string> entry : sen.entrySet())
+							{				
+								if (field == "altitude")
+								{
+									if (entry.getValue().coords.alt_valid)						
+										series.add(entry.getKey(),(int)entry.getValue().coords.altitude);	
+								}
+								else
+								{
+									if (entry.getValue().getExtraFieldExists(findex))
+										series.add(entry.getKey(),entry.getValue().getExtraFields(findex));
+								}
+							}
+										
+							dataset.addSeries(series);			
+							XYSeriesRenderer renderer = new XYSeriesRenderer();
+							renderer.setColor(_data.get(call).colour);
+							renderer.setLineWidth(4);
+							mrend.addSeriesRenderer(renderer);
+							
+							cnt++;
+						}
 					}
-								
-					dataset.addSeries(series);			
-					XYSeriesRenderer renderer = new XYSeriesRenderer();
-					renderer.setColor(_data.get(call).colour);
-					renderer.setLineWidth(4);
-					mrend.addSeriesRenderer(renderer);
-					cnt++;
 				}
 			}
 		}
@@ -118,13 +153,15 @@ public class LineGraph {
 		for (int i = 0; i < steps; i++)
 		{
 			Date dt = new Date(minTime + i*inc);
-			SimpleDateFormat dtf = new SimpleDateFormat("hh:mm");
+			SimpleDateFormat dtf = new SimpleDateFormat("HH:mm");
 
 			mrend.addXTextLabel(minTime + i*inc, dtf.format(dt));
 		}
 		
 		mrend.setChartTitle("Altitude Plot");
 		mrend.setYTitle("Altitude (m)");
+		
+		mrend.setShowGrid(true);
 		
 		mrend.setYLabelsAngle(270);
 		

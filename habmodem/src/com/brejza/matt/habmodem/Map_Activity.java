@@ -616,7 +616,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             	if (intent.hasExtra(Dsp_service.TELEM_STR))
             	{
             		
-            		Telemetry_string str = new Telemetry_string( intent.getStringExtra(Dsp_service.TELEM_STR));
+            		Telemetry_string str = new Telemetry_string( intent.getStringExtra(Dsp_service.TELEM_STR),null);
 
                 	//item.setPoint(new GeoPoint(str.coords.latitude,str.coords.longitude));
                 	//itemizedOverlay.requestRedraw();
