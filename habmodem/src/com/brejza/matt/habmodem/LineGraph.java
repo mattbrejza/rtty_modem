@@ -168,7 +168,9 @@ public class LineGraph {
 				
 				if (_data.containsKey(call))
 				{
-					int findex = _data.get(call).telemetryConfig.getIndex(field);
+					int findex = 0;
+					if (_data.get(call).telemetryConfig != null)
+						findex = _data.get(call).telemetryConfig.getIndex(field);
 					if (findex >= 0){
 						TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
 						if (sen.size() > 1)

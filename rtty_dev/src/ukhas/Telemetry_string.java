@@ -221,6 +221,8 @@ public class Telemetry_string {
 	
 	public double getExtraFields(int index)
 	{
+		if (index < 0)
+			return 0;
 		if (extraFields == null)
 			return 0;
 		if (!(index < extraFields.length))
