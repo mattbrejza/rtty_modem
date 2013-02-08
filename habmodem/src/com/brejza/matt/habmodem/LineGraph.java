@@ -21,6 +21,7 @@ import ukhas.Payload;
 import ukhas.Telemetry_string;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint.Align;
 import android.view.View;
 
@@ -154,12 +155,17 @@ public class LineGraph {
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
 		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer( Math.min(2, differentFields));
 		int cnt = 0;
-		for (int f = 0; f < listfields.size(); f++)
+		
+		
+		for (int i = 0; i < listpayloads.size(); i++)
 		{
-			String field = listfields.get(f);
-			for (int i = 0; i < listpayloads.size(); i++)
-			{
-				String call = listpayloads.get(i);
+			String call = listpayloads.get(i);
+			int colour = _data.get(call).colour;
+			
+			for (int f = 0; f < listfields.size(); f++)
+			{			
+				String field = listfields.get(f);
+				
 				if (_data.containsKey(call))
 				{
 					int findex = _data.get(call).telemetryConfig.getIndex(field);
@@ -173,8 +179,12 @@ public class LineGraph {
 								maxTime = sen.lastKey().longValue();
 							
 							int axis = 0;
-							if (!isTemperature(listfields.get(f)))
-								axis = f;	
+							if (!isTemperature(listfields.get(f))){
+								if (tempLoc == 0)
+									axis = 1;	
+								else
+									axis = f;
+							}
 							else
 								axis = tempLoc;
 							
@@ -195,13 +205,14 @@ public class LineGraph {
 							}
 									
 							//if (!isTemperature(listfields.get(f)))
-								dataset.addSeries(axis,series);	
+							//dataset.addSeries(axis,series);	
+							dataset.addSeries(series);	
 							//else
 							//	dataset.addSeries(f,series);
 							
 							
 							XYSeriesRenderer renderer = new XYSeriesRenderer();
-							renderer.setColor(_data.get(call).colour);
+							renderer.setColor(colour);
 							renderer.setLineWidth(4);
 
 							//stroke style
@@ -211,7 +222,12 @@ public class LineGraph {
 						}
 					}
 				}
-			}
+				float lasthsv[]= new float[3];
+	    		Color.colorToHSV(colour,lasthsv);
+	    		lasthsv[0] = (lasthsv[0] + (26)) % 360;
+	    		colour = Color.HSVToColor(lasthsv);
+			}		
+			
 		}
 		
 		if (cnt == 0)
@@ -228,12 +244,13 @@ public class LineGraph {
 			mrend.addXTextLabel(minTime + i*inc, dtf.format(dt));
 		}
 		
-		mrend.setChartTitle("Altitude Plot");
+		//mrend.setChartTitle("Altitude Plot");
 		mrend.setYTitle("Altitude (m)",0);
-	//	if (Math.min(2, differentFields) > 1){
-	//		mrend.addYTextLabel(10, "New Test", 1);
-	//		mrend.setYTitle("Hours", 1);
-	//	}
+		if (Math.min(2, differentFields) > 1){
+			//mrend.addYTextLabel(10, "New Test", 1);
+			//mrend.setYTitle("Hours", 1);
+			mrend.setYAxisAlign(Align.RIGHT, 1);
+		}
 		
 		mrend.setShowGrid(true);
 		

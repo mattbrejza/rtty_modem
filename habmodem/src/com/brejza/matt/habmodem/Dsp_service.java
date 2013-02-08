@@ -300,6 +300,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
         if (bestProvider == null)
         	return;
         System.out.println("STARTING GPS WITH: "+bestProvider);
+        logEvent("Starting Location with: " + bestProvider,true);
         this.locationManager.requestLocationUpdates(bestProvider, 2000, 0, this.loc_han);
         
         
