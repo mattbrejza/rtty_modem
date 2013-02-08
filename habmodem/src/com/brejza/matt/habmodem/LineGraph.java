@@ -73,6 +73,13 @@ public class LineGraph {
 	{
 		int differentFields = 0;
 		boolean gotTemp = false;
+		/*
+		if (listfields.size() < 2){
+			listfields.add(field);
+			return true;
+		}
+		else
+			return false; */
 		
 		if (!listfields.contains(field))
 		{
@@ -93,7 +100,7 @@ public class LineGraph {
 			}
 			
 			
-			if (differentFields < 2 || (differentFields == 2 && isTemperature(field)))
+			if (differentFields < 2 || (gotTemp && differentFields == 2 && isTemperature(field)))
 				{
 					listfields.add(field);
 					return true;
@@ -102,7 +109,7 @@ public class LineGraph {
 					return false;	
 		}
 		
-		return true;
+		return true; 
 	}
 		
 	private boolean isTemperature(String str)
@@ -145,9 +152,9 @@ public class LineGraph {
 		
 		
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer(Math.min(2, differentFields));
+		XYMultipleSeriesRenderer mrend = new XYMultipleSeriesRenderer( Math.min(2, differentFields));
 		int cnt = 0;
-		for (int f = 0; f < differentFields; f++)
+		for (int f = 0; f < listfields.size(); f++)
 		{
 			String field = listfields.get(f);
 			for (int i = 0; i < listpayloads.size(); i++)
@@ -165,7 +172,13 @@ public class LineGraph {
 							if (sen.lastKey().longValue() > maxTime)
 								maxTime = sen.lastKey().longValue();
 							
-							XYSeries series = new XYSeries(_data.get(call).callsign + " - " + field,f);
+							int axis = 0;
+							if (!isTemperature(listfields.get(f)))
+								axis = f;	
+							else
+								axis = tempLoc;
+							
+							XYSeries series = new XYSeries(_data.get(call).callsign + " - " + field,axis);
 							
 							for (TreeMap.Entry<Long,Telemetry_string> entry : sen.entrySet())
 							{				
@@ -181,10 +194,12 @@ public class LineGraph {
 								}
 							}
 									
-							if (!isTemperature(listfields.get(f)))
-								dataset.addSeries(f,series);	
-							else
-								dataset.addSeries(tempLoc,series);
+							//if (!isTemperature(listfields.get(f)))
+								dataset.addSeries(axis,series);	
+							//else
+							//	dataset.addSeries(f,series);
+							
+							
 							XYSeriesRenderer renderer = new XYSeriesRenderer();
 							renderer.setColor(_data.get(call).colour);
 							renderer.setLineWidth(4);
@@ -215,10 +230,10 @@ public class LineGraph {
 		
 		mrend.setChartTitle("Altitude Plot");
 		mrend.setYTitle("Altitude (m)",0);
-		if (Math.min(2, differentFields) > 1){
-			mrend.addYTextLabel(10, "New Test", 1);
-			mrend.setYTitle("Hours", 1);
-		}
+	//	if (Math.min(2, differentFields) > 1){
+	//		mrend.addYTextLabel(10, "New Test", 1);
+	//		mrend.setYTitle("Hours", 1);
+	//	}
 		
 		mrend.setShowGrid(true);
 		
