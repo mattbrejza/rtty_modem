@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -466,9 +467,11 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Dsp_service.FFT_UPDATED)) {
             	//TODO: HERE
-            	wfview.setImageBitmap(wf.UpdateLine(mService.getFFT(),mService.get_f1_FFTbin(),mService.get_f2_FFTbin()));
-            	wfview.invalidate();
-            	
+            	Bitmap img = wf.UpdateLine(mService.getFFT(),mService.get_f1_FFTbin(),mService.get_f2_FFTbin());
+            	if (img != null){
+	            	wfview.setImageBitmap(img);
+	            	wfview.invalidate();
+            	}
             	
             	
             	//tdata.setTe

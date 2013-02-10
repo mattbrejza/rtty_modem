@@ -35,6 +35,9 @@ public class Waterfall {
 		if (fftin.length != 512)
 			return null;
 		
+		if (_imageHeight <= 0)
+			return null;
+		
 		int currentpix;
 		
 		for (int i = 0; i < 512; i++)
