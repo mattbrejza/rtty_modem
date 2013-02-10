@@ -269,6 +269,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			updateActivePayloadsHabitat();
 		}
 		logEvent("Service Restarted",false);
+		
+		if (_enablePosition || _enableChase)
+			enableLocation();
+
 	}
 	
 	public void servicePause()
@@ -277,6 +281,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		if (updateTimer != null)
 			updateTimer.cancel();
 		logEvent("Service Paused",false);
+		
+		disableLocation();
 	}
 	
 	public int countActivePayloads()
@@ -302,8 +308,6 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
         System.out.println("STARTING GPS WITH: "+bestProvider);
         logEvent("Starting Location with: " + bestProvider,true);
         this.locationManager.requestLocationUpdates(bestProvider, 2000, 0, this.loc_han);
-        
-        
         
     }
     
