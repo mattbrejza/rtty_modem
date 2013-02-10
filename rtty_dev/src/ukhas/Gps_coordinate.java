@@ -84,9 +84,13 @@ public class Gps_coordinate {
 		
 		if (lat.charAt(0) == '-')
 			offset_lat = 1;
+		else if (lat.charAt(0) == '+')
+			lat = lat.substring(1);
 		
 		if (longi.charAt(0) == '-')
 			offset_long = 1;
+		else if (longi.charAt(0) == '+')
+			longi = longi.substring(1);
 		
 		int i,j;
 		
@@ -111,9 +115,9 @@ public class Gps_coordinate {
 					double la2 = Double.parseDouble(lat.substring(offset_lat+2,lat.length()));       //get the MM.mmmm part
 					double lo2 = Double.parseDouble(longi.substring(offset_long+3,longi.length()));  //get the MM.mmmm part
 	
-					if (la1 < 0)
+					if (offset_lat > 0)
 						la2 = -1 * la2;
-					if (lo1 < 0)
+					if (offset_long > 0)
 						lo2 = -1 * lo2;
 					
 					Set_decimal((double)la1 + la2/60,(double)lo1 + lo2/60);
