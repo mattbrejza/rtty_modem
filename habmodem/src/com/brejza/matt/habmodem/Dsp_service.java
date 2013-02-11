@@ -677,6 +677,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
              }
 
             mRecorder.stop();
+            mRecorder.release();
             System.out.println("DONE RECORDING");
             logEvent("Stopping Audio",true);
             isRecording = false;
