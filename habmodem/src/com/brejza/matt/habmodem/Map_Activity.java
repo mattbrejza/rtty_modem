@@ -361,6 +361,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 
     private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
     {
+    	if (coord == null)
+    		return;
+    	if (!coord.latlong_valid)
+    		return ;
+    	if (coord.latitude == 0 && coord.longitude == 0)
+    		return ;
     	callsign = callsign.toUpperCase();
     	if (mapView == null)
     		return ;

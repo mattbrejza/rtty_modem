@@ -86,15 +86,15 @@ public class Telemetry_string {
 		String[] cksplit = raw_string.split("\\*",0);  //remove checksum
 		
 		if (cksplit.length>0)			
-			fields = cksplit[0].split(",",0);
+			fields = cksplit[0].split("\\,",-1);
 		else
-			fields = raw_string.split(",",0);
+			fields = raw_string.split("\\,",-1);
 		
 		if (fields.length > 6)
 		{
 			user_fields = new String[fields.length-6];
 			System.arraycopy(fields, 6, user_fields, 0, fields.length-6);		
-		}
+		} 
 		
 		int ci = 0;
 		int offset = 0;
@@ -321,7 +321,7 @@ public class Telemetry_string {
 	}
 	
 	public boolean isZeroGPS(){
-		return (coords.latitude == 0 || coords.longitude == 0);
+		return (coords.latitude == 0.0 || coords.longitude == 0.0);
 	}
 
 }

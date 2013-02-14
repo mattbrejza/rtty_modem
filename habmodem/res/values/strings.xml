@@ -47,7 +47,7 @@
     <string name="firstruntitle">WARNING</string>
     <string name="firstrunmessage">This app provides mapping data which can be used for navigation. The app does not provide audio prompts and so must never be used while driving a motor vehicle. No guarantee of correctness is given for data presented by this app.</string>
     <string name="firstruncontinue">I Agree</string>
-    <string name="maphelpermessage">This app requires Open Street Map data in the mapsforge (.map) format. Please download maps for your region from _link_ and select a file when done.</string>
+    <string name="maphelpermessage">This app requires Open Street Map data in the mapsforge (.map) format. Please download maps for your region from download.mapsforge.org/maps/ and select a file when done.</string>
     <string name="maphelpercontinue">Select Map File</string>
     <string name="mapshelptitle">About Maps</string>
     <string name="title_activity_start">HAB Tracker</string>
