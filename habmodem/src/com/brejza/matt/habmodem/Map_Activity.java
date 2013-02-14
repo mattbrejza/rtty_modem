@@ -104,6 +104,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
          mapView = (MapView) findViewById(R.id.mapView);
     	 mapView.setClickable(true);
     	 mapView.setBuiltInZoomControls(true);
+    	
         
     	// mapView.setMapFile(new File("/mnt/sdcard/Pictures/england.map"));
         
@@ -147,6 +148,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
       
     }
     
+    
     private void showMapChooser()
     {
     	Intent intent = new Intent(Map_Activity.this, FileChooserActivity.class);
@@ -155,6 +157,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		intent.putExtra(FileChooserActivity._Theme, android.R.style.Theme_Dialog);
 		startActivityForResult(intent, _ReqChooseFile);
     }
+    
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -197,6 +200,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             break;
         }
     }
+    
     
     public void btnAddPayload(View view)
     {
@@ -282,6 +286,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    	public void onResume() {
    		super.onResume();
    		
+
+	   		
    		if (mapView.getMapFile() == null)
    			showMapChooser();
    		else
@@ -324,6 +330,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		if (!isReg) { registerReceiver(logReceiver, intentFilter4); }
    		
    		isReg = true;
+   	    
    	
    	}
        
@@ -733,5 +740,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		mService.changeLocationSettings(enPos,enChase);
 		
 	}
+
+
+
 
 }

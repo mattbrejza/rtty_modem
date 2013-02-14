@@ -207,29 +207,31 @@ public final class R {
     public static final class layout {
         public static final int activity_fft=0x7f030000;
         public static final int activity_map=0x7f030001;
-        public static final int activity_status_screen=0x7f030002;
-        public static final int afc_button_location=0x7f030003;
-        public static final int afc_context_menu_tiem=0x7f030004;
-        public static final int afc_context_menu_view=0x7f030005;
-        public static final int afc_file_chooser=0x7f030006;
-        public static final int afc_file_item=0x7f030007;
-        public static final int afc_gridview_files=0x7f030008;
-        public static final int afc_listview_files=0x7f030009;
-        public static final int afc_settings_sort_view=0x7f03000a;
-        public static final int afc_simple_text_input_view=0x7f03000b;
-        public static final int afc_view_locations_divider=0x7f03000c;
-        public static final int dialog_add_payload=0x7f03000d;
-        public static final int fragment_balloon_data=0x7f03000e;
-        public static final int fragment_data_snippet=0x7f03000f;
-        public static final int fragment_graphs=0x7f030010;
-        public static final int fragment_log=0x7f030011;
+        public static final int activity_start=0x7f030002;
+        public static final int activity_status_screen=0x7f030003;
+        public static final int afc_button_location=0x7f030004;
+        public static final int afc_context_menu_tiem=0x7f030005;
+        public static final int afc_context_menu_view=0x7f030006;
+        public static final int afc_file_chooser=0x7f030007;
+        public static final int afc_file_item=0x7f030008;
+        public static final int afc_gridview_files=0x7f030009;
+        public static final int afc_listview_files=0x7f03000a;
+        public static final int afc_settings_sort_view=0x7f03000b;
+        public static final int afc_simple_text_input_view=0x7f03000c;
+        public static final int afc_view_locations_divider=0x7f03000d;
+        public static final int dialog_add_payload=0x7f03000e;
+        public static final int fragment_balloon_data=0x7f03000f;
+        public static final int fragment_data_snippet=0x7f030010;
+        public static final int fragment_graphs=0x7f030011;
+        public static final int fragment_log=0x7f030012;
     }
     public static final class menu {
         public static final int activity_fft=0x7f0c0000;
         public static final int activity_map=0x7f0c0001;
-        public static final int activity_status_screen=0x7f0c0002;
-        public static final int afc_file_chooser_activity=0x7f0c0003;
-        public static final int main_menu=0x7f0c0004;
+        public static final int activity_start=0x7f0c0002;
+        public static final int activity_status_screen=0x7f0c0003;
+        public static final int afc_file_chooser_activity=0x7f0c0004;
+        public static final int main_menu=0x7f0c0005;
     }
     public static final class string {
         public static final int accept=0x7f07006a;
@@ -307,12 +309,18 @@ public final class R {
         public static final int dialog_graphs_title=0x7f07004c;
         public static final int dialog_logs_title=0x7f070045;
         public static final int fft_screen=0x7f070044;
+        public static final int firstruncontinue=0x7f07006d;
+        public static final int firstrunmessage=0x7f07006c;
+        public static final int firstruntitle=0x7f07006b;
         public static final int hello_world=0x7f070040;
         public static final int latitude=0x7f070061;
         public static final int location_dialog=0x7f070068;
         public static final int log_screen=0x7f070049;
         public static final int longitude=0x7f070062;
         public static final int map_screen=0x7f070047;
+        public static final int maphelpercontinue=0x7f07006f;
+        public static final int maphelpermessage=0x7f07006e;
+        public static final int mapshelptitle=0x7f070070;
         public static final int menu_settings=0x7f070041;
         public static final int pref_advanced=0x7f07005b;
         public static final int pref_callsign=0x7f07004d;
@@ -338,6 +346,7 @@ public final class R {
         public static final int title_activity_fft=0x7f07004b;
         public static final int title_activity_map=0x7f07004a;
         public static final int title_activity_prefs=0x7f070046;
+        public static final int title_activity_start=0x7f070071;
         public static final int title_activity_status_screen=0x7f070042;
     }
     public static final class style {

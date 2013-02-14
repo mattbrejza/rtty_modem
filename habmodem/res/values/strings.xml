@@ -14,7 +14,7 @@
     <string name="title_activity_map">HAB Tracker</string>
     <string name="title_activity_fft">FFTActivity</string>
     <string name="dialog_graphs_title">Graphs</string>
-    <string name="pref_callsign">Callsign</string>   
+    <string name="pref_callsign">Callsign</string>
     <string name="pref_habitat_update_title">Habitat Update Period (minutes)</string>
     <string name="pref_habitat_update_summ">Enter time between querying server for new data</string>
     <string name="pref_habitat_lines_title">Max Database Entries Returned</string>
@@ -34,15 +34,23 @@
     <string name="time">TIME</string>
     <string name="altitude">ALTITUDE</string>
     <string name="altitude_max">MAX</string>
-	<string name="latitude">LATITUDE</string>
-	<string name="longitude">LONGITUDE</string>
-	<string name="ascent_rate">ASCENT RATE</string>
-	<string name="add_button_description">Add Payload to be Tracked</string>
-	<string name="dialog_add_payload_title">Select Payload</string>
-	<string name="dialog_add_payload_body">Select or enter payload to be tracked</string>
-	<string name="refresh_button">Refresh</string>
-	<string name="location_dialog">My Location</string>
-	<string name="cancel">Cancel</string>
-	<string name="accept">OK</string>
+    <string name="latitude">LATITUDE</string>
+    <string name="longitude">LONGITUDE</string>
+    <string name="ascent_rate">ASCENT RATE</string>
+    <string name="add_button_description">Add Payload to be Tracked</string>
+    <string name="dialog_add_payload_title">Select Payload</string>
+    <string name="dialog_add_payload_body">Select or enter payload to be tracked</string>
+    <string name="refresh_button">Refresh</string>
+    <string name="location_dialog">My Location</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">OK</string>
+    <string name="firstruntitle">WARNING</string>
+    <string name="firstrunmessage">This app provides mapping data which can be used for navigation. The app does not provide audio prompts and so must never be used while driving a motor vehicle. No guarantee of correctness is given for data presented by this app.</string>
+    <string name="firstruncontinue">I Agree</string>
+    <string name="maphelpermessage">This app requires Open Street Map data in the mapsforge (.map) format. Please download maps for your region from _link_ and select a file when done.</string>
+    <string name="maphelpercontinue">Select Map File</string>
+    <string name="mapshelptitle">About Maps</string>
+    <string name="title_activity_start">HAB Tracker</string>
+    
 
 </resources>
