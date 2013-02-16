@@ -30,6 +30,7 @@ public class Bits_to_chars {
 	private double _average_stop_bits;
 	private int _bits_since_last=0;
 	private int _total_average=0;
+	private boolean _first_start_found_stop_av = false;
 	
 	private int _previous_bits;
 	private int _search_pattern;
@@ -47,8 +48,17 @@ public class Bits_to_chars {
 	
 	public double average_stop_bits()
 	{
+		double out = _average_stop_bits/_total_average;
+		if (_total_average>7)
+		{
+			_average_stop_bits = 0;
+			_bits_since_last = 0;
+			_total_average = 0;
+			_first_start_found_stop_av = false;
+		}
+		
 		System.out.println("AT: "+_average_stop_bits/_total_average);
-		return _average_stop_bits/_total_average;
+		return out;
 	}
 	
 	public Bits_to_chars(int default_data_bits, Method default_method) {
@@ -233,10 +243,10 @@ public class Bits_to_chars {
 		
 		
 		String out = "";
-		_average_stop_bits = 0;
-		_bits_since_last = 0;
-		_total_average = 0;
-		boolean first_start_found = false;
+		//_average_stop_bits = 0;
+		//_bits_since_last = 0;
+		//_total_average = 0;
+		//_first_start_found_stop_av = false;
 		
 		if (input.length < 1)
 		{
@@ -294,7 +304,7 @@ public class Bits_to_chars {
 					_bitmask = 1;
 					
 					//now average stops part
-					first_start_found = true;
+					_first_start_found_stop_av = true;
 					if (_bits_since_last > 0 && _bits_since_last < 5)
 					{
 						_total_average++;
@@ -302,7 +312,7 @@ public class Bits_to_chars {
 					}
 					_bits_since_last = 0;
 				}
-				else if (first_start_found)
+				else if (_first_start_found_stop_av)
 					_bits_since_last++;
 			}
 			_last_bit = input[i];
