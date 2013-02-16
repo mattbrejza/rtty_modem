@@ -47,6 +47,7 @@ public class Bits_to_chars {
 	
 	public double average_stop_bits()
 	{
+		System.out.println("AT: "+_average_stop_bits/_total_average);
 		return _average_stop_bits/_total_average;
 	}
 	

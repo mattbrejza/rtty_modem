@@ -566,13 +566,17 @@ public class rtty_receiver implements StringRxEvent {
 			telem_hand_f.ExtractPacket(str);
 			if (current_data_bits ==7)
 			{
+				str = bit2char_8.bits2chars(bits);
+				valid8 = telem_hand_8.ExtractPacket(str);
 				str = bit2char_7.bits2chars(bits);
-				telem_hand_7.ExtractPacket(str);
+				valid7 = telem_hand_7.ExtractPacket(str);
 			}
 			else
 			{
+				str = bit2char_7.bits2chars(bits);
+				valid7 = telem_hand_7.ExtractPacket(str);
 				str = bit2char_8.bits2chars(bits);
-				telem_hand_8.ExtractPacket(str);
+				valid8 = telem_hand_8.ExtractPacket(str);
 			}
 			
 			if (cc.getState() == ConfidenceCalculator.State.SIG_DROPPED)

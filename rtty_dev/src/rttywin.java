@@ -142,9 +142,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 
 	public void StringRx(Telemetry_string str, boolean checksum)
 	{
-		System.out.println(str.getSentence() + "   " + checksum);
-		if (chkOnline.isSelected())
-			hi.upload_payload_telem(str);
+	
 	}
 	
 	/**
@@ -512,4 +510,15 @@ public class rttywin extends JFrame implements StringRxEvent {
 		    }//end catch
 		  }//end run
 		}//end inner class CaptureThread
+
+
+	@Override
+	public void StringRx(String strrx, boolean checksum) {
+		// TODO Auto-generated method stub
+		Telemetry_string ts = new Telemetry_string("$$PICOTEX,00:00:00,,,h,*5443",null);
+		//Telemetry_string ts = new Telemetry_string(strrx,null);
+		System.out.println(ts.getSentence() + "   " + checksum);
+		if (chkOnline.isSelected())
+			hi.upload_payload_telem(ts);
+	}
 }

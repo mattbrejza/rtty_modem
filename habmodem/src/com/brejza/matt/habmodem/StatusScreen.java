@@ -83,6 +83,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     Waterfall wf;
 
     Handler handler;
+    Handler handler2;
     
     int lastScrollLength = 0;
   
@@ -161,6 +162,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         
         handler = new Handler();
+        handler2 = new Handler();
         
         
       //  rcv.addStringRecievedListener(this);
@@ -195,6 +197,8 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         Intent intent = new Intent(this, Dsp_service.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mBound = true;
+        
+        
       
        
     }
@@ -279,25 +283,28 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     		return;
     	if (mService.listRxStr.size() < 1)
     		return;
-    	if (!initList)
-    	{
-	    	 list = (ListView) findViewById(R.id.listRxDecodedStrings);
-	     
-	
-	         // First paramenter - Context
-	         // Second parameter - Layout for the row
-	         // Third parameter - ID of the TextView to which the data is written
-	         // Forth - the Array of data
-	         adapter = new ArrayAdapter<String>(this,
-	           android.R.layout.simple_list_item_1, android.R.id.text1, mService.listRxStr);
-	
-	         // Assign adapter to ListView
-	         list.setAdapter(adapter);
-	         list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-	         initList = true;
-    	}
-    	else
-    		adapter.notifyDataSetChanged();
+    	
+    	
+    	 handler2.post(new Runnable() {
+             @Override
+             public void run() {        	
+                 	
+		    	if (!initList)
+		    	{
+			    	 list = (ListView) findViewById(R.id.listRxDecodedStrings);
+			     
+			    	 initAdapter();
+					
+			         // Assign adapter to ListView
+			         list.setAdapter(adapter);
+			         list.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+			         initList = true;
+		    	}
+		    	else
+		    		adapter.notifyDataSetChanged();
+		    	
+             }
+      	});
 
     }
     
@@ -398,6 +405,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
             setBaudButton();
             updateListView();
             refreshButtons();
+            
         }
 
         @Override
@@ -406,6 +414,11 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         }
     };
     
+    private void initAdapter()
+    {
+    	adapter = new ArrayAdapter<String>(this,
+		           android.R.layout.simple_list_item_1, android.R.id.text1, mService.listRxStr);
+    }
    
     
     private class StringRxReceiver extends BroadcastReceiver {

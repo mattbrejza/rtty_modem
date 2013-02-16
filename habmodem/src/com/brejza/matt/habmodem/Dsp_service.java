@@ -105,7 +105,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	Handler handler;
 	
 	Toast toast;
-		
+	
+	
 	public double currentLatitude = 0;
 	public double currentLongitude = 0;
 	public boolean currentLocationValid = false;
@@ -798,47 +799,55 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		String call = str.callsign.toUpperCase();
 		if (!checksum && !mapPayloads.containsKey(call))
 			return;
-		last_str = str;
-		listRxStr.add(str.getSentence().trim());
 		
-		logEvent("Decoded String - " + str.getSentence().trim(),true);
+		if (last_str == null)
+			last_str = new Telemetry_string("",null);
 		
-		if (checksum){
-			if (enableUploader)
-				hab_con.upload_payload_telem(str);    //upload received string to server
+		if (!str.raw_64_str().equals(last_str.raw_64_str()))
+		{
+			last_str = str;
+			System.out.println("adding to list: " + str.getSentence().trim());
+			listRxStr.add(str.getSentence().trim());
 			
-			if (serviceInactiveTimer != null){
-				startInactiveTimer();
-			}
+			logEvent("Decoded String - " + str.getSentence().trim(),true);
 			
-			if (mapPayloads.containsKey(call)){
-				mapPayloads.get(call).setIsActivePayload(true);
-				if (mapPayloads.get(call).colour == 0)
-					mapPayloads.get(call).setNewColour(newColour());
+			if (checksum){
+				if (enableUploader)
+					hab_con.upload_payload_telem(str);    //upload received string to server
 				
-				mapPayloads.get(call).putPacket(str);
-				if ((System.currentTimeMillis() / 1000L) -60 < mapPayloads.get(call).getLastUpdated())
-					mapPayloads.get(call).setLastUpdatedNow(); //if there are no (big) gaps since last string add current time as last update
+				if (serviceInactiveTimer != null){
+					startInactiveTimer();
+				}
+				
+				if (mapPayloads.containsKey(call)){
+					mapPayloads.get(call).setIsActivePayload(true);
+					if (mapPayloads.get(call).colour == 0)
+						mapPayloads.get(call).setNewColour(newColour());
+					
+					mapPayloads.get(call).putPacket(str);
+					if ((System.currentTimeMillis() / 1000L) -60 < mapPayloads.get(call).getLastUpdated())
+						mapPayloads.get(call).setLastUpdatedNow(); //if there are no (big) gaps since last string add current time as last update
+				}
+				else
+				{		//first one, dont need to do anything special
+					//TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
+					//l.put(Long.valueOf(str.time.getTime()),str);
+					//listPayloadData.put(str.callsign.toUpperCase(),l);
+					mapPayloads.put(call,new Payload(str,newColour()));
+					startUpdateTimer();
+					updateActivePayloadsHabitat();
+				}
+				if (str.coords != null){
+					if (str.coords.alt_valid)
+						mapPayloads.get(call).putMaxAltitude(str.coords.altitude);
+				}
 			}
-			else
-			{		//first one, dont need to do anything special
-				//TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
-				//l.put(Long.valueOf(str.time.getTime()),str);
-				//listPayloadData.put(str.callsign.toUpperCase(),l);
-				mapPayloads.put(call,new Payload(str,newColour()));
-				startUpdateTimer();
-				updateActivePayloadsHabitat();
+			else if (str.getSentence().length() > 10 && !payloadExists(str.callsign)){
+				mapPayloads.put(call,new Payload(call,newColour(),true));
 			}
-			if (str.coords != null){
-				if (str.coords.alt_valid)
-					mapPayloads.get(call).putMaxAltitude(str.coords.altitude);
-			}
+			
+			sendBroadcast(new Intent(TELEM_RX));
 		}
-		else if (str.getSentence().length() > 10 && !payloadExists(str.callsign)){
-			mapPayloads.put(call,new Payload(call,newColour(),true));
-		}
-		
-		sendBroadcast(new Intent(TELEM_RX));
 	}
 
 	@Override
@@ -973,6 +982,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     	        new NotificationCompat.Builder(this)
     	        .setSmallIcon(R.drawable.ic_stat_car)
     	        .setContentTitle(title)
+    	        .setAutoCancel(true)
     	        .setContentText(body);
     	// Creates an explicit intent for an Activity in your app
    /* 	Intent resultIntent = new Intent(this, Map_Activity.class);
