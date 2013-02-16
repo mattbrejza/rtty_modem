@@ -53,10 +53,24 @@ public class Telemetry_string {
 	public Telemetry_string(String telem, TelemetryConfig tc) {
 		parse_telem(telem, System.currentTimeMillis() / 1000L, tc);
 		checksum_valid = check_checksum(telem,0);
+		
+		//get time created
+		Date time = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		String t = dateFormat.format(time);
+		t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+		doc_time_created = t;
 	}
 	public Telemetry_string(String telem, long timerx, TelemetryConfig tc) {
 		parse_telem(telem,timerx, tc);
 		checksum_valid = check_checksum(telem,0);
+		
+		//get time created
+		Date time = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		String t = dateFormat.format(time);
+		t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+		doc_time_created = t;
 	}
 	
 	public Telemetry_string(String telem, boolean _checksum_valid, TelemetryConfig tc) {

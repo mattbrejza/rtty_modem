@@ -766,6 +766,7 @@ public class Habitat_interface {
 			
 			String sha = input.toSha256();
 		
+			//System.out.println(doc.toString());
 			
 			db.saveDocument(doc,sha);  				//try to upload as only listener
 			CouchResponse cr = s.getLastResponse(); //see if successful
