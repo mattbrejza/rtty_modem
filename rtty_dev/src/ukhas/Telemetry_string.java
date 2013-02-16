@@ -145,7 +145,7 @@ public class Telemetry_string {
 				
 						
 
-				if (cal.getTimeInMillis() < timerx*1000 - 12*60*60*1000)
+				if (cal.getTimeInMillis() < timerx*1000 - 1*60*60*1000)
 					cal.roll(Calendar.DAY_OF_YEAR, 1);
 				if (cal.getTimeInMillis() < timerx*1000 + 12*60*60*1000)
 					;
