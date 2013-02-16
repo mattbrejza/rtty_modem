@@ -173,8 +173,10 @@ public class LineGraph {
 					int findex = 0;
 					if (_data.get(call).telemetryConfig != null){
 						findex = _data.get(call).telemetryConfig.getIndex(field);
-						m = _data.get(call).telemetryConfig.getFieldScale(findex);
-						c = _data.get(call).telemetryConfig.getFieldOffset(findex);
+						if (findex >= 0){
+							m = _data.get(call).telemetryConfig.getFieldScale(findex);
+							c = _data.get(call).telemetryConfig.getFieldOffset(findex);
+						}
 					}
 					if (findex >= 0){
 						TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
