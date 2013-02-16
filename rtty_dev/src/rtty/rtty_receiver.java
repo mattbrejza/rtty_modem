@@ -492,6 +492,8 @@ public class rtty_receiver implements StringRxEvent {
 		
 		cc.samplesElapsed(samples.length);
 		
+		ConfidenceCalculator.State initialState = cc.state;
+		
 		if (auto_rtty_finding && cc.fullSearchDue())
 		{
 			samples_since_fft = 0;
@@ -507,7 +509,7 @@ public class rtty_receiver implements StringRxEvent {
 		{
 			samples_since_fft = 0;
 			samples_since_afc = 0;
-			followRTTY(false);
+			followRTTY(initialState != ConfidenceCalculator.State.SIG_DROPPED);
 			
 			cc.AFCUpdate(decoder._f1,decoder._f2);
 		}
