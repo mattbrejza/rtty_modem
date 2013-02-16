@@ -91,7 +91,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	boolean _enableChase = false;
 	boolean _enablePosition = false;
 	
-	public boolean enableEcho = false;
+	private boolean enableEcho = false;
 	public boolean enableBell = false;
 	public boolean enableUploader = true;
 	private boolean _enableDecoder = false;
@@ -219,6 +219,17 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public void onDestroy()
 	{
+		disableEcho();
+		if (mRecorder != null)
+		{
+			mRecorder.stop();
+            mRecorder.release();
+		}
+		if (mPlayer != null)
+		{
+			mPlayer.stop();
+			mPlayer.release();
+		}
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	nm.cancel(0);
     	System.out.println("Destroying service");
@@ -343,9 +354,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	    	mPlayer = new AudioTrack(AudioManager.STREAM_MUSIC,8000,AudioFormat.CHANNEL_OUT_MONO,
 	    			AudioFormat.ENCODING_PCM_16BIT,2*buffsize,AudioTrack.MODE_STREAM);
 	    	
-	    	AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-	    	manager.setMode(AudioManager.MODE_IN_CALL);
-	    	manager.setSpeakerphoneOn(true);
+	    	if (enableEcho)
+	    	{
+		    	AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+				manager.setMode(AudioManager.MODE_IN_CALL);
+		    	manager.setSpeakerphoneOn(true);
+	    	}
 	    	
 	    	mRecorder.startRecording();
 	    	System.out.println("STARTING THREAD");
@@ -588,6 +602,23 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			return null;
 	}
 
+	public void enableEcho()
+	{
+		if (isRecording){
+			AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+	    	manager.setMode(AudioManager.MODE_IN_CALL);
+	    	manager.setSpeakerphoneOn(true);
+		}
+    	enableEcho = true;
+	}
+	
+	public void disableEcho()
+	{
+		AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		manager.setMode(AudioManager.MODE_NORMAL);
+    	manager.setSpeakerphoneOn(false);
+    	enableEcho = false;
+	}
 	
 	class captureThread extends Thread
     {
@@ -624,8 +655,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	            		mPlayer.play();
 	            	lastHead = true;
             	}
-            	else
+            	else{
+            		if (mPlayer.getPlayState() == AudioTrack.PLAYSTATE_PLAYING){
+            			mPlayer.stop();
+            			mPlayer.flush();
+            		}
             		lastHead = false;
+            	}
             	
             	if (buffsize >= 512)
             	{
@@ -676,12 +712,20 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
              }
 
+            mPlayer.stop();
+            mPlayer.release();
             mRecorder.stop();
             mRecorder.release();
             System.out.println("DONE RECORDING");
             logEvent("Stopping Audio",true);
             isRecording = false;
             mRecorder = null;
+            mPlayer = null;
+            
+            AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+    		manager.setMode(AudioManager.MODE_NORMAL);
+        	manager.setSpeakerphoneOn(false);            
+            
             nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             nm.cancel(1);
        }	
@@ -1054,6 +1098,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public boolean getEnablePosition(){
 		return _enablePosition;
+	}
+	
+	public boolean getEchoEnabled()
+	{
+		return enableEcho;
 	}
 	
 	public Telemetry_string getMostRecent(String callsign)

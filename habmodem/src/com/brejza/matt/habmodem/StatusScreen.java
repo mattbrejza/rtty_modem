@@ -517,10 +517,10 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     
     public void toggleEcho(View view)
     {
-    	if (mService.enableEcho)
-    		mService.enableEcho = false;
+    	if (mService.getEchoEnabled())
+    		mService.disableEcho();
     	else
-    		mService.enableEcho = true;
+    		mService.enableEcho();
     	
     	refreshButtons();
     }
@@ -569,7 +569,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     	else
     		btnbell.setImageResource(R.drawable.ic_action_bell_off);
 
-    	if (mService.enableEcho)
+    	if (mService.getEchoEnabled())
     		btnecho.setImageResource(R.drawable.ic_action_echo_on);
     	else
     		btnecho.setImageResource(R.drawable.ic_action_echo_off);
