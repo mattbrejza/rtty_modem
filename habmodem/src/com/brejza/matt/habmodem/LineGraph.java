@@ -165,12 +165,17 @@ public class LineGraph {
 			for (int f = 0; f < listfields.size(); f++)
 			{			
 				String field = listfields.get(f);
+				double m = 1;
+				double c = 0;
 				
 				if (_data.containsKey(call))
 				{
 					int findex = 0;
-					if (_data.get(call).telemetryConfig != null)
+					if (_data.get(call).telemetryConfig != null){
 						findex = _data.get(call).telemetryConfig.getIndex(field);
+						m = _data.get(call).telemetryConfig.getFieldScale(findex);
+						c = _data.get(call).telemetryConfig.getFieldOffset(findex);
+					}
 					if (findex >= 0){
 						TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
 						if (sen.size() > 1)
@@ -202,7 +207,7 @@ public class LineGraph {
 								else
 								{
 									if (entry.getValue().getExtraFieldExists(findex))
-										series.add(entry.getKey(),entry.getValue().getExtraFields(findex));
+										series.add(entry.getKey(),m*entry.getValue().getExtraFields(findex)+c);
 								}
 							}
 									
