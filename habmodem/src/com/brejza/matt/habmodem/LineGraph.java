@@ -10,6 +10,10 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.achartengine.ChartFactory;
+import org.achartengine.chart.BarChart;
+import org.achartengine.chart.BubbleChart;
+import org.achartengine.chart.CubicLineChart;
+import org.achartengine.chart.LineChart;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
@@ -182,10 +186,7 @@ public class LineGraph {
 						TreeMap<Long,Telemetry_string> sen = _data.get(call).data;
 						if (sen.size() > 1)
 						{
-							if (sen.firstKey().longValue() < minTime)
-								minTime = sen.firstKey().longValue();
-							if (sen.lastKey().longValue() > maxTime)
-								maxTime = sen.lastKey().longValue();
+							
 							
 							int axis = 0;
 							if (!isTemperature(listfields.get(f))){
@@ -215,7 +216,14 @@ public class LineGraph {
 									
 							//if (!isTemperature(listfields.get(f)))
 							//dataset.addSeries(axis,series);	
-							dataset.addSeries(series);	
+														
+							if (series.getMinX() < minTime)
+								minTime = (long)series.getMinX();
+							if (series.getMaxX() > maxTime)
+								maxTime = (long)series.getMaxX();
+							
+							dataset.addSeries(series);
+							
 							//else
 							//	dataset.addSeries(f,series);
 							
@@ -263,12 +271,20 @@ public class LineGraph {
 		
 		mrend.setShowGrid(true);
 		
+		for (int i = 0 ; i < Math.min(2, differentFields); i++)
+		{
+			mrend.setXAxisMax(maxTime, i);
+			mrend.setXAxisMin(minTime, i);
+		}
+			
+		
 		mrend.setYLabelsAngle(270);
 		
 		
 		
 		mrend.setXLabels(0);
-				
+
+
 		return ChartFactory.getLineChartView(context, dataset, mrend);
 		
 	}
