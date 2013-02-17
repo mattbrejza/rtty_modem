@@ -261,12 +261,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         	mService.updateActivePayloadsHabitat();
         	return true; }
         else if (item.getItemId() == R.id.graphs_button) {
-        	List<String> ls = mService.getActivePayloadList();
+        	if ( mService.getActivePayloadList().size() > 0)
+        	{
+        		showGraphDialog(mService.getActivePayloadList().get(0));
+        	}
+        	/*List<String> ls = mService.getActivePayloadList();
         	if (ls.size() > 0){
 	        	FragmentManager fm = getFragmentManager();
 	        	GraphsFragment di = new GraphsFragment();	        	
 	        	di.setActivePayloads(ls,mService.getPayloadList());
-	          	di.show(fm, "View Graphs");}}
+	          	di.show(fm, "View Graphs");}*/}
         else if (item.getItemId() == R.id.log_screen) {
         	FragmentManager fm = getFragmentManager();
         	ViewLogFragment di = new ViewLogFragment();

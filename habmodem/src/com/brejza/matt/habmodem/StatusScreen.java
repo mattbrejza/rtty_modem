@@ -122,12 +122,10 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         	mService.updateActivePayloadsHabitat();
         	return true; }
         else if (item.getItemId() == R.id.graphs_button) {
-        	List<String> ls = mService.getActivePayloadList();
-        	if (ls.size() > 0){
-	        	FragmentManager fm = getFragmentManager();
-	        	GraphsFragment di = new GraphsFragment();	        	
-	        	di.setActivePayloads(ls,mService.getPayloadList());
-	          	di.show(fm, "View Graphs");}}
+        	if ( mService.getActivePayloadList().size() > 0)
+        	{
+        		showGraphDialog(mService.getActivePayloadList().get(0));
+        	}}
         else if (item.getItemId() == R.id.log_screen) {
         	FragmentManager fm = getFragmentManager();
         	ViewLogFragment di = new ViewLogFragment();
@@ -140,6 +138,18 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     	
        
        return super.onOptionsItemSelected(item); 
+    }
+    
+    protected void showGraphDialog(String call_startup)
+    {
+    	List<String> ls = mService.getActivePayloadList();
+    	if (ls.size() > 0){
+        	FragmentManager fm = getFragmentManager();
+        	GraphsFragment di = new GraphsFragment();	 
+        	di.setStartCall(call_startup);
+        	di.setActivePayloads(ls,mService.getPayloadList());        	
+          	di.show(fm, "View Graphs");
+         }
     }
     
 	/////////////////////
