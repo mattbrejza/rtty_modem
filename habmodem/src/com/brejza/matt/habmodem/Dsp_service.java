@@ -220,6 +220,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public void onDestroy()
 	{
+		if (headsetReceiver != null) unregisterReceiver(headsetReceiver);
 		disableEcho();
 		if (mRecorder != null)
 		{
@@ -660,78 +661,94 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             buffsize =  mRecorder.read(buffer, 0, buffsize);  
         	mPlayer.write(buffer, 0, buffsize);
         	
-        	
+        	int readres;
         	
             while(isRecording && _enableDecoder) 
             {
-            	buffsize =  mRecorder.read(buffer, 0, buffsize);  
-            	if (usingMic && enableEcho){	            	
-	            	mPlayer.write(buffer, 0, buffsize);
-	            	if (mPlayer.getPlayState() != AudioTrack.PLAYSTATE_PLAYING && lastHead==true)
-	            		mPlayer.play();
-	            	lastHead = true;
-            	}
-            	else{
-            		if (mPlayer.getPlayState() == AudioTrack.PLAYSTATE_PLAYING){
-            			mPlayer.stop();
-            			mPlayer.flush();
-            		}
-            		lastHead = false;
-            	}
-            	
-            	if (buffsize >= 512)
+            	readres =  mRecorder.read(buffer, 0, buffsize);  
+            	if (readres < 10)
             	{
-            		int i;
-	                s = new double [buffsize];
-	                for (i = 0; i < buffsize; i++)
-	            	    s[i] = (double) buffer[i];
-	                
-	                i=0;
-	                clippingCount = 0;
-	                while (i < buffsize)
-	                {
-	                	if (buffer[i] > 30000 || buffer[i] < -30000)
-	                		clippingCount++;
-	                	
-	                	i += 10;
-	                }
-	                
-	                if (clippingCount > 10){
-	                	if (samplesSinceToast <= 0 || samplesSinceToast > 8000*3)
-	                	{
-	                		samplesSinceToast = buffsize;
-		                	System.out.println("Clipping detected");
-		                	handler.post(new Runnable(){
-		                		@Override
-		                		public void run() {
-		                			if (toast != null){
-		                				toast.cancel();
-		                				toast = null;
-		                			}
-		                			toast = Toast.makeText(getApplicationContext(), "Clipping Detected", Toast.LENGTH_SHORT);
-		                			toast.show();
-		                		}
-		                	});
-	                	}
-	                }
-	                samplesSinceToast += buffsize;
-	                
-	                String rxchar =  rcv.processBlock(s,_baud);
-	                Intent it = new Intent(CHAR_RX);
-	                it.putExtra(CHARS, rxchar);
-	                sendBroadcast(it);
-	                
-	                if (rcv.get_fft_updated())
-	                	sendBroadcast(new Intent(FFT_UPDATED));
-	                
+            		_enableDecoder = false;
+            		logEvent("Failed to get audio data, code " + readres,true);
             	}
-
+            	else
+            	{
+	            	if (usingMic && enableEcho){	            	
+		            	mPlayer.write(buffer, 0, buffsize);
+		            	if (mPlayer.getPlayState() != AudioTrack.PLAYSTATE_PLAYING && lastHead==true)
+		            		mPlayer.play();
+		            	lastHead = true;
+	            	}
+	            	else{
+	            		if (mPlayer.getPlayState() == AudioTrack.PLAYSTATE_PLAYING){
+	            			mPlayer.stop();
+	            			mPlayer.flush();
+	            		}
+	            		lastHead = false;
+	            	}
+	            	
+	            	if (buffsize >= 512)
+	            	{
+	            		int i;
+		                s = new double [buffsize];
+		                for (i = 0; i < buffsize; i++)
+		            	    s[i] = (double) buffer[i];
+		                
+		                i=0;
+		                clippingCount = 0;
+		                while (i < buffsize)
+		                {
+		                	if (buffer[i] > 30000 || buffer[i] < -30000)
+		                		clippingCount++;
+		                	
+		                	i += 10;
+		                }
+		                
+		                if (clippingCount > 10){
+		                	if (samplesSinceToast <= 0 || samplesSinceToast > 8000*3)
+		                	{
+		                		samplesSinceToast = buffsize;
+			                	System.out.println("Clipping detected");
+			                	handler.post(new Runnable(){
+			                		@Override
+			                		public void run() {
+			                			if (toast != null){
+			                				toast.cancel();
+			                				toast = null;
+			                			}
+			                			toast = Toast.makeText(getApplicationContext(), "Clipping Detected", Toast.LENGTH_SHORT);
+			                			toast.show();
+			                		}
+			                	});
+		                	}
+		                }
+		                samplesSinceToast += buffsize;
+		                
+		                String rxchar =  rcv.processBlock(s,_baud);
+		                Intent it = new Intent(CHAR_RX);
+		                it.putExtra(CHARS, rxchar);
+		                sendBroadcast(it);
+		                
+		                if (rcv.get_fft_updated())
+		                	sendBroadcast(new Intent(FFT_UPDATED));
+	            	}	                
+            	}
              }
 
-            mPlayer.stop();
-            mPlayer.release();
-            mRecorder.stop();
-            mRecorder.release();
+            if (mPlayer != null)
+            {
+            	if(mPlayer.getState() != AudioTrack.STATE_UNINITIALIZED){
+		            mPlayer.stop();
+		            mPlayer.release();
+            	}
+            }
+            if (mRecorder != null)
+            {
+            	if (mRecorder.getState() != AudioRecord.STATE_UNINITIALIZED){
+		            mRecorder.stop();
+		            mRecorder.release();
+            	}
+            }
             System.out.println("DONE RECORDING");
             logEvent("Stopping Audio",true);
             isRecording = false;

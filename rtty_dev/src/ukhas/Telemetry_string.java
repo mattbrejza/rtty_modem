@@ -195,6 +195,17 @@ public class Telemetry_string {
 						
 					}
 				}
+				else if (tc.getTotalFields() <= j-1)
+				{
+					try
+					{
+						extraFields[j-1] = Double.parseDouble(fields[j]);
+					}
+					catch (Exception e)
+					{
+						
+					}
+				}
 				else
 				{
 					if (tc.getFieldDataType(j-1) == TelemetryConfig.DataType.FLOAT)
