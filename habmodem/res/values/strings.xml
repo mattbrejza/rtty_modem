@@ -74,6 +74,7 @@
     <string name="firstruncontinue">I Agree</string>
     <string name="maphelpermessage">This app requires Open Street Map data in the mapsforge (.map) format. Please download maps for your region from download.mapsforge.org/maps/ and select a file when done.</string>
     <string name="maphelpercontinue">Select Map File</string>
+    <string name="maphelpernomap">Dont Use Maps</string>
     <string name="mapshelptitle">About Maps</string>
     
     

@@ -62,7 +62,6 @@ public class StartActivity extends Activity implements FirstRunMessage.NoticeDia
       	    	MapFileMessage di = new MapFileMessage();	    	
              	di.show(fm, "mapmessage");
            }
-
    	    }
     }
 
@@ -91,9 +90,7 @@ public class StartActivity extends Activity implements FirstRunMessage.NoticeDia
 	                {
 	                	PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).edit().putString("pref_map_path", f.getPath()).commit();
 	                	System.out.println(f.toString());
-	                }
-	             
-	                        
+	                }	              
 	            }
 	            break;
 	        }
@@ -120,6 +117,13 @@ public class StartActivity extends Activity implements FirstRunMessage.NoticeDia
 	public void onDialogPositiveClickMapHelp(DialogFragment dialog) {
 		// TODO Auto-generated method stub
  	   showMapChooser();
+	}
+
+	@Override
+	public void onDialogNegativeClickMapHelp(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent(this, StatusScreen.class);
+    	startActivity(intent);
 	}
 
 }

@@ -326,7 +326,8 @@ public final class R {
         public static final int map_screen=0x7f070041;
         public static final int maphelpercontinue=0x7f07006d;
         public static final int maphelpermessage=0x7f07006c;
-        public static final int mapshelptitle=0x7f07006e;
+        public static final int maphelpernomap=0x7f07006e;
+        public static final int mapshelptitle=0x7f07006f;
         public static final int menu_settings=0x7f070042;
         public static final int pref_advanced=0x7f07005b;
         /**   contents of preference screen 

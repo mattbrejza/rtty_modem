@@ -6,11 +6,16 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.widget.TextView;
 
 public class MapFileMessage extends DialogFragment {
 	
     public interface NoticeDialogListener {
-        public void onDialogPositiveClickMapHelp(DialogFragment dialog);
+    	public void onDialogPositiveClickMapHelp(DialogFragment dialog);
+    	public void onDialogNegativeClickMapHelp(DialogFragment dialog);
     }
     
     NoticeDialogListener mListener;
@@ -32,13 +37,25 @@ public class MapFileMessage extends DialogFragment {
 	
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+    	
+    	final SpannableString s =  new SpannableString(getActivity().getText(R.string.maphelpermessage));
+    	Linkify.addLinks(s, Linkify.WEB_URLS);
+    	final TextView message = new TextView(getActivity());
+    	message.setText(s);
+    	message.setMovementMethod(LinkMovementMethod.getInstance());
+    	
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.maphelpermessage)
+        builder.setView(message)
+        		//.setMessage(s)//R.string.maphelpermessage)
                .setPositiveButton(R.string.maphelpercontinue, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // FIRE ZE MISSILES!
                 	   mListener.onDialogPositiveClickMapHelp(MapFileMessage.this);
+                   }
+               })
+               .setNegativeButton(R.string.maphelpernomap, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                	   mListener.onDialogNegativeClickMapHelp(MapFileMessage.this);
                    }
                })
                .setTitle(R.string.mapshelptitle);
