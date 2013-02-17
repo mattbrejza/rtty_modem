@@ -180,7 +180,7 @@ public class rtty_decode {
 		//assume 300 baud for now
 		int R = downsample_ratio;
 		
-		int len = (int) Math.floor(((samples.length*upsample_ratio)-resample_counter)/R);
+		int len = (int) Math.ceil(((double)(samples.length*upsample_ratio)-resample_counter)/R);
 		if (len > 0)
 		{
 			double[] out = new double[len];
