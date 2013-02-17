@@ -364,24 +364,17 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	    	
 	    	if (mRecorder.getState() != AudioRecord.STATE_INITIALIZED)
 	    	{
-	    		logEvent("Could not start audio. " + buffsize,true);
+	    		
 	    		mRecorder = new AudioRecord(AudioSource.DEFAULT,8000,
 		    			AudioFormat.CHANNEL_IN_MONO ,
 		    			AudioFormat.ENCODING_PCM_16BIT,buffsize);
+	    		
 	    		if (mRecorder.getState() != AudioRecord.STATE_INITIALIZED)
 		    	{
-	    			logEvent("Could not start audio2. " + buffsize,true);
-	    			mRecorder = new AudioRecord(AudioSource.MIC,11025,
-			    			AudioFormat.CHANNEL_IN_MONO ,
-			    			AudioFormat.ENCODING_PCM_8BIT,buffsize);
-	    			if (mRecorder.getState() != AudioRecord.STATE_INITIALIZED)
-			    	{
-		    			logEvent("Could not start audio3. " + buffsize,true);
-	    			
-		    			return ;
-			    	}
-		    	}
-	    		
+	    			logEvent("Error - Could not initialise audio",true);
+	    			return;
+		    	}	 
+	    		logEvent("Using default audio source",false);
 	    	}	    
 	    	
 	    	mRecorder.startRecording();
