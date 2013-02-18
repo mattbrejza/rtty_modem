@@ -76,7 +76,7 @@ public class Telemetry_handler {
 						boolean ck = check_checksum(telem_buff,0);
 						//Telemetry_string ts = new Telemetry_string(telem_buff,ck);    //TODO: consider remove from here
 						fireStringReceived(telem_buff, ck);
-						
+						//System.out.println("got string: " + telem_buff);
 						out = ck;
 					}
 						

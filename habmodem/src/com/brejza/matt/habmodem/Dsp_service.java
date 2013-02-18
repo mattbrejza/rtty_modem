@@ -77,7 +77,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
     rtty_receiver rcv = new rtty_receiver();
     private AudioRecord mRecorder;
     private AudioTrack mPlayer;
-	int buffsize;
+	private int buffsize;
 	boolean isRecording = false;
 	boolean usingMic = false;
 	HeadsetReceiver headsetReceiver;
@@ -613,7 +613,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	{
 		if (payloadExists(call))
 		{
-			return mapPayloads.get(call).telemetryConfig;
+			return mapPayloads.get(call.toUpperCase()).telemetryConfig;
 		}
 		else
 			return null;
@@ -658,8 +658,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
  
           //  setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
             
-            buffsize =  mRecorder.read(buffer, 0, buffsize);  
-        	mPlayer.write(buffer, 0, buffsize);
+            //buffsize =  mRecorder.read(buffer, 0, buffsize);  
+        	//mPlayer.write(buffer, 0, buffsize);
         	
         	int readres;
         	
@@ -674,7 +674,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
             	else
             	{
 	            	if (usingMic && enableEcho){	            	
-		            	mPlayer.write(buffer, 0, buffsize);
+		            	mPlayer.write(buffer, 0, readres);
 		            	if (mPlayer.getPlayState() != AudioTrack.PLAYSTATE_PLAYING && lastHead==true)
 		            		mPlayer.play();
 		            	lastHead = true;
@@ -687,16 +687,16 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	            		lastHead = false;
 	            	}
 	            	
-	            	if (buffsize >= 512)
+	            	if (readres >= 512)
 	            	{
 	            		int i;
-		                s = new double [buffsize];
-		                for (i = 0; i < buffsize; i++)
+		                s = new double [readres];
+		                for (i = 0; i < readres; i++)
 		            	    s[i] = (double) buffer[i];
 		                
 		                i=0;
 		                clippingCount = 0;
-		                while (i < buffsize)
+		                while (i < readres)
 		                {
 		                	if (buffer[i] > 30000 || buffer[i] < -30000)
 		                		clippingCount++;
@@ -707,7 +707,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		                if (clippingCount > 10){
 		                	if (samplesSinceToast <= 0 || samplesSinceToast > 8000*3)
 		                	{
-		                		samplesSinceToast = buffsize;
+		                		samplesSinceToast = readres;
 			                	System.out.println("Clipping detected");
 			                	handler.post(new Runnable(){
 			                		@Override
@@ -722,7 +722,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			                	});
 		                	}
 		                }
-		                samplesSinceToast += buffsize;
+		                samplesSinceToast += readres;
 		                
 		                String rxchar =  rcv.processBlock(s,_baud);
 		                Intent it = new Intent(CHAR_RX);
