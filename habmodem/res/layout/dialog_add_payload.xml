@@ -11,7 +11,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Payload" />
+            android:text="@string/payaddpayload" />
 
         <AutoCompleteTextView
             android:id="@+id/auto_payload"
@@ -34,7 +34,7 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Look Back  " />
+            android:text="@string/payaddlookback" />
 
         <EditText
             android:id="@+id/txtLookDays"
@@ -48,7 +48,7 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Days, " />
+            android:text="@string/payadddays" />
 
         <EditText
             android:id="@+id/txtLookHours"
@@ -62,7 +62,7 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hours" />
+            android:text="@string/payaddhours" />
 
     </LinearLayout>
 

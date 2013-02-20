@@ -78,6 +78,20 @@
     <string name="mapshelptitle">About Maps</string>
     
     
-    
-
+    <!--  add dialog -->
+    <string name="payaddpayload">Payload</string>
+	<string name="payaddlookback">Look Back  </string>
+	<string name="payadddays">Days, </string>
+	<string name="payaddhours">Hours</string>
+	
+	<!-- decoder screen -->
+	<string name="decoderecho">ECHO</string>
+	<string name="decoderalerts">ALERTS</string>
+    <string name="decoderonline">ONLINE</string>
+	<string name="decoderactive">ACTIVE</string>
+	<string name="decoderbaud">BAUD</string>
+	<string name="decoderdata">DATA</string>
+	<string name="decoderstops">STOPS</string>
+	<string name="decoderstatus">STATUS</string>
+	
 </resources>
