@@ -12,12 +12,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Payload" />
-
+
         <AutoCompleteTextView
             android:id="@+id/auto_payload"
             android:layout_width="161dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:inputType="textCapCharacters" >
 
             <requestFocus />
         </AutoCompleteTextView>
@@ -48,12 +49,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Days, " />
-
+
         <EditText
             android:id="@+id/txtLookHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:inputType="number"
             android:text="0" />
 
         <TextView

@@ -204,8 +204,7 @@
                     android:layout_margin="3dp"
                     android:background="@drawable/status_background"
                     android:minHeight="100dp"
-                    android:scrollbars="vertical"
-                    android:text="BLAA" />
+                    android:scrollbars="vertical" />
 
                 <ListView
                     android:id="@+id/listRxDecodedStrings"
