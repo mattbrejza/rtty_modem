@@ -180,7 +180,10 @@ public class rtty_decode {
 		//assume 300 baud for now
 		int R = downsample_ratio;
 		
-		int len = (int) Math.ceil(((double)((double)(samples.length*upsample_ratio)-resample_counter))/R);
+		if (R-resample_counter < 0)
+			resample_counter = 0;
+		
+		int len = (int) Math.ceil(((double)((double)(samples.length*upsample_ratio)-(R-resample_counter)%R))/R);
 		if (len > 0)
 		{
 			double[] out = new double[len];
@@ -197,10 +200,10 @@ public class rtty_decode {
 				bb_l_c[i] = fir_outq1.step(bb_l_c[i]);
 				bb_h_s[i] = fir_outi2.step(bb_h_s[i]);
 				bb_h_c[i] = fir_outq2.step(bb_h_c[i]);
-				if (j < len){
+				//if (j < len){
 				out[j] =  (Math.pow(bb_l_s[i],2) + Math.pow(bb_l_c[i],2)) - 
 				          (Math.pow(bb_h_s[i],2) + Math.pow(bb_h_c[i],2));
-				}
+				//}
 				j++;
 			}
 			
@@ -209,12 +212,12 @@ public class rtty_decode {
 			
 
 			
-			resample_counter = ((resample_counter + (samples.length*3)) % R) % R;
+			resample_counter = ((resample_counter + (samples.length*upsample_ratio)) % R) % R;
 			return out;
 		}
 		else
 		{
-			resample_counter = ((resample_counter + (samples.length*3)) % R) % R;
+			resample_counter = ((resample_counter + (samples.length*upsample_ratio)) % R) % R;
 			return null;
 		}
 		
