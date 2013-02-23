@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="cable guide.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4234"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path4231"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="288.18357"
+     inkscape:cy="940.58716"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1440"
+     inkscape:window-height="847"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3911"
+       transform="translate(14.647212,29.7995)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         id="rect2985"
+         d="m 157.40625,66.96875 c -1.08142,1.398176 -2.77793,3.566939 -4.375,5.5 l -0.0625,2.125 -0.0625,0 0.0312,0.96875 -0.0312,1 0.0625,0 0.0625,2.125 c 1.59707,1.933061 3.29358,4.101824 4.375,5.5 l 5.59375,0 10.125,-3.15625 0.625,3.15625 44.4375,0 0,-7.75 0,-1.71875 0,-7.75 -44.4375,0 -0.625,3.15625 -10.125,-3.15625 -5.59375,0 z"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         inkscape:connector-curvature="0" />
+      <rect
+         y="67.656036"
+         x="178.39989"
+         height="15.738714"
+         width="0.87329459"
+         id="rect3776"
+         style="fill:none;stroke:#000000;stroke-width:1.30783439;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         y="68.093216"
+         x="191.18741"
+         height="15.738714"
+         width="0.87329459"
+         id="rect3776-1"
+         style="fill:none;stroke:#000000;stroke-width:1.30783439;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         y="67.526733"
+         x="204.52165"
+         height="15.738714"
+         width="0.87329459"
+         id="rect3776-7"
+         style="fill:none;stroke:#000000;stroke-width:1.30783439;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         sodipodi:nodetypes="ccccccccccccccccccccccccccccc"
+         inkscape:connector-curvature="0"
+         id="rect3834"
+         d="m 218.21132,59.407451 0.007,31.998799 3.59375,0 0,-2.78125 6.03125,0 0,-0.75 56.15625,0 0,-3.28125 -0.0625,0 0,-17.84375 -3.03125,0 0,17.84375 -53.0625,0 0,-3.375 15.84375,0 0,-1.9375 11.96875,0 0,-1.875 10.09375,0 0,-4.03125 -10.09375,0 0,-1.5 -11.96875,0 0,-1.78125 -15.85118,0.0012 0,-7.39118 -6.03125,-0.0947 0,-3.201618 z"
+         style="fill:none;stroke:#000000;stroke-width:0.82443422;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         y="72.334106"
+         x="254.4209"
+         height="6.3368006"
+         width="1.158229"
+         id="rect3852"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.9131996;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         y="70.396866"
+         x="242.56039"
+         height="10.032237"
+         width="1.0024585"
+         id="rect3852-8"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.06897008;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <rect
+         y="70.267151"
+         x="228.04488"
+         height="10.723234"
+         width="0.97917002"
+         id="rect3852-8-8"
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.09225845;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3895"
+         d="m 155.8375,81.25645 c -1.03125,-1.291555 -1.9726,-2.516362 -2.09189,-2.721792 -0.14239,-0.245227 -0.21906,-1.272911 -0.22321,-2.992214 l -0.006,-2.618703 0.9375,-1.230938 c 0.51563,-0.677016 1.45982,-1.889053 2.09822,-2.693417 l 1.16071,-1.462479 2.55283,-3.79e-4 2.55283,-3.8e-4 5.21503,1.624359 c 2.86826,0.893397 5.28833,1.636701 5.37793,1.651786 0.15955,0.02686 0.21313,-0.162557 0.63633,-2.249359 l 0.20823,-1.026786 1.68377,0 1.68377,0 0,8.035714 0,8.035715 -1.68164,0 -1.68163,0 -0.1906,-0.888728 c -0.10482,-0.4888 -0.24229,-1.212015 -0.30547,-1.607143 -0.0715,-0.447083 -0.21052,-0.718415 -0.3681,-0.718415 -0.13928,0 -2.57183,0.723214 -5.40567,1.607143 l -5.15244,1.607143 -2.56258,-0.0014 -2.56259,-0.0014 -1.875,-2.348282 z"
+         style="fill:#ca7663;fill-opacity:1;stroke:#ca7663;stroke-width:0.60000002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3897"
+         d="m 179.94464,75.571862 0,-8.035714 5.26786,0 5.26786,0 0,8.035714 0,8.035715 -5.26786,0 -5.26786,0 0,-8.035715 z"
+         style="fill:#cab563;fill-opacity:1;fill-rule:nonzero;stroke:#cab563;stroke-width:0.10714286;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3899"
+         d="m 192.80179,75.571862 0,-8.035714 5.44643,0 5.44642,0 0,8.035714 0,8.035715 -5.44642,0 -5.44643,0 0,-8.035715 z"
+         style="fill:#7cca63;fill-opacity:1;fill-rule:nonzero;stroke:#7cca63;stroke-width:0.10714286;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3901"
+         d="m 206.19464,75.571862 0,-8.035714 5.71429,0 5.71429,0 0,8.035714 0,8.035715 -5.71429,0 -5.71429,0 0,-8.035715 z"
+         style="fill:#638cca;fill-opacity:1;fill-rule:nonzero;stroke:#638cca;stroke-width:0.10714286;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         sodipodi:nodetypes="ccccccccsccccccccccssscccccc"
+         inkscape:connector-curvature="0"
+         id="path3903"
+         d="m 218.69464,75.393291 0,-15.535714 1.33929,0 1.33929,0 0,2.5 -0.0631,0.637531 3.3046,0.189404 2.70484,0.03157 0.0368,7.426175 c 0.0157,3.182355 0.0721,7.721751 -3.6e-4,10.089285 l -0.13181,4.304609 27.07455,0 27.07455,0 0,-8.928571 0,-8.928572 1.07142,0 1.07143,0 0,10.089286 0,10.089286 -28.125,0 c -28.00595,0 -28.125,0.0014 -28.125,0.357143 0,0.342712 -0.11905,0.357142 -2.94643,0.357142 l -2.94642,0 0,1.428572 0,1.428571 -1.33929,0 -1.33929,0 z"
+         style="fill:#638cca;fill-opacity:1;fill-rule:nonzero;stroke:#638cca;stroke-width:0.10714286;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3905"
+         d="m 229.69193,75.649486 0,-5.050763 6.12405,0 6.12405,0 0,5.050763 0,5.050762 -6.12405,0 -6.12405,0 0,-5.050762 z"
+         style="fill:#7cca63;fill-opacity:1;fill-rule:nonzero;stroke:#7cca63;stroke-width:0.07576144;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3907"
+         d="m 244.21287,75.586351 0,-3.219861 4.86136,0 4.86136,0 0,3.219861 0,3.219861 -4.86136,0 -4.86136,0 0,-3.219861 z"
+         style="fill:#cab563;fill-opacity:1;fill-rule:nonzero;stroke:#cab563;stroke-width:0.07576144;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path3909"
+         d="m 256.08216,75.396948 0,-1.515229 4.60883,0 4.60882,0 0,1.515229 0,1.515228 -4.60882,0 -4.60883,0 0,-1.515228 z"
+         style="fill:#ca7663;fill-opacity:1;fill-rule:nonzero;stroke:#ca7663;stroke-width:0.07576144;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:15.58649635px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="184.08688"
+       y="95.172119"
+       id="text4144"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4146"
+         x="184.08688"
+         y="95.172119"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">1 2 3 4</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:2.17884994;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 465.21165,37.04783 -29.72423,0 0,0.0563 -28.48337,0 0,58.1512 8.46041,0 0,4.79423 9.75767,0 0,15.67995 21.77144,-0.0563 0,-15.67995 9.75767,0 0,-4.79423 8.46041,0 z"
+       id="rect3949"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccccc"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#969696;fill-opacity:1;stroke:#969696;stroke-width:2.88781905;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3994"
+       width="9.185585"
+       height="23.68914"
+       x="86.545174"
+       y="-447.67743"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#969696;fill-opacity:1;fill-rule:nonzero;stroke:#343434;stroke-width:2.88781905;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3998"
+       width="1.1280543"
+       height="6.4460244"
+       x="87.83445"
+       y="-439.13644"
+       transform="matrix(0,1,-1,0,0,0)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#969696;fill-opacity:1;fill-rule:nonzero;stroke:#343434;stroke-width:2.88781905;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3998-5"
+       width="1.1280543"
+       height="6.4460244"
+       x="-456.78244"
+       y="-50.911415"
+       transform="scale(-1,-1)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#969696;fill-opacity:1;fill-rule:nonzero;stroke:#343434;stroke-width:2.88781905;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3998-5-1"
+       width="1.1280543"
+       height="6.4460244"
+       x="-449.04721"
+       y="-50.930916"
+       transform="scale(-1,-1)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#969696;fill-opacity:1;fill-rule:nonzero;stroke:#343434;stroke-width:2.88781905;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3998-5-1-1"
+       width="1.1280543"
+       height="6.4460244"
+       x="-414.76935"
+       y="-50.930916"
+       transform="scale(-1,-1)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#969696;fill-opacity:1;fill-rule:nonzero;stroke:#343434;stroke-width:2.88781905;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect3998-5-1-15"
+       width="1.1280543"
+       height="6.4460244"
+       x="-422.11749"
+       y="-50.948891"
+       transform="scale(-1,-1)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#b37311;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.94701743;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4075"
+       width="23.558847"
+       height="8.4344168"
+       x="-356.46661"
+       y="236.06166"
+       transform="matrix(-0.88908345,0.45774515,0.39445324,0.91891602,0,0)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#b37311;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.94701743;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4075-2"
+       width="23.558847"
+       height="8.4344168"
+       x="-426.93079"
+       y="15.222606"
+       transform="matrix(-0.96897398,-0.24716274,0.17879977,-0.98388548,0,0)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#606060;stroke-width:3.79026222;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 411.74083,57.53813 c 0,0 8.59693,-2.86612 8.78273,-5.882 0.1803,-2.92744 -6.28487,-4.99567 -6.28487,-4.99567"
+       id="path4095"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="csc"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#606060;stroke-width:3.79026222;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 390.22723,68.17408 c -1.80365,0.85376 -3.17258,0.66385 -8.7827,6.12371 -4.73637,4.6095 -10.15249,-2.09495 -10.15249,-2.09495"
+       id="path4097"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="csc"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#606060;stroke-width:3.79026222;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 394.17541,80.66323 c 0,0 -5.70976,-1.43782 -7.25176,-3.78703 -1.21601,-1.85257 -4.71184,0.84238 -7.1118,0.21431 -4.47316,-1.17059 -8.19752,-4.40423 -8.19752,-4.40423"
+       id="path4099"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cssc"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#606060;stroke-width:3.79026222;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 417.17782,86.0215 c 7.84938,1.72398 10.10578,1.7391 10.87768,1.36978 9.36458,-4.48048 8.86329,0.24173 8.86329,0.24173"
+       id="path4095-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="csc"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       xml:space="preserve"
+       style="font-size:15.82711124px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="387.66763"
+       y="53.37207"
+       id="text4119"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4121"
+         x="387.66763"
+         y="53.37207"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">R1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:15.82711124px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="384.78821"
+       y="98.687706"
+       id="text4119-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4121-1"
+         x="384.78821"
+         y="98.687706"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">R2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.3136816px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="426.63724"
+       y="83.300407"
+       id="text4148"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.99999785,-0.00207441,0.00207441,0.99999785,0,0)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4150"
+         x="426.63724"
+         y="83.300407"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">GND</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.3136816px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="420.30325"
+       y="63.468376"
+       id="text4148-4"
+       sodipodi:linespacing="125%"
+       transform="matrix(0.99999785,-0.00207441,0.00207441,0.99999785,0,0)"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4150-2"
+         x="420.30325"
+         y="63.468376"
+         style="font-weight:bold;-inkscape-font-specification:Sans Bold">TIP</tspan></text>
+    <path
+       style="fill:none;stroke:#2a2a2a;stroke-width:4.07425022;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 371.74858,73.060985 c 0,0 -10.84103,-8.422433 -18.79112,-15.380094 -19.20292,-16.805781 -48.06194,-12.816746 -58.54162,-2.197156 -10.47967,10.619589 -7.58873,60.055605 -7.58873,60.055605"
+       id="path4217"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cssc"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#2a2a2a;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 434.28571,89.505038 C 414.64286,111.29075 416.42857,120.93361 388.21429,117.71932 360,114.50504 289.64286,72.719324 270.35714,79.862181 251.07143,87.005038 250,102.00504 250,102.00504"
+       id="path4219"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="411.42856"
+       y="153.79074"
+       id="text4221"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4223"
+         x="411.42856"
+         y="153.79074"
+         style="font-size:20px;font-weight:bold;-inkscape-font-specification:Sans Bold">Radio</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="87.550217"
+       y="100.11748"
+       id="text4221-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\Desktop\radiocable.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4223-2"
+         x="87.550217"
+         y="100.11748"
+         style="font-size:20px;font-weight:bold;-inkscape-font-specification:Sans Bold">Tablet /</tspan><tspan
+         sodipodi:role="line"
+         x="87.550217"
+         y="125.11748"
+         style="font-size:20px;font-weight:bold;-inkscape-font-specification:Sans Bold"
+         id="tspan5242">Phone</tspan></text>
+  </g>
+</svg>

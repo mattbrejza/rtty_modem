@@ -30,7 +30,7 @@ public class Waterfall {
 		_grad_max = gradient.getWidth();	
 	}
 	
-	public Bitmap UpdateLine(double[] fftin, int f1, int f2)
+	public Bitmap updateLine(double[] fftin, int f1, int f2)
 	{
 		if (fftin.length != 512)
 			return null;
@@ -60,11 +60,36 @@ public class Waterfall {
 		else
 			output = Bitmap.createBitmap(im1,0,line1,512,_imageHeight);
 		
+		int w0,w1,w2,w3;
+		w0 = f1-1;
+		w1 = f1+1;
+		w2 = f2-1;
+		w3 = f2+1;
+		if (w0 < 0)
+			w0 = 0;
+		if (w2 < 0)
+			w2 = 0;
+		if (w1 >= output.getWidth())
+			w1 = output.getWidth()-1;
+		if (w3 >= output.getWidth())
+			w3 = output.getWidth()-1;
+		if (f1 < 0)
+			f1 = 0;
+		if (f1 >= output.getWidth())
+			f1 = output.getWidth()-1;
+		if (f2 < 0)
+			f2 = 0;
+		if (f2 >= output.getWidth())
+			f2 = output.getWidth()-1;
 		
 		for (int i = 0; i < _imageHeight; i++)
 		{
-			output.setPixel(f1, i, 0xFF00FF00);
-			output.setPixel(f2, i, 0xFF00FF00);
+			output.setPixel(w0, i, 0xFF000000);
+			output.setPixel(w1, i, 0xFF000000);
+			output.setPixel(w2, i, 0xFF000000);
+			output.setPixel(w3, i, 0xFF000000);
+			output.setPixel(f1, i, 0xFF22FF22);
+			output.setPixel(f2, i, 0xFF22FF22);			
 		}
 		
 		line1--;

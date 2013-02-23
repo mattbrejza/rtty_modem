@@ -291,8 +291,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void servicePause()
 	{
 		isRecording = false;
-		if (updateTimer != null)
+		if (updateTimer != null){
 			updateTimer.cancel();
+			updateTimer = null;
+		}
 		logEvent("Service Paused",false);
 		
 		disableLocation();
@@ -829,6 +831,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			str = new Telemetry_string(str_,tc);
 		
 		String call = str.callsign.toUpperCase();
+		if (call.equals(""))
+			return ;
 		if (!checksum && !mapPayloads.containsKey(call))
 			return;
 		

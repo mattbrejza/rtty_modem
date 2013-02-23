@@ -490,7 +490,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Dsp_service.FFT_UPDATED)) {
             	//TODO: HERE
-            	Bitmap img = wf.UpdateLine(mService.getFFT(),mService.get_f1_FFTbin(),mService.get_f2_FFTbin());
+            	Bitmap img = wf.updateLine(mService.getFFT(),mService.get_f1_FFTbin(),mService.get_f2_FFTbin());
             	if (img != null){
 	            	wfview.setImageBitmap(img);
 	            	wfview.invalidate();

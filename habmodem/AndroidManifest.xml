@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.brejza.matt.habmodem"
-    android:versionCode="13"
-    android:versionName="0.6.3.4 (pre-release)" >
+    android:versionCode="14"
+    android:versionName="0.6.4 (pre-release)" >
 
     <uses-sdk
         android:minSdkVersion="12"
