@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.brejza.matt.habmodem"
-    android:versionCode="14"
-    android:versionName="0.6.4 (pre-release)" >
+    android:versionCode="15"
+    android:versionName="0.6.4.1 (pre-release)" >
 
     <uses-sdk
-        android:minSdkVersion="12"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

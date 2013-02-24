@@ -60,6 +60,15 @@ public class Waterfall {
 		else
 			output = Bitmap.createBitmap(im1,0,line1,512,_imageHeight);
 		
+		if (f1 < 0)
+			f1 = 0;
+		if (f1 >= output.getWidth())
+			f1 = output.getWidth()-1;
+		if (f2 < 0)
+			f2 = 0;
+		if (f2 >= output.getWidth())
+			f2 = output.getWidth()-1;
+		
 		int w0,w1,w2,w3;
 		w0 = f1-1;
 		w1 = f1+1;
@@ -73,14 +82,7 @@ public class Waterfall {
 			w1 = output.getWidth()-1;
 		if (w3 >= output.getWidth())
 			w3 = output.getWidth()-1;
-		if (f1 < 0)
-			f1 = 0;
-		if (f1 >= output.getWidth())
-			f1 = output.getWidth()-1;
-		if (f2 < 0)
-			f2 = 0;
-		if (f2 >= output.getWidth())
-			f2 = output.getWidth()-1;
+
 		
 		for (int i = 0; i < _imageHeight; i++)
 		{
