@@ -168,15 +168,12 @@ public class Telemetry_string {
 				
 				time = cal.getTime(); 
 				
-				
+				coords = new Gps_coordinate(fields[3+offset],fields[4+offset],fields[5+offset]);
 			}
 			catch (Exception e)
 			{
 				System.out.println("Error parsing - " + e.toString());
 			}
-			
-			coords = new Gps_coordinate(fields[3+offset],fields[4+offset],fields[5+offset]);			
-			
 			
 			
 			//now parse extra data

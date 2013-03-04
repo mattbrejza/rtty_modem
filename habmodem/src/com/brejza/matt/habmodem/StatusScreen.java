@@ -205,8 +205,9 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         
       	 // Bind to LocalService
         Intent intent = new Intent(this, Dsp_service.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        mBound = true;
+        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        startService(intent);
+       // mBound = true;
         
         
       
@@ -647,5 +648,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     	
     	mService.updateActivePayloadsHabitat();
 	}
+	
+	
     
 }

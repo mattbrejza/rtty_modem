@@ -103,6 +103,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	NotificationManager nm;
 	
 	Handler handler;
+	Handler handler2;
 	
 	Toast toast;
 	
@@ -123,6 +124,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	Habitat_interface hab_con;
 	
+	private boolean listRxStrUpdated = false;
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
 	private ConcurrentHashMap<String, Payload> mapPayloads = new ConcurrentHashMap<String, Payload>();
 	
@@ -152,6 +154,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		System.out.println("DEBUG : something bound");
 		
 		handler = new Handler();
+		//handler2 = new Handler();
 		
 		
 		  //string receiver
@@ -727,10 +730,14 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		                samplesSinceToast += readres;
 		                
 		                String rxchar =  rcv.processBlock(s,_baud);
+
+		                
 		                Intent it = new Intent(CHAR_RX);
 		                it.putExtra(CHARS, rxchar);
 		                sendBroadcast(it);
 		                
+		                if (listRxStrUpdated)
+		                	sendBroadcast(new Intent(TELEM_RX));
 		                if (rcv.get_fft_updated())
 		                	sendBroadcast(new Intent(FFT_UPDATED));
 	            	}	                
@@ -843,8 +850,16 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		{
 			last_str = str;
 			System.out.println("adding to list: " + str.getSentence().trim());
-			listRxStr.add(str.getSentence().trim());
-			
+			String st = str.getSentence().trim();
+			///handler2.post(new Runnable(){
+        	//	@Override
+        	//	public void run() {
+        	//		listRxStr.add(st);
+        	//		sendBroadcast(new Intent(TELEM_RX));
+        	//	}
+        	//});
+			listRxStr.add(st);
+			listRxStrUpdated = true;
 			logEvent("Decoded String - " + str.getSentence().trim(),true);
 			
 			if (checksum){
@@ -882,22 +897,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				mapPayloads.put(call,new Payload(call,newColour(),true));
 			}
 			
-			sendBroadcast(new Intent(TELEM_RX));
+			//sendBroadcast(new Intent(TELEM_RX));
 		}
 	}
 
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
 			long startTime, long endTime, AscentRate as, double maxAltitude) {
-		
-		mapPayloads.get(callsign.toUpperCase()).setQueryOngoing(0);
+		String call = callsign.toUpperCase();
+		if (mapPayloads.containsKey(call))
+			mapPayloads.get(call).setQueryOngoing(0);
 		if (success)
 		{
 			
-			
-			
-			
-			String call = callsign.toUpperCase();
 			System.out.println("DEBUG: Got " + data.size() + " sentences for payload " + callsign);
 			logEvent("Habitat Query Got " + data.size() + " Sentences For Payload " + callsign,true);
 			
