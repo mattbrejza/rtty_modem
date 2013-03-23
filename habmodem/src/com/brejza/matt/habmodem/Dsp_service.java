@@ -17,12 +17,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.mapsforge.core.GeoPoint;
+
+import com.brejza.matt.habmodem.PredictionGrabber.PredictionRxEvent;
 
 import rtty.StringRxEvent;
 import rtty.rtty_receiver;
@@ -60,7 +65,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent {
+public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent, PredictionRxEvent {
 
 	public final static String TELEM_RX = "com.brejza.matt.habmodem.TELEM_RX";
 	public final static String CHAR_RX = "com.brejza.matt.habmodem.CHAR_RX";
@@ -1202,6 +1207,30 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			return i;
 		}
 		return 0;
+	}
+
+	@Override
+	public void PredictionRx(HashMap<String,List<GeoPoint>> data) {
+		if (data == null)
+			return ;
+		
+		for (Map.Entry<String, List<GeoPoint>> entry : data.entrySet()) {
+		    String call = entry.getKey().toUpperCase();
+		    List<GeoPoint> value = entry.getValue();
+		    
+		    if (payloadExists(call))
+		    {
+		    	Payload p = mapPayloads.get(call);
+		    	p.predictedPath = value;
+		    	p.lastPredictionGetTime = System.currentTimeMillis();
+		    	if (p.data != null){
+		    		if (p.data.lastEntry()!=null){
+		    			p.lastPredictionLocation = p.data.lastEntry().getValue().coords;
+		    		}
+		    	}
+		    }
+		}
+		
 	}
 	
 	

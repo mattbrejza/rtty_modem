@@ -547,6 +547,11 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     		mService.enableEcho();
     	
     	refreshButtons();
+    	
+    	
+    	//delete later
+    	//PredictionGrabber pg = new PredictionGrabber(this.getApplicationContext(),"http://users.ecs.soton.ac.uk/mfb2g09/get_predictions.php.htm");
+    	//pg.getPredictions();
     }
     
     public void toggleBell(View view)

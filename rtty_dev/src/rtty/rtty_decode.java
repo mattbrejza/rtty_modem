@@ -31,6 +31,8 @@ public class rtty_decode {
 	private double _lastAveragePower_tot = -1;
 	private int _lastBitCount = -1;
 	
+	private double sync_con = 2;
+	
 	//demod 
 	int resample_counter = 0;
 	
@@ -260,15 +262,15 @@ public class rtty_decode {
 					//	if (DEBUG) {gbb.addMarkers(i, Color.RED); }
 					//break;
 				case 6:		//skip or add a cycle
-					if (_sync_error > _sync_thres.getMA())		//skip
+					if (_sync_error > sync_con * _sync_thres.getMA())		//skip
 					{
 						_sync_pos = _sync_pos + 1;
-						_sync_error = _sync_error - _sync_thres.getMA();
+						_sync_error = _sync_error - sync_con * _sync_thres.getMA();
 					}
-					else if (_sync_error > _sync_thres.getMA())  //add
+					else if (_sync_error > sync_con * _sync_thres.getMA())  //add
 					{
 						_sync_pos = _sync_pos - 1;
-						_sync_error = _sync_error + _sync_thres.getMA();
+						_sync_error = _sync_error + sync_con * _sync_thres.getMA();
 					}
 					break;
 				case 8:   //sample gate

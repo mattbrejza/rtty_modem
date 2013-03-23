@@ -1,6 +1,10 @@
 package ukhas;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.TreeMap;
+
+import org.mapsforge.core.GeoPoint;
 
 
 public class Payload {
@@ -20,6 +24,9 @@ public class Payload {
 		double maxAltitude = -9999999;
 		
 		public TelemetryConfig telemetryConfig = null;
+		public List<GeoPoint> predictedPath = null;
+		public long lastPredictionGetTime = 0;
+		public Gps_coordinate lastPredictionLocation = null;
 		
 		int _maxLookBehind = 4*24*60*60;
 		int _maxRecords = 3000;

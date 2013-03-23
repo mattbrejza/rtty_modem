@@ -44,6 +44,7 @@ import java.awt.image.BufferedImage;
 import org.math.plot.*;
 
 import edu.emory.mathcs.jtransforms.fft.*;
+import graphics.Waterfall;
 
 import ukhas.Gps_coordinate;
 import ukhas.Habitat_interface;
