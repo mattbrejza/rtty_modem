@@ -72,6 +72,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public final static String CHARS = "com.brejza.matt.habmodem.CHARS";
 	public final static String FFT_UPDATED = "com.brejza.matt.habmodem.FFT_UPDATED";
 	public final static String HABITAT_NEW_DATA = "com.brejza.matt.habmodem.HABITAT_NEW_DATA";
+	public final static String PREDICTION_NEW_DATA = "com.brejza.matt.habmodem.PREDICTION_NEW_DATA";
 	public final static String TELEM_STR = "com.brejza.matt.habmodem.TELEM_STR";
 	public final static String GPS_UPDATED = "com.brejza.matt.habmodem.GPS_UPDATED";
 	public final static String LOG_EVENT = "com.brejza.matt.habmodem.LOG_EVENT";
@@ -128,6 +129,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	LoggingQueue log = new LoggingQueue(200);
 	
 	Habitat_interface hab_con;
+	PredictionGrabber pred_grab;
 	
 	private boolean listRxStrUpdated = false;
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
@@ -167,6 +169,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
    		IntentFilter intentFilter1 = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
    		registerReceiver(headsetReceiver, intentFilter1);
 		
+   		if (pred_grab == null)
+		{
+			pred_grab = new PredictionGrabber(this.getApplicationContext(),
+					PreferenceManager.getDefaultSharedPreferences(this).getString("pref_predictor_server", "spacenear.us/tracker/get_predictions.php"));
+			pred_grab.addPredictorUpdateListener(this);
+		}
+   		
 		if (hab_con == null){
 			String call_u = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext()).getString("pref_callsign", "USER");
 			
@@ -178,6 +187,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			hab_con.addGetActiveFlightsTask();
 			hab_con.addHabitatRecievedListener(this);
 		}
+		
 		if (loc_han == null){
 			loc_han = new Location_handler();
 			this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -515,6 +525,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		else
 			return null;
 	}
+	public List<GeoPoint> getPredictedPath (String callsign){
+		if (payloadExists(callsign))
+			return mapPayloads.get(callsign.toUpperCase()).predictedPath;
+		else
+			return null;
+	}
 	public double getAscentRate(String callsign) {
 		if (payloadExists(callsign))
 			return mapPayloads.get(callsign.toUpperCase()).getAscentRate();
@@ -832,6 +848,10 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				updateTimer.cancel();
 				logEvent("Cancelling habitat update timer - no active payloads", false);
 			}
+		}
+		else
+		{
+			pred_grab.getPredictions();
 		}
 	}
 
@@ -1213,6 +1233,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void PredictionRx(HashMap<String,List<GeoPoint>> data) {
 		if (data == null)
 			return ;
+		if (data.size() < 1)
+			return;
 		
 		for (Map.Entry<String, List<GeoPoint>> entry : data.entrySet()) {
 		    String call = entry.getKey().toUpperCase();
@@ -1230,6 +1252,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		    	}
 		    }
 		}
+		
+		Intent i = new Intent(PREDICTION_NEW_DATA);
+		sendBroadcast(i);
 		
 	}
 	

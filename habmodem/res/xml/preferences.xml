@@ -52,6 +52,12 @@
         android:summary="@string/pref_habitat_db_summ"
         android:defaultValue="habitat" />
         
+        <EditTextPreference
+        android:key="pref_predictor_server"
+        android:title="@string/pref_predictor_server"
+        android:summary="@string/pref_predictor_server_summ"
+        android:defaultValue="spacenear.us/tracker/get_predictions.php" />
+        
          <EditTextPreference
 		  android:key="pref_habitat_max_lines" 
 		  android:title="@string/pref_habitat_lines_title"

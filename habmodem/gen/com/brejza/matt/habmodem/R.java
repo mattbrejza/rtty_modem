@@ -234,10 +234,10 @@ public final class R {
         public static final int main_menu=0x7f0c0005;
     }
     public static final class string {
-        public static final int accept=0x7f070068;
+        public static final int accept=0x7f07006a;
         /**   select payload dialog 
          */
-        public static final int add_button_description=0x7f070064;
+        public static final int add_button_description=0x7f070066;
         public static final int afc_cmd_advanced_selection_all=0x7f070008;
         public static final int afc_cmd_advanced_selection_invert=0x7f070009;
         public static final int afc_cmd_advanced_selection_none=0x7f07000a;
@@ -301,69 +301,71 @@ public final class R {
         public static final int afc_title_size=0x7f07003c;
         public static final int afc_title_sort_by=0x7f07003d;
         public static final int afc_yesterday=0x7f07003e;
-        public static final int altitude=0x7f07005f;
-        public static final int altitude_max=0x7f070060;
+        public static final int altitude=0x7f070061;
+        public static final int altitude_max=0x7f070062;
         public static final int app_name=0x7f07003f;
-        public static final int ascent_rate=0x7f070063;
+        public static final int ascent_rate=0x7f070065;
         /**   generic 
          */
-        public static final int cancel=0x7f070067;
-        public static final int decoderactive=0x7f070077;
-        public static final int decoderalerts=0x7f070075;
-        public static final int decoderbaud=0x7f070078;
-        public static final int decoderdata=0x7f070079;
+        public static final int cancel=0x7f070069;
+        public static final int decoderactive=0x7f070079;
+        public static final int decoderalerts=0x7f070077;
+        public static final int decoderbaud=0x7f07007a;
+        public static final int decoderdata=0x7f07007b;
         /**  decoder screen 
          */
-        public static final int decoderecho=0x7f070074;
-        public static final int decoderonline=0x7f070076;
-        public static final int decoderstatus=0x7f07007b;
-        public static final int decoderstops=0x7f07007a;
-        public static final int dialog_add_payload_body=0x7f070066;
-        public static final int dialog_add_payload_title=0x7f070065;
+        public static final int decoderecho=0x7f070076;
+        public static final int decoderonline=0x7f070078;
+        public static final int decoderstatus=0x7f07007d;
+        public static final int decoderstops=0x7f07007c;
+        public static final int dialog_add_payload_body=0x7f070068;
+        public static final int dialog_add_payload_title=0x7f070067;
         public static final int dialog_graphs_title=0x7f07004b;
         /**  titles of windows and dialogs 
          */
         public static final int dialog_logs_title=0x7f070046;
-        public static final int firstruncontinue=0x7f07006b;
-        public static final int firstrunmessage=0x7f07006a;
+        public static final int firstruncontinue=0x7f07006d;
+        public static final int firstrunmessage=0x7f07006c;
         /**  first run messages 
          */
-        public static final int firstruntitle=0x7f070069;
-        public static final int latitude=0x7f070061;
+        public static final int firstruntitle=0x7f07006b;
+        public static final int latitude=0x7f070063;
         public static final int location_dialog=0x7f07004c;
         public static final int log_screen=0x7f070044;
-        public static final int longitude=0x7f070062;
+        public static final int longitude=0x7f070064;
         public static final int map_screen=0x7f070041;
-        public static final int maphelpercontinue=0x7f07006d;
-        public static final int maphelpermessage=0x7f07006c;
-        public static final int maphelpernomap=0x7f07006e;
-        public static final int mapshelptitle=0x7f07006f;
+        public static final int maphelpercontinue=0x7f07006f;
+        public static final int maphelpermessage=0x7f07006e;
+        public static final int maphelpernomap=0x7f070070;
+        public static final int mapshelptitle=0x7f070071;
         public static final int menu_settings=0x7f070042;
-        public static final int payadddays=0x7f070072;
-        public static final int payaddhours=0x7f070073;
-        public static final int payaddlookback=0x7f070071;
+        public static final int payadddays=0x7f070074;
+        public static final int payaddhours=0x7f070075;
+        public static final int payaddlookback=0x7f070073;
         /**   add dialog 
          */
-        public static final int payaddpayload=0x7f070070;
-        public static final int pref_advanced=0x7f07005b;
+        public static final int payaddpayload=0x7f070072;
+        public static final int pref_advanced=0x7f07005d;
         /**   contents of preference screen 
          */
         public static final int pref_callsign=0x7f07004d;
         public static final int pref_callsign_summ=0x7f070056;
         public static final int pref_chase_update_summ=0x7f070052;
         public static final int pref_chase_update_title=0x7f070051;
-        public static final int pref_habitat_db=0x7f070058;
-        public static final int pref_habitat_db_summ=0x7f07005a;
+        public static final int pref_habitat_db=0x7f070059;
+        public static final int pref_habitat_db_summ=0x7f07005c;
         public static final int pref_habitat_lines_summ=0x7f070053;
         public static final int pref_habitat_lines_title=0x7f070050;
         public static final int pref_habitat_server=0x7f070057;
-        public static final int pref_habitat_server_summ=0x7f070059;
+        public static final int pref_habitat_server_summ=0x7f07005a;
         public static final int pref_habitat_update_summ=0x7f07004f;
         public static final int pref_habitat_update_title=0x7f07004e;
         public static final int pref_inactive_summ=0x7f070055;
         public static final int pref_inactive_title=0x7f070054;
-        public static final int pref_map_path=0x7f07005c;
-        public static final int pref_map_path_summ=0x7f07005d;
+        public static final int pref_map_path=0x7f07005e;
+        public static final int pref_map_path_summ=0x7f07005f;
+        public static final int pref_predictor_server=0x7f070058;
+        public static final int pref_predictor_server_summ=0x7f07005b;
         public static final int refresh_button=0x7f070045;
         public static final int settings_screen=0x7f070043;
         /**  displayed in menu at top of screen 
@@ -371,7 +373,7 @@ public final class R {
         public static final int status_screen=0x7f070040;
         /**  strings used to display data 
          */
-        public static final int time=0x7f07005e;
+        public static final int time=0x7f070060;
         public static final int title_activity_map=0x7f070049;
         public static final int title_activity_prefs=0x7f070047;
         public static final int title_activity_start=0x7f07004a;

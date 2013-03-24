@@ -38,8 +38,10 @@
     <string name="pref_inactive_summ">Set the inactive period for the decoder and data fetch queries</string>
     <string name="pref_callsign_summ">Enter a callsign to identify your receiver</string>
     <string name="pref_habitat_server">Habitat Server URL</string>
+    <string name="pref_predictor_server">Predictor Server URL</string>
     <string name="pref_habitat_db">Habitat Database Name</string>
     <string name="pref_habitat_server_summ">Enter the address for the habitat server</string>
+    <string name="pref_predictor_server_summ">Enter the address for the predictor server</string>
     <string name="pref_habitat_db_summ">Enter the database name</string>
     <string name="pref_advanced">Advanced Settings</string>
     <string name="pref_map_path">Path to Map File</string>

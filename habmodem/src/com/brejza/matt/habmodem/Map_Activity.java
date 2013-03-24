@@ -67,6 +67,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private StringRxReceiver strrxReceiver;
 	private HabitatRxReceiver habirxReceiver;
 	private GPSRxReceiver gpsrxReceiver;
+	private PredictRxReceiver predictrxReceiver;
 	private LogEventReceiver logReceiver;
 	boolean isReg = false;
 	boolean requestUpdate = false;
@@ -81,7 +82,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	Button btnMapPath;
 	
 	protected int last_colour = 0x0;
-	public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
+	//public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
 	
 	//Drawable defaultMarker;
 	//ArrayItemizedOverlay itemizedOverlay;
@@ -89,6 +90,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private ArrayWayOverlay array_waypoints; 
 	protected OverlayItem overlayMyLocation;
 	
+	private ConcurrentHashMap<String,OverlayWay> map_prediction_overlays = new ConcurrentHashMap<String,OverlayWay>();
 	private ConcurrentHashMap<String,OverlayWay> map_path_overlays = new ConcurrentHashMap<String,OverlayWay>();
 	protected ConcurrentHashMap<String,OverlayItem> map_balloon_overlays = new ConcurrentHashMap<String,OverlayItem>();
 	
@@ -328,6 +330,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		IntentFilter intentFilter3 = new IntentFilter(Dsp_service.GPS_UPDATED);
    		if (!isReg) { registerReceiver(gpsrxReceiver, intentFilter3); }
    		
+   		
+   		//prediction receiver
+   		if (predictrxReceiver == null) predictrxReceiver = new PredictRxReceiver();
+   		IntentFilter intentFilter5 = new IntentFilter(Dsp_service.PREDICTION_NEW_DATA);
+   		if (!isReg) { registerReceiver(predictrxReceiver, intentFilter5); }
+   		
    		//log receiver
    		if (logReceiver == null) logReceiver = new LogEventReceiver();
    		IntentFilter intentFilter4 = new IntentFilter(Dsp_service.LOG_EVENT);
@@ -346,6 +354,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	    	if (habirxReceiver != null) unregisterReceiver(habirxReceiver);
 	       	if (strrxReceiver != null) unregisterReceiver(strrxReceiver);
 	       	if (gpsrxReceiver != null) unregisterReceiver(gpsrxReceiver);
+	       	if (predictrxReceiver != null) unregisterReceiver(predictrxReceiver);
 	       	if (logReceiver != null) unregisterReceiver(logReceiver);
        	}
         isReg = false;  
@@ -361,6 +370,53 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         	di.setActivePayloads(ls,mService.getPayloadList());        	
           	di.show(fm, "View Graphs");
          }
+    }
+    
+    private void updatePredictedPaths(List<GeoPoint> input, String callsign)
+    {
+    	if (input == null)
+    		return;
+    	if (input.size() < 1)
+    		return;
+    	
+    	callsign = callsign.toUpperCase();
+    	GeoPoint[][] points = new GeoPoint[1][input.size()];
+    	OverlayWay way;
+    	
+    	for (int i = 0; i < input.size(); i++)
+    	{
+    		points[0][i] = input.get(i);
+    	}
+    	
+    	if (map_prediction_overlays.containsKey(callsign))
+    	{
+    		way = map_prediction_overlays.get(callsign);
+    		way.setWayNodes(points);
+    	}
+    	else
+    	{
+    		Paint linepaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    		linepaint.setStyle(Paint.Style.STROKE);
+    		
+    		int c;
+    		
+    		float hsv[]= new float[3];
+    		Color.colorToHSV(mService.getPayloadColour(callsign),hsv);
+    		hsv[1] = hsv[1] /2;
+    		c = Color.HSVToColor(hsv);
+        		
+    		linepaint.setColor(c);
+    		
+    		linepaint.setAlpha(128);
+    		linepaint.setStrokeWidth(4);
+    		linepaint.setStrokeJoin(Paint.Join.ROUND);
+            
+    		way = new OverlayWay(points,linepaint,linepaint);
+    		way.setWayNodes(points);
+    		array_waypoints.addWay(way);
+    		map_prediction_overlays.put(callsign, way);
+    	}
+    	
     }
 
     private void UpdateBalloonLocation(Gps_coordinate coord, String callsign)
@@ -551,6 +607,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	    	for (int i = 0; i < flights.size(); i++)
 	    	{
 	    		String call = flights.get(i).toUpperCase();
+	    		updatePredictedPaths(mService.getPredictedPath(call),call);
 	    		fragment.AddPayload(flights.get(i),mService.getPayloadColour(call));
 	    		TreeMap <Long, Telemetry_string> tm = mService.getPayloadData(call);
 	    		if (tm.size() > 0){
@@ -620,6 +677,23 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             			array_img_balloons.requestRedraw();
             		}
             	}
+            }
+        }
+    }
+    
+    private class PredictRxReceiver extends BroadcastReceiver  {
+
+    	@Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Dsp_service.PREDICTION_NEW_DATA)) {  
+            	
+            	List<String> flights = mService.getActivePayloadList();
+		    	
+		    	for (int i = 0; i < flights.size(); i++)
+		    	{
+		    		String call = flights.get(i).toUpperCase();	
+		    		updatePredictedPaths(mService.getPredictedPath(call),call);		    		
+		    	}		    	
             }
         }
     }
@@ -738,12 +812,13 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 		if (map_path_overlays.containsKey(call)){
 			array_waypoints.removeWay(map_path_overlays.get(call));
 			map_path_overlays.remove(call);
-		}
-			
+		}			
+		if (map_prediction_overlays.containsKey(call)){
+			array_waypoints.removeWay(map_prediction_overlays.get(call));
+			map_prediction_overlays.remove(call);
+		}			
 	}
 	
-
-
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {
 		
