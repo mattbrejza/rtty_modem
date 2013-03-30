@@ -601,9 +601,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	    	
     	//try
     	//{
-    	List<String> flights = mService.getActivePayloadList();
+    	
     	if (mBound && mService != null)
     	{
+    		List<String> flights = mService.getActivePayloadList();
 	    	for (int i = 0; i < flights.size(); i++)
 	    	{
 	    		String call = flights.get(i).toUpperCase();

@@ -2,26 +2,18 @@ package com.brejza.matt.habmodem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.chart.BarChart;
-import org.achartengine.chart.BubbleChart;
-import org.achartengine.chart.CubicLineChart;
-import org.achartengine.chart.LineChart;
-import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.BasicStroke;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import ukhas.Payload;
+import com.brejza.matt.habmodem.Payload;
 import ukhas.Telemetry_string;
 
 import android.content.Context;

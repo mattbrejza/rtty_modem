@@ -2,8 +2,6 @@ package com.brejza.matt.habmodem;
 
 import java.util.ArrayList;
 
-import com.brejza.matt.habmodem.AddPayloadFragment.NoticeDialogListener;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;

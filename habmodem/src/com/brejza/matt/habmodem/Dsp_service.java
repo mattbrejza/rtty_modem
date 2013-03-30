@@ -36,7 +36,7 @@ import ukhas.Gps_coordinate;
 import ukhas.HabitatRxEvent;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
-import ukhas.Payload;
+import com.brejza.matt.habmodem.Payload;
 import ukhas.TelemetryConfig;
 import ukhas.Telemetry_string;
 import android.app.NotificationManager;
@@ -161,7 +161,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		System.out.println("DEBUG : something bound");
 		
 		handler = new Handler();
-		//handler2 = new Handler();
+		handler2 = new Handler();
 		
 		
 		  //string receiver
@@ -851,7 +851,13 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 		else
 		{
-			pred_grab.getPredictions();
+			handler2.post(new Runnable(){
+        		@Override
+        		public void run() {
+        			pred_grab.getPredictions();
+        		}
+        	});
+			
 		}
 	}
 
@@ -1240,7 +1246,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		    String call = entry.getKey().toUpperCase();
 		    List<GeoPoint> value = entry.getValue();
 		    
-		    if (payloadExists(call))
+		    if (payloadExists(call) && !call.equals(""))
 		    {
 		    	Payload p = mapPayloads.get(call);
 		    	p.predictedPath = value;

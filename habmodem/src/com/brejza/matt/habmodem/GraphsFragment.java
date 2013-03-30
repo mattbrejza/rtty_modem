@@ -3,10 +3,9 @@ package com.brejza.matt.habmodem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import ukhas.Payload;
+import com.brejza.matt.habmodem.Payload;
 import ukhas.TelemetryConfig;
 
 import android.app.Activity;
@@ -14,20 +13,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
 public class GraphsFragment extends DialogFragment {
 	

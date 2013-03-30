@@ -43,6 +43,22 @@ public class rtty_decode {
     private moving_average _sync_thres;//value over which the sync should add/skip a cycle
     private double _last_bit = 0;   //last bit value the sync encountered
 	
+   //sync2
+    private int _sync2_pos = 0;   //counter in the sync, for position in the bit (0->6)
+    private double _sync2_error = 0; //stores the error 
+    private double _sync2_error_int = 0; //stores the integrated error 
+    private double _sync2_late = 0;  //late gate value
+    private double _sync2_early = 0;  //late gate value
+
+    
+    private double _sync2_vco = 0;
+
+    
+    private double _sync2_alpha = 0.2;
+    private double _sync2_beta = 0.05;
+    
+	
+    
     private fir_filter fir_res1_300;
     private fir_filter fir_res2_300;
     private fir_filter fir_res3_300;
@@ -227,6 +243,8 @@ public class rtty_decode {
 
 	private double[] sync(double[] input)
 	{
+		if (true)
+			return sync2(input); 
 		// TODO increment values more than just 1/-1;
 		// TODO remember that data is already squared coming into this block
 		//debug
@@ -292,6 +310,125 @@ public class rtty_decode {
 											
 			}
 			_sync_pos = (_sync_pos+1) % 16;
+		}
+		
+		
+		//resize output length
+		if (out_count == 0)
+		{
+			return null;
+		}
+		else
+		{
+			double[] fo = new double[out_count];
+			System.arraycopy(out, 0, fo, 0, out_count);
+			return fo;
+		
+		} 
+		
+	}
+	
+	
+	private double[] sync2(double[] input)
+	{
+		// TODO increment values more than just 1/-1;
+		// TODO remember that data is already squared coming into this block
+		//debug
+		int le = Math.min(400, input.length);
+		double[] gin = new double[le];
+		System.arraycopy(input,0,gin,0,le);
+		//System.arraycopy(prev_win,0,gin,0,200);
+		//if (DEBUG)
+		//{
+		//	gbb.drawsingle(gin);
+		//	gbb.clearMarkers();
+		//}
+		//System.arraycopy(input,input.length-200,prev_win,0,200);
+		//
+		
+		_lastBitCount = 0;
+		_lastMaxPower = 0;
+		_lastAveragePower_tot = 0;
+		
+		double[] out = new double[input.length/10];
+		int out_count = 0;
+		double error;
+		
+		for (int i = 0; i < input.length; i++)
+		{
+			switch (_sync2_pos)
+			{
+			
+				case 0:
+					_sync2_late =  Math.signum(input[i]);
+					break;
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+					_sync2_late = _sync2_late + Math.signum(input[i]);
+					break;
+				
+				case 6:
+					_sync2_late = _sync2_late + Math.signum(input[i]);
+					_sync2_error = (+Math.abs(_sync2_late)-Math.abs(_sync2_early));
+					_sync2_error_int = _sync2_error_int + _sync2_error;
+					_sync2_error_int = Math.min(_sync2_error_int, 2 * _sync2_beta);
+					_sync2_error_int = Math.max(_sync2_error_int, -2 * _sync2_beta);
+					break;
+				
+				case 7:		//skip or add a cycle
+					System.out.println(_sync2_vco);
+					if (_sync2_vco < 6.4)
+					{
+						_sync2_pos = 6;
+						break;
+					}
+					else if (_sync2_vco > 7.6)
+					{
+						if (_sync2_vco > 8.6)						
+							_sync2_pos = 8;
+						
+						else
+							_sync2_pos = 9;
+					}
+					else
+						break;
+				
+				case 8:   //sample gate
+					out[out_count] = input[i];
+					out_count++;
+					_last_bit = input[i];
+					//_sync_thres.update(Math.pow(input[i],2));
+					_lastMaxPower = Math.max(_lastMaxPower, Math.abs(input[i]));
+					_lastAveragePower_tot += Math.abs(input[i]);
+					_lastBitCount ++;
+					
+					//if (i < 400)
+					//	if (DEBUG) { gbb.addMarkers(i, Color.BLUE); }
+					if (_sync2_pos == 8)
+						break;					
+				
+					
+				case 9:
+					_sync2_early =  Math.signum(input[i]);
+					break;
+				case 10:
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+				case 15:
+					_sync2_early = _sync2_early + Math.signum(input[i]);
+					break;
+											
+			}
+			
+			error = (_sync2_alpha * _sync2_error + _sync2_beta * _sync2_error_int)/16;
+			
+			_sync2_pos = (_sync2_pos+1) % 16;
+			_sync2_vco = (_sync2_vco + error + 1) % 16;
 		}
 		
 		

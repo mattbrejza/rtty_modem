@@ -1,10 +1,15 @@
-package ukhas;
+package com.brejza.matt.habmodem;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
 import org.mapsforge.core.GeoPoint;
+
+import ukhas.AscentRate;
+import ukhas.Gps_coordinate;
+import ukhas.TelemetryConfig;
+import ukhas.Telemetry_string;
 
 
 public class Payload {
