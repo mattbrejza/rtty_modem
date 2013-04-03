@@ -14,7 +14,7 @@ public class Waterfall {
 	private int line2 = 199;
 	private int _imageHeight = 200;
 	
-	public Waterfall(Bitmap gradient, int imageHeight) {
+public Waterfall(Bitmap gradient, int imageHeight) {
 		
 		_imageHeight = imageHeight;
 		line1 = 2*imageHeight - 1;
@@ -29,6 +29,7 @@ public class Waterfall {
 		}
 		_grad_max = gradient.getWidth();	
 	}
+
 	
 	public Bitmap updateLine(double[] fftin, int f1, int f2)
 	{

@@ -57,6 +57,8 @@ import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder.AudioSource;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -828,21 +830,30 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			maxRec = 3000;
 		}
 		
-		for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
-		{
-			if (entry.getValue().isActivePayload()){
-				count++;
-				long start = entry.getValue().getUpdateStart(false); 
-				if ( start + 15 < (System.currentTimeMillis() / 1000L) )
-				{
-					if (entry.getValue().getQueryOngoing() == 0 ||
-							entry.getValue().getQueryOngoing() < System.currentTimeMillis()-(60*1000)){
-						hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), maxRec);//entry.getValue().getMaxRecords());
-						entry.getValue().setQueryOngoing(System.currentTimeMillis());
+		ConnectivityManager connMgr = (ConnectivityManager)this.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        // fetch data
+	    	for (Map.Entry<String, Payload> entry : mapPayloads.entrySet())
+			{
+				if (entry.getValue().isActivePayload()){
+					count++;
+					long start = entry.getValue().getUpdateStart(false); 
+					if ( start + 15 < (System.currentTimeMillis() / 1000L) )
+					{
+						if (entry.getValue().getQueryOngoing() == 0 ||
+								entry.getValue().getQueryOngoing() < System.currentTimeMillis()-(60*1000)){
+							hab_con.addDataFetchTask(entry.getValue().callsign,start, (System.currentTimeMillis() / 1000L), maxRec);//entry.getValue().getMaxRecords());
+							entry.getValue().setQueryOngoing(System.currentTimeMillis());
+						}
 					}
 				}
-			}
-		}	
+			}	
+	    } else {
+	        // display error
+	    	logEvent("No network connection", true);
+	    }
+		
 		if (count < 1){
 			if (updateTimer != null){
 				updateTimer.cancel();

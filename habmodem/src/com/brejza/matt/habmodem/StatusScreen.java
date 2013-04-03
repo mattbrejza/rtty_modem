@@ -22,6 +22,7 @@ import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -45,6 +46,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -70,6 +72,8 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
 	private StringRxReceiver strrxReceiver;
 	private CharRxReceiver charrxReceiver;
 	private FFTUpdateReceiver fftupdateReceiver;
+	
+	protected PowerManager.WakeLock mWakeLock;
 	
 	Dsp_service mService;
     boolean mBound = false;
@@ -258,9 +262,17 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         //else
         //	Toast.makeText(this, "MIC NOT AVAILABLE :o", Toast.LENGTH_LONG).show();
         
-        
-        
+   		
+   		Boolean s = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_keep_screen", true);
+   		//Toast.makeText(this, s.toString(), Toast.LENGTH_LONG).show();
+   		
+   		if (s){
+	   		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+	        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+	        mWakeLock.acquire();
+   		}
    	}
+ 
     
    
        
@@ -278,6 +290,9 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
            
         mService.rcv.enableFFT = false;
            
+        if (mWakeLock != null)
+        	this.mWakeLock.release();
+        
      //  if (mBound) {
      //      unbindService(mConnection);
      //      mBound = false;
@@ -632,6 +647,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     {
     	Button btn = (Button) findViewById(R.id.btnBaud);
     	btn.setText(Integer.toString(mService.getBaud()));
+    	//mService.StringRx("$$ASTRA1,26872,16:16:15,5051.2786,-00443.7411,12865,-9.8,439*AE51", true);
     }
     
 	@Override

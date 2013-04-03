@@ -42,6 +42,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -73,6 +74,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	boolean requestUpdate = false;
 	
 	private static final int _ReqChooseFile = 0;
+	
+	protected PowerManager.WakeLock mWakeLock;
 
 	boolean _mapFile_set = false;
 
@@ -344,6 +347,15 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		isReg = true;
    	    
    	
+   		Boolean s = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_keep_screen", true);
+   		//Toast.makeText(this, s.toString(), Toast.LENGTH_LONG).show();
+   		
+   		if (s){
+	   		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+	        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+	        mWakeLock.acquire();
+   		}
+   		
    	}
        
     @Override
@@ -358,6 +370,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	       	if (logReceiver != null) unregisterReceiver(logReceiver);
        	}
         isReg = false;  
+        
+        if (mWakeLock != null)
+        	this.mWakeLock.release();
     }
        
     protected void showGraphDialog(String call_startup)
@@ -460,7 +475,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     			if (forceAppend)// || last_update_time.get(callsign).longValue() < dataStartTime)
     			{
     				//no conflict, just keep drawing
-    				System.out.println("Update track, no conflict - add to end");
+    				//System.out.println("Update track, no conflict - add to end");
     				OverlayWay way = map_path_overlays.get(callsign);
     				int size_org = way.getWayNodes()[0].length;
     				GeoPoint[][] points = new GeoPoint[1][telem.size() + size_org];

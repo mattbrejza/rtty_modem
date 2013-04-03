@@ -54,8 +54,8 @@ public class rtty_decode {
     private double _sync2_vco = 0;
 
     
-    private double _sync2_alpha = 0.2;
-    private double _sync2_beta = 0.05;
+    private double _sync2_alpha = 0.5;
+    private double _sync2_beta = 0.06;
     
 	
     
@@ -379,7 +379,6 @@ public class rtty_decode {
 					break;
 				
 				case 7:		//skip or add a cycle
-					System.out.println(_sync2_vco);
 					if (_sync2_vco < 6.4)
 					{
 						_sync2_pos = 6;

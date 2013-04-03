@@ -502,7 +502,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 			          lbStatus.setText(rcv.current_state.toString());
 		          }
 		          if (rcv.get_fft_updated())
-		        	  lbimage.setIcon(new ImageIcon(wf.UpdateLine(rcv.get_fft())));
+		        	  lbimage.setIcon(new ImageIcon(wf.UpdateLine(rcv.get_fft(),(int) (rcv.get_f1()*(rcv.FFT_half_len*2)),(int) (rcv.get_f2()*(rcv.FFT_half_len*2)))));
 	
 		         // plotint = plot.addLinePlot("my plot", c);
 		        }//end if

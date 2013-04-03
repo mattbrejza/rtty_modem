@@ -30,6 +30,8 @@
     <string name="pref_callsign">Callsign</string>
     <string name="pref_habitat_update_title">Habitat Update Period (minutes)</string>
     <string name="pref_habitat_update_summ">Enter time between querying server for new data</string>
+    <string name="pref_keep_screen_title">Keep screen on</string>
+    <string name="pref_keep_screen_summ">The screen is kept on when the app is in the foreground</string>
     <string name="pref_habitat_lines_title">Max Database Entries Returned</string>
     <string name="pref_chase_update_title">Chase Car Update Period (seconds)</string>
     <string name="pref_chase_update_summ">Enter seconds between chase car position update</string>
