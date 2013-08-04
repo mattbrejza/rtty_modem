@@ -287,11 +287,22 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
        	}
            
         isReg = false;
-           
-        mService.rcv.enableFFT = false;
-           
-        if (mWakeLock != null)
-        	this.mWakeLock.release();
+        
+        if (mService != null)
+        {
+	        mService.rcv.enableFFT = false;
+	           
+	
+	        if (mWakeLock != null){
+	        	try{
+	        		this.mWakeLock.release();
+	        	}
+	        	catch(Throwable th)
+	        	{
+	        		mService.logEvent("Warning, code 01.2",false);
+	        	}
+	        }
+        }
         
      //  if (mBound) {
      //      unbindService(mConnection);
@@ -647,7 +658,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     {
     	Button btn = (Button) findViewById(R.id.btnBaud);
     	btn.setText(Integer.toString(mService.getBaud()));
-    	//mService.StringRx("$$ASTRA1,26872,16:16:15,5051.2786,-00443.7411,12865,-9.8,439*AE51", true);
+    	//mService.StringRx("$$XABEN1,346,13:22:10,52.06253,-0.37046,14708*5B3F", true);
     }
     
 	@Override

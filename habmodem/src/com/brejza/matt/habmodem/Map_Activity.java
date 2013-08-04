@@ -371,8 +371,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
        	}
         isReg = false;  
         
-        if (mWakeLock != null)
-        	this.mWakeLock.release();
+        if (mWakeLock != null){
+        	try{
+        		this.mWakeLock.release();
+        	}
+        	catch(Throwable th)
+        	{
+        		mService.logEvent("Warning, code 01.1",false);
+        	}
+        }
+        	
     }
        
     protected void showGraphDialog(String call_startup)
