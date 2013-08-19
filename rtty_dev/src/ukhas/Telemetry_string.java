@@ -343,6 +343,8 @@ public class Telemetry_string {
 	}
 	
 	public boolean isZeroGPS(){
+		if (coords == null)
+			return true;
 		return (coords.latitude == 0.0 || coords.longitude == 0.0);
 	}
 
