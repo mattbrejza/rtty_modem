@@ -20,7 +20,7 @@
 
 % Section 1
 %===============================================================
-function main_ber_rs( SNR_start, SNR_delta, SNR_stop,n,k,symbols , chan, interleave)
+function main_ber_uncoded( SNR_start, SNR_delta, SNR_stop)
 %===============================================================
 
 % Section 2
@@ -41,22 +41,7 @@ end
 if ischar(SNR_delta)
     SNR_delta = str2num(SNR_delta);
 end
-if ischar(n)
-    n = str2num(n);
-end
-if ischar(k)
-    k = str2num(k);
-end
-if ischar(symbols)
-    symbols = str2num(symbols);
-end
 
-if ~(nargin > 6)
-    chan = '';
-end
-if ~(nargin > 7)
-    interleave = '';
-end
 
     
     
@@ -64,7 +49,7 @@ end
     chances = 3; % Choose how many iterations should fail to improve the decoding before the iterations are stopped early
     random_interleaver = 0; % Choose whether to use a random interleaver or the UMTS interleaver. Longer simulations will be needed for the random interleaver.
 
-    frame_length = symbols;%306; %symbols
+    frame_length = 1000; %1207467;
     
    
     
@@ -82,7 +67,7 @@ end
     rng(seed);
 
     % Choose a file to save the results into.
-    filename = ['results_rs_',num2str(n),'_',num2str(k),'_',chan,'_',interleave,'_',num2str(SNR_start),'_',num2str(seed),'.mat'];
+    filename = ['results_uncoded_',num2str(SNR_start),'_',num2str(seed),'.mat'];
 
     
     
@@ -97,16 +82,14 @@ end
             flag = 0;
             if size(results,1) < SNR_count
                 flag = 1;
-            else if results(SNR_count,end) < 10000
+            else if results(SNR_count,iteration_count+2) < 10000
                     flag = 1;
                 end
             end
                 
             if flag    
                 keepgoing = 1;
-                
-                hEnc = comm.RSEncoder(n,k);%('CodewordLength',21,'MessageLength',9);
-                hDec = comm.RSDecoder(n,k);%('CodewordLength',21,'MessageLength',9);
+
                
                
                 % Convert from SNR (in dB) to noise power spectral density.
@@ -118,58 +101,31 @@ end
 
                 % Keep going until enough errors have been observed. 
                 % This runs the simulation only as long as is required to keep the BER vs SNR curve smooth.
-                while bit_count < 10000% || error_counts(iteration_count) < 10
+                while bit_count < 1000000% || error_counts(iteration_count) < 10
 
                    
-                    % Generate some random symbols (3 bit/sym)
-                    
-                    a = randi([0 7], frame_length,1);
-                    
-                    m = log2(n+1);
-                    
-                    %encode
-                    encd = step(hEnc, a);                    
-                    encb = double(uint16(dec2bin(encd,m))-48);
+                    % Generate some random bits.
+                    % This label matches that used in Figure 2.7 of Liang Li's nine month report.
+                    a = round(rand(1,frame_length));
 
                    
                     % BPSK modulate them
-                    a_tx = 2*(encb-0.5);
-                    org_size = size(a_tx);
-                    
-                    a_tx_r = reshape(a_tx,1,numel(a_tx));
-                    
-                     it1 = 1:length(a_tx_r);
-                       
-                    if strcmp(chan,'fade')  
-                        if strcmp(interleave,'full')
-                            it1 = randperm(length(a_tx_r));   
-                        end
-                        a_tx_r = a_tx_r(it1);
-
-                         %add wobble
-                        u = (1:length(a_tx_r))./50;  
-                        a_tx_r = a_tx_r.*0.2.*(sin(1.2*u)+.7*sin(2.1*u)+0.5*sin(3*u)+2.5);
-
-                    end
-
+                    a_tx = -2*(a-0.5);
+                   
 
                     % Send the BPSK signal over an AWGN channel
-                    a_rx_r(it1) = a_tx_r + sqrt(N0/2)*(randn(size(a_tx_r))+1i*randn(size(a_tx_r)));
-                    a_rx = reshape(a_rx_r,org_size);
+                    a_rx = a_tx + sqrt(N0/2)*(randn(size(a_tx))+1i*randn(size(a_tx)));
                     
-                    % BPSK demodulator                    
+                    % BPSK demodulator
+                    % These labels match those used in Figure 2.11 of Liang Li's nine month report.
                     a_c = (abs(a_rx+1).^2-abs(a_rx-1).^2)/N0;
                    
-                    demod = (a_c > 0);
-                    rx_sym = bin2dec(num2str(demod));
-                    
-                    data_out = step(hDec,rx_sym);
-                    
-                    % see how many bit errors we have.
-                    errors = sum(sum( double(uint16(dec2bin(data_out,m))-48) ~= double(uint16(dec2bin(a,m))-48)));
+
+                    % Make a hard decision and see how many bit errors we have.
+                    errors = sum((a_c < 0) ~= a);
 
 
-                    bit_count = bit_count + length(a*3);
+                    bit_count = bit_count + length(a);
                     
                     if errors > 0
                         ser=1;
@@ -180,14 +136,14 @@ end
                     % Store the SNR and BERs in a matrix and display it.
                     if size(results,1) < SNR_count
                         results(SNR_count,1) = SNR;
-                        results(SNR_count,2) = length(a*3);
+                        results(SNR_count,2) = length(a);
                         results(SNR_count,3) = errors;
                         results(SNR_count,4) = 1;
                         results(SNR_count,5) = ser;
                         
                     else
                         results(SNR_count,1) = SNR;
-                        results(SNR_count,2) = results(SNR_count,2)+length(a*3);
+                        results(SNR_count,2) = results(SNR_count,2)+length(a);
                         results(SNR_count,3) = results(SNR_count,3) + errors;
                         results(SNR_count,4) = results(SNR_count,4)+1;
                         results(SNR_count,5) = results(SNR_count,5)+ser;

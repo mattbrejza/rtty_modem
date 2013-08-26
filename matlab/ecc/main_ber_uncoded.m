@@ -113,9 +113,9 @@ end
                     a_tx = -2*(a-0.5);
                     
                     %add wobble
-                    u = 1:length(a_tx);
-                   u=u./50;
-                    a_tx = a_tx.*0.2.*(sin(1.2*u)+.7*sin(2.1*u)+0.5*sin(3*u)+2.5);
+                  %  u = 1:length(a_tx);
+                  % u=u./50;
+                  %  a_tx = a_tx.*0.2.*(sin(1.2*u)+.7*sin(2.1*u)+0.5*sin(3*u)+2.5);
                    
 
                     % Send the BPSK signal over an AWGN channel

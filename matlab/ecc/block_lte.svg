@@ -1,0 +1,1645 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg9805"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="block_lte.svg">
+  <defs
+     id="defs3">
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mstart"
+       style="overflow:visible">
+      <path
+         id="path4286"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) translate(0,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mstart"
+       style="overflow:visible">
+      <path
+         id="path4268"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         transform="scale(0.4) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Mend"
+       style="overflow:visible;">
+      <path
+         id="path4289"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(0.6) rotate(180) translate(0,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Send"
+       style="overflow:visible;">
+      <path
+         id="path4277"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.2) rotate(180) translate(6,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4265"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend-1"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4289-7"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6,-0.6)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4289-1"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6,-0.6)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend-11"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4289-5"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6,-0.6)" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Lend-0"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path13832" />
+    </marker>
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Mend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mend">
+      <path
+         transform="scale(0.4) rotate(180) translate(10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path13838" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow1Mstart-4"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Mstart">
+      <path
+         transform="scale(0.4) translate(10,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path13835" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     inkscape:document-units="mm"
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2"
+     inkscape:cx="556.99443"
+     inkscape:cy="846.81549"
+     inkscape:current-layer="layer7"
+     showgrid="true"
+     inkscape:snap-bbox="false"
+     inkscape:window-width="1440"
+     inkscape:window-height="847"
+     inkscape:window-x="-8"
+     inkscape:window-y="116"
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox-midpoints="false"
+     inkscape:snap-global="false"
+     inkscape:object-paths="true"
+     inkscape:snap-smooth-nodes="false"
+     inkscape:snap-midpoints="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid9811" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.48449782;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect9817"
+       width="56.880981"
+       height="30.319565"
+       x="177.89226"
+       y="31.604431" />
+    <g
+       id="g19272"
+       transform="translate(398.07286,110.63441)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         transform="translate(14.5,-32.499994)"
+         d="m 110,192.36218 c 0,2.76143 -2.23858,5 -5,5 -2.76142,0 -5,-2.23857 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
+         sodipodi:ry="5"
+         sodipodi:rx="5"
+         sodipodi:cy="192.36218"
+         sodipodi:cx="105"
+         id="path10965"
+         style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+         sodipodi:type="arc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path10967"
+         d="m 114.5,159.86218 10,0"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path10969"
+         d="m 119.5,164.86218 0,-10"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+    </g>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.48449782;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect9817-8"
+       width="56.880981"
+       height="30.319565"
+       x="272.80951"
+       y="48.9524" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 522.43526,270.45105 22.36225,0"
+       id="path19370"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 517.66229,302.86876 0,-42.95673"
+       id="path19372"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.98149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 544.97429,237.373 -27.75394,0 0,7.07106"
+       id="path19374"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.98149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 545.03266,284.45613 -47.43333,0 0,-23.96455"
+       id="path19380"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.98149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 517.93871,303.29968 -39.20532,0.0469 0,-42.65748"
+       id="path19382"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.98149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 478.2265,244.80473 0,-22.7139 13.90317,0"
+       id="path19384"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="ccc" />
+    <g
+       style="display:inline"
+       id="g19272-5"
+       transform="translate(378.17184,62.375)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         transform="translate(14.5,-32.499994)"
+         d="m 110,192.36218 c 0,2.76143 -2.23858,5 -5,5 -2.76142,0 -5,-2.23857 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
+         sodipodi:ry="5"
+         sodipodi:rx="5"
+         sodipodi:cy="192.36218"
+         sodipodi:cx="105"
+         id="path10965-3"
+         style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+         sodipodi:type="arc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path10967-5"
+         d="m 114.5,159.86218 10,0"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path10969-5"
+         d="m 119.5,164.86218 0,-10"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 497.49506,244.57817 0,-17.46599"
+       id="path19413"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.98149606;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 487.20126,222.11218 57.75615,0"
+       id="path19415"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 534.81371,270.48718 0,43.75"
+       id="path19973"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <g
+       style="display:inline"
+       id="g19272-7"
+       transform="translate(415.31371,159.5)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         transform="translate(14.5,-32.499994)"
+         d="m 110,192.36218 c 0,2.76143 -2.23858,5 -5,5 -2.76142,0 -5,-2.23857 -5,-5 0,-2.76142 2.23858,-5 5,-5 2.76142,0 5,2.23858 5,5 z"
+         sodipodi:ry="5"
+         sodipodi:rx="5"
+         sodipodi:cy="192.36218"
+         sodipodi:cx="105"
+         id="path10965-8"
+         style="fill:none;stroke:#000000;stroke-width:0.69999999;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+         sodipodi:type="arc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path10967-0"
+         d="m 114.5,159.86218 10,0"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path10969-50"
+         d="m 119.5,164.86218 0,-10"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 523.58431,284.3956 0,34.91339 6.45235,0"
+       id="path20004"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 534.72124,324.52391 0,5.74524"
+       id="path20006"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer7"
+     inkscape:label="text"
+     style="display:inline">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 623.25693,265.12694 -11.28123,0 0,11.31371 -9.90254,0"
+       id="path19339"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 622.65337,255.93455 -10.67767,0 0,-26.16295 -10.25609,0"
+       id="path19337"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="cccc" />
+    <rect
+       style="opacity:0.93999999000000001;fill:#7b74ae;fill-opacity:0.28191486;fill-rule:nonzero;stroke:none"
+       id="rect6376"
+       width="106.06602"
+       height="45.211941"
+       x="498.51028"
+       y="154.37946"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <g
+       id="g19278">
+      <rect
+         y="37.362183"
+         x="137"
+         height="20"
+         width="25"
+         id="rect10418"
+         style="display:inline;fill:none;stroke:#000000;stroke-width:0.69999999000000002;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text10420"
+         y="50.362183"
+         x="150"
+         style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="50.362183"
+           x="150"
+           id="tspan10422"
+           sodipodi:role="line">$\pi_1$</tspan></text>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(-23.979762,15.546266)"><flowRegion
+         id="flowRegion10385"><rect
+           id="rect10387"
+           width="79.999977"
+           height="29.999998"
+           x="190.3125"
+           y="28.886984"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389">URC Encoder</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383-8"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       transform="translate(53.96875,35.225198)"><flowRegion
+         id="flowRegion10385-3"><rect
+           id="rect10387-8"
+           width="74.846474"
+           height="33.344864"
+           x="209.60666"
+           y="25.54212"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389-7">Modulator</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="142.83557"
+       y="230.35056"
+       id="text11548"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan11550"
+         x="142.83557"
+         y="230.35056" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:6px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="164.11035"
+       y="43.914909"
+       id="text15845-76"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan15847-1"
+         x="164.11035"
+         y="43.914909">\bf x$'$</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:6px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="63.598633"
+       y="42.914917"
+       id="text15845-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan15847-7"
+         x="63.598633"
+         y="42.914917">(a)</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mstart)"
+       d="m 126.75,85.487183 -49.75,0"
+       id="path19108"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.48449782;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect9817-7"
+       width="56.880981"
+       height="30.319565"
+       x="177.68114"
+       y="69.880325" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383-4"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       transform="translate(-24.190883,53.822159)"><flowRegion
+         id="flowRegion10385-6"><rect
+           id="rect10387-6"
+           width="79.999977"
+           height="29.999998"
+           x="190.3125"
+           y="28.886984"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389-4">URC Encoder</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend-11)"
+       d="m 137.00194,47.475057 -10.25305,0 0,38.00699 51.08847,0"
+       id="path19158"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 235.02462,47.298281 21.30159,0 0,9.104 16.52862,0"
+       id="path19162"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend-11)"
+       d="m 234.49429,86.100765 12.9047,0 0,-22.008698 25.45584,0"
+       id="path19164"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart)"
+       d="m 272.85483,71.605076 -10.34144,0 0,35.974054 -135.85289,0 0,-22.27386"
+       id="path19166"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.98149606000000000;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline;fill-opacity:1"
+       id="rect9817-7-8"
+       width="56.880981"
+       height="30.319565"
+       x="544.99487"
+       y="214.96538"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.98149606000000000;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline;fill-opacity:1"
+       id="rect9817-7-8-5"
+       width="56.880981"
+       height="30.319565"
+       x="544.99487"
+       y="260.92731"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.70866142;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect10418-8"
+       width="16.037066"
+       height="15.279707"
+       x="489.93314"
+       y="244.93593"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.70866142;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="rect10418-8-7"
+       width="17.963953"
+       height="14.554944"
+       x="509.03381"
+       y="245.29829"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 623.90337,273.96577 -6.54594,0 0,29.34493 -100.1135,0"
+       id="path19341"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       xml:space="preserve"
+       style="font-size:6px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="106.11035"
+       y="83.664917"
+       id="text15845-76-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan15847-1-6"
+         x="106.11035"
+         y="83.664917">\bf x</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:6px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="236.40186"
+       y="44.509644"
+       id="text15845-76-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan15847-1-8"
+         x="236.40186"
+         y="44.509644">\bf y$_1$</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:6px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="236.04639"
+       y="83.414917"
+       id="text15845-76-1-3"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan15847-1-8-9"
+         x="236.04639"
+         y="83.414917">\bf y$_2$</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="239.75"
+       y="239.61218"
+       id="text25463"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan25465" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="534.97321"
+       y="337.07196"
+       id="text15845-76-7-1-1-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan15847-1-86-9-1-4"
+         x="534.97321"
+         y="337.07196">Output</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path5425"
+       d="m 503.42439,174.86827 -14.28317,0 0,-47.41722"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2Mstart)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <g
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.58002711,0,0,0.58002711,384.60198,3.1588301)"
+       id="g13548"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect13519"
+         width="17.142857"
+         height="17.142857"
+         x="232.14285"
+         y="206.29076" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 236.42721,218.43361 9.28572,0 -4.60212,-7.97111 z"
+         id="path13521"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.58002711,0,0,0.58002711,400.4349,3.1836205)"
+       id="g13544"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="rect13519-5"
+         width="17.142857"
+         height="17.142857"
+         x="258.10883"
+         y="206.24802" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 262.3932,218.39088 9.28572,0 -4.60212,-7.97111 z"
+         id="path13521-4"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.58002711,0,0,0.58002711,332.89491,20.005501)"
+       id="g13556"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:2.76406789;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path13009"
+         sodipodi:cx="292.94424"
+         sodipodi:cy="177.57008"
+         sodipodi:rx="15.152288"
+         sodipodi:ry="15.152288"
+         d="m 308.09653,177.57008 c 0,8.36838 -6.78391,15.15229 -15.15229,15.15229 -8.36837,0 -15.15228,-6.78391 -15.15228,-15.15229 0,-8.36837 6.78391,-15.15228 15.15228,-15.15228 8.36838,0 15.15229,6.78391 15.15229,15.15228 z"
+         transform="matrix(0.47687334,0,0,0.47687334,161.46123,101.10593)" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 301.16072,178.61218 0,14.46429"
+         id="path13552"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 293.92857,185.57647 14.46429,0"
+         id="path13554"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.58002711,0,0,0.58002711,396.901,39.474811)"
+       id="g13556-5"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:2.76406789;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path13009-5"
+         sodipodi:cx="292.94424"
+         sodipodi:cy="177.57008"
+         sodipodi:rx="15.152288"
+         sodipodi:ry="15.152288"
+         d="m 308.09653,177.57008 c 0,8.36838 -6.78391,15.15229 -15.15229,15.15229 -8.36837,0 -15.15228,-6.78391 -15.15228,-15.15229 0,-8.36837 6.78391,-15.15228 15.15228,-15.15228 8.36838,0 15.15229,6.78391 15.15229,15.15228 z"
+         transform="matrix(0.47687334,0,0,0.47687334,161.46123,101.10593)" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 301.16072,178.61218 0,14.46429"
+         id="path13552-1"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 293.92857,185.57647 14.46429,0"
+         id="path13554-8"
+         inkscape:connector-curvature="0" />
+    </g>
+    <rect
+       y="122.81306"
+       x="581.03888"
+       height="9.9433212"
+       width="9.9433212"
+       id="rect13519-5-3"
+       style="fill:none;stroke:#000000;stroke-width:0.765;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13521-4-0"
+       d="m 583.52395,129.85625 5.38597,0 -2.66936,-4.62346 z"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13625"
+       d="m 511.67248,127.66247 7.54367,0"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13627"
+       d="m 529.38559,127.73571 19.85296,0"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13629"
+       d="m 560.14611,127.66247 19.70686,0"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13631"
+       d="m 591.05974,127.51732 8.20583,0 0,19.62552 -23.36072,0"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13633"
+       d="m 571.58238,127.72478 0,15.00706"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13637"
+       d="m 567.41002,147.1403 -32.1342,0"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13639"
+       d="m 535.20828,147.14669 -27.73354,0 0,-15.03135"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path13641"
+       d="m 503.01496,127.51259 -24.15333,0"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mstart)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       transform="matrix(0.58002711,0,0,0.58002711,372.15127,13.53461)"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       sodipodi:ry="1.1364216"
+       sodipodi:rx="1.1364216"
+       sodipodi:cy="196.6367"
+       sodipodi:cx="246.35095"
+       id="path16489"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="arc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       transform="matrix(0.58002711,0,0,0.58002711,396.54002,13.681091)"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       sodipodi:ry="1.1364216"
+       sodipodi:rx="1.1364216"
+       sodipodi:cy="196.6367"
+       sodipodi:cx="246.35095"
+       id="path16489-3"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="arc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       transform="matrix(0.58002711,0,0,0.58002711,428.69215,13.75433)"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       sodipodi:ry="1.1364216"
+       sodipodi:rx="1.1364216"
+       sodipodi:cy="196.6367"
+       sodipodi:cx="246.35095"
+       id="path16489-0"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       sodipodi:type="arc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text16516"
+       y="125.13033"
+       x="479.88486"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         y="125.13033"
+         x="479.88486"
+         id="tspan16518"
+         sodipodi:role="line">In</tspan></text>
+    <g
+       style="stroke-width:1.39999998;stroke-miterlimit:4;stroke-dasharray:none"
+       transform="matrix(0.58002711,0,0,0.58002711,364.81891,5.9577289)"
+       id="g13556-5-8"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         sodipodi:type="arc"
+         style="fill:none;stroke:#000000;stroke-width:2.93579006;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         id="path13009-5-1"
+         sodipodi:cx="292.94424"
+         sodipodi:cy="177.57008"
+         sodipodi:rx="15.152288"
+         sodipodi:ry="15.152288"
+         d="m 308.09653,177.57008 c 0,8.36838 -6.78391,15.15229 -15.15229,15.15229 -8.36837,0 -15.15228,-6.78391 -15.15228,-15.15229 0,-8.36837 6.78391,-15.15228 15.15228,-15.15228 8.36838,0 15.15229,6.78391 15.15229,15.15228 z"
+         transform="matrix(0.47687334,0,0,0.47687334,161.46123,101.10593)" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.39999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 301.16072,178.61218 0,14.46429"
+         id="path13552-1-8"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.39999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 293.92857,185.57647 14.46429,0"
+         id="path13554-8-6"
+         inkscape:connector-curvature="0" />
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       id="path17288"
+       d="m 539.43025,127.73571 0,-9.66761"
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path17290"
+       d="m 515.0415,127.58923 0,-13.99027 20.04248,0"
+       style="fill:none;stroke:#000000;stroke-width:0.81203794;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path17292"
+       d="m 543.52442,113.63337 66.97559,0 0,27.875 11.36965,0.125"
+       style="fill:none;stroke:#000000;stroke-width:0.8118096;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text18410"
+       y="126.17498"
+       x="531.052"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         y="126.17498"
+         x="531.052"
+         id="tspan18412"
+         sodipodi:role="line">A</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text18418"
+       y="125.53852"
+       x="594.2049"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         y="125.53852"
+         x="594.2049"
+         id="tspan18420"
+         sodipodi:role="line">C</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text18422"
+       y="125.97794"
+       x="563.24719"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         y="125.97794"
+         x="563.24719"
+         id="tspan18424"
+         sodipodi:role="line">B</tspan></text>
+    <g
+       id="g4057"
+       transform="matrix(0.58002711,0,0,0.58002711,384.60198,50.325059)"
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <rect
+         y="206.29076"
+         x="232.14285"
+         height="17.142857"
+         width="17.142857"
+         id="rect4059"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4061"
+         d="m 236.42721,218.43361 9.28572,0 -4.60212,-7.97111 z"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       id="g4063"
+       transform="matrix(0.58002711,0,0,0.58002711,400.4349,50.349849)"
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <rect
+         y="206.24802"
+         x="258.10883"
+         height="17.142857"
+         width="17.142857"
+         id="rect4065"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4067"
+         d="m 262.3932,218.39088 9.28572,0 -4.60212,-7.97111 z"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       id="g4069"
+       transform="matrix(0.58002711,0,0,0.58002711,332.89491,67.171726)"
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         transform="matrix(0.47687334,0,0,0.47687334,161.46123,101.10593)"
+         d="m 308.09653,177.57008 c 0,8.36838 -6.78391,15.15229 -15.15229,15.15229 -8.36837,0 -15.15228,-6.78391 -15.15228,-15.15229 0,-8.36837 6.78391,-15.15228 15.15228,-15.15228 8.36838,0 15.15229,6.78391 15.15229,15.15228 z"
+         sodipodi:ry="15.152288"
+         sodipodi:rx="15.152288"
+         sodipodi:cy="177.57008"
+         sodipodi:cx="292.94424"
+         id="path4071"
+         style="fill:none;stroke:#000000;stroke-width:2.76406789;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4073"
+         d="m 301.16072,178.61218 0,14.46429"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4075"
+         d="m 293.92857,185.57647 14.46429,0"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       id="g4077"
+       transform="matrix(0.58002711,0,0,0.58002711,396.901,86.641038)"
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         transform="matrix(0.47687334,0,0,0.47687334,161.46123,101.10593)"
+         d="m 308.09653,177.57008 c 0,8.36838 -6.78391,15.15229 -15.15229,15.15229 -8.36837,0 -15.15228,-6.78391 -15.15228,-15.15229 0,-8.36837 6.78391,-15.15228 15.15228,-15.15228 8.36838,0 15.15229,6.78391 15.15229,15.15228 z"
+         sodipodi:ry="15.152288"
+         sodipodi:rx="15.152288"
+         sodipodi:cy="177.57008"
+         sodipodi:cx="292.94424"
+         id="path4079"
+         style="fill:none;stroke:#000000;stroke-width:2.76406789;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4081"
+         d="m 301.16072,178.61218 0,14.46429"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4083"
+         d="m 293.92857,185.57647 14.46429,0"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <g
+       id="g4085"
+       transform="matrix(0.58002711,0,0,0.58002711,431.32878,50.349849)"
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <rect
+         y="206.24802"
+         x="258.10883"
+         height="17.142857"
+         width="17.142857"
+         id="rect4087"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4089"
+         d="m 262.3932,218.39088 9.28572,0 -4.60212,-7.97111 z"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 511.67248,174.8287 7.54367,0"
+       id="path4091"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       d="m 529.38559,174.90194 19.85296,0"
+       id="path4093"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       d="m 560.14611,174.8287 19.70686,0"
+       id="path4095"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 591.05974,174.68355 8.20583,0 0,19.62551 -23.36072,0"
+       id="path4097"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       d="m 571.58238,174.891 0,15.00707"
+       id="path4099"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:none"
+       d="m 567.41002,194.30652 -32.1342,0"
+       id="path4101"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 535.20828,194.31292 -27.73354,0 0,-15.03136"
+       id="path4103"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4107"
+       sodipodi:cx="246.35095"
+       sodipodi:cy="196.6367"
+       sodipodi:rx="1.1364216"
+       sodipodi:ry="1.1364216"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       transform="matrix(0.58002711,0,0,0.58002711,372.15127,60.700839)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4109"
+       sodipodi:cx="246.35095"
+       sodipodi:cy="196.6367"
+       sodipodi:rx="1.1364216"
+       sodipodi:ry="1.1364216"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       transform="matrix(0.58002711,0,0,0.58002711,396.54002,60.847319)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path4111"
+       sodipodi:cx="246.35095"
+       sodipodi:cy="196.6367"
+       sodipodi:rx="1.1364216"
+       sodipodi:ry="1.1364216"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       transform="matrix(0.58002711,0,0,0.58002711,428.69215,60.920559)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <g
+       id="g4121"
+       transform="matrix(0.58002711,0,0,0.58002711,364.81891,53.123956)"
+       style="stroke-width:1.31811023;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621">
+      <path
+         transform="matrix(0.47687334,0,0,0.47687334,161.46123,101.10593)"
+         d="m 308.09653,177.57008 c 0,8.36838 -6.78391,15.15229 -15.15229,15.15229 -8.36837,0 -15.15228,-6.78391 -15.15228,-15.15229 0,-8.36837 6.78391,-15.15228 15.15228,-15.15228 8.36838,0 15.15229,6.78391 15.15229,15.15228 z"
+         sodipodi:ry="15.152288"
+         sodipodi:rx="15.152288"
+         sodipodi:cy="177.57008"
+         sodipodi:cx="292.94424"
+         id="path4123"
+         style="fill:none;stroke:#000000;stroke-width:2.76406789;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+         sodipodi:type="arc" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4125"
+         d="m 301.16072,178.61218 0,14.46429"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4127"
+         d="m 293.92857,185.57647 14.46429,0"
+         style="fill:none;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       d="m 539.43025,174.90194 0,-9.66762"
+       id="path4129"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
+       d="m 515.0415,174.75546 0,-13.99028 20.04248,0"
+       id="path4131"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.8118096;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Mend)"
+       d="m 543.57537,160.7996 66.59989,0 0,-10.875 11.97566,0"
+       id="path4133"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       xml:space="preserve"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="531.052"
+       y="173.34122"
+       id="text4135"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4137"
+         x="531.052"
+         y="173.34122">A</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="594.2049"
+       y="172.70476"
+       id="text4139"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4141"
+         x="594.2049"
+         y="172.70476">C</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.80027103px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="563.24719"
+       y="173.14418"
+       id="text4143"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan4145"
+         x="563.24719"
+         y="173.14418">B</tspan></text>
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.76453966;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect4059-4"
+       width="9.9433212"
+       height="9.9433212"
+       x="484.09708"
+       y="144.95544"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text4181"
+       y="152.1022"
+       x="486.16858"
+       style="font-size:23.20108414px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         style="font-size:8.12037945px"
+         y="152.1022"
+         x="486.16858"
+         id="tspan4183"
+         sodipodi:role="line">π</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6033"
+       d="m 489.06872,127.30604 0,-25.8112 125.93129,0 0.375,31.625 6.53908,0"
+       style="fill:none;stroke:#000000;stroke-width:0.8118096;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Mend-11)"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1.31811023;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path6237"
+       sodipodi:cx="246.35095"
+       sodipodi:cy="196.6367"
+       sodipodi:rx="1.1364216"
+       sodipodi:ry="1.1364216"
+       d="m 247.48737,196.6367 a 1.1364216,1.1364216 0 1 1 -2.27284,0 1.1364216,1.1364216 0 1 1 2.27284,0 z"
+       transform="matrix(0.58002711,0,0,0.58002711,346.14393,13.487926)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.76535433;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;display:inline;stroke-dasharray:none"
+       d="m 621.77678,128.75438 37.32205,0 0,26.01062 -37.32205,0 z"
+       id="rect9817-8-9-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383-8-4-1"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       transform="translate(394.03152,112.62268)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><flowRegion
+         id="flowRegion10385-3-1-7"><rect
+           id="rect10387-8-2-1"
+           width="74.846474"
+           height="33.344864"
+           x="209.60666"
+           y="25.54212"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389-7-3-1">Modulator</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 659.09464,141.19896 10.25,0 0,-25"
+       id="path10622-6-5"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 659.34464,116.19896 10,10 10,-10"
+       id="path10624-6-2"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <rect
+       y="106.87946"
+       x="498.51028"
+       height="45.211941"
+       width="106.06602"
+       id="rect6378"
+       style="opacity:0.93999999;fill:#7b74ae;fill-opacity:0.28191486;fill-rule:nonzero;stroke:none"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text4181-7"
+       y="254.98163"
+       x="495.01245"
+       style="font-size:23.20108413999999900px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans;stroke-width:0.70866142;stroke-miterlimit:4;stroke-dasharray:none"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         style="font-size:8.12037944999999790px;stroke-width:0.70866142;stroke-miterlimit:4;stroke-dasharray:none"
+         y="254.98163"
+         x="495.01245"
+         id="tspan4183-6"
+         sodipodi:role="line">π</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4181-1"
+       y="255.17096"
+       x="475.55444"
+       style="font-size:23.20108413999999900px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans;stroke-width:0.98149606;stroke-miterlimit:4;stroke-dasharray:none"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         style="font-size:8.12037944999999790px;stroke-width:0.98149606;stroke-miterlimit:4;stroke-dasharray:none"
+         y="255.17096"
+         x="475.55444"
+         id="tspan4183-4"
+         sodipodi:role="line">π</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4181-2"
+       y="256.21762"
+       x="513.76044"
+       style="font-size:23.20108413999999900px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans;stroke-width:0.70866142;stroke-miterlimit:4;stroke-dasharray:none"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         style="font-size:8.12037944999999790px;stroke-width:0.70866142;stroke-miterlimit:4;stroke-dasharray:none"
+         y="256.21762"
+         x="513.76044"
+         id="tspan4183-3"
+         sodipodi:role="line">π</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;stroke-width:0.70866142;stroke-miterlimit:4;stroke-dasharray:none"
+       x="519.56372"
+       y="251.86218"
+       id="text6428"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><tspan
+         sodipodi:role="line"
+         id="tspan6430"
+         x="519.56372"
+         y="251.86218"
+         style="font-size:6px;stroke-width:0.70866142;stroke-miterlimit:4;stroke-dasharray:none">-1</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6738"
+       d="m 622.59049,253.50438 37.32205,0 0,26.01062 -37.32205,0 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.76535434;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383-8-4"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       transform="translate(394.00995,236.72219)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><flowRegion
+         id="flowRegion10385-3-1"><rect
+           id="rect10387-8-2"
+           width="74.846474"
+           height="33.344864"
+           x="209.60666"
+           y="25.54212"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389-7-3">Demodulator</flowPara></flowRoot>    <rect
+       inkscape:export-ydpi="286.48621"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       y="244.93593"
+       x="469.95737"
+       height="15.279707"
+       width="16.037066"
+       id="rect6761"
+       style="fill:none;stroke:#000000;stroke-width:0.98149606;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383-4-7"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       transform="translate(343.12283,198.90721)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><flowRegion
+         id="flowRegion10385-6-0"><rect
+           id="rect10387-6-2"
+           width="79.999977"
+           height="29.999998"
+           x="190.3125"
+           y="28.886984"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389-4-9">BCJR Decoder</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10383-4-7-0"
+       style="font-size:6px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       transform="translate(343.12283,244.86914)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"><flowRegion
+         id="flowRegion10385-6-0-9"><rect
+           id="rect10387-6-2-0"
+           width="79.999977"
+           height="29.999998"
+           x="190.3125"
+           y="28.886984"
+           style="font-size:6px" /></flowRegion><flowPara
+         id="flowPara10389-4-9-0">BCJR Decoder</flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer10"
+     inkscape:label="dots">
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="path20008"
+       sodipodi:cx="129.22377"
+       sodipodi:cy="260.2258"
+       sodipodi:rx="1.4142135"
+       sodipodi:ry="1.4142135"
+       d="m 130.63798,260.2258 a 1.4142135,1.4142135 0 1 1 -2.82842,0 1.4142135,1.4142135 0 1 1 2.82842,0 z"
+       transform="matrix(0.77139959,0,0,0.77139959,418.01759,102.76469)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="path20008-1"
+       sodipodi:cx="129.22377"
+       sodipodi:cy="260.2258"
+       sodipodi:rx="1.4142135"
+       sodipodi:ry="1.4142135"
+       d="m 130.63798,260.2258 a 1.4142135,1.4142135 0 1 1 -2.82842,0 1.4142135,1.4142135 0 1 1 2.82842,0 z"
+       transform="matrix(0.77139959,0,0,0.77139959,423.94534,83.79011)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="path20008-2"
+       sodipodi:cx="129.22377"
+       sodipodi:cy="260.2258"
+       sodipodi:rx="1.4142135"
+       sodipodi:ry="1.4142135"
+       d="m 130.63798,260.2258 a 1.4142135,1.4142135 0 1 1 -2.82842,0 1.4142135,1.4142135 0 1 1 2.82842,0 z"
+       transform="matrix(0.77139959,0,0,0.77139959,435.25905,69.69216)"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;display:inline"
+       id="path20008-2-4"
+       sodipodi:cx="129.22377"
+       sodipodi:cy="260.2258"
+       sodipodi:rx="1.4142135"
+       sodipodi:ry="1.4142135"
+       d="m 130.63798,260.2258 a 1.4142135,1.4142135 0 1 1 -2.82842,0 1.4142135,1.4142135 0 1 1 2.82842,0 z"
+       transform="matrix(0.77139959,0,0,0.77139959,26.888951,-115.4328)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer8"
+     inkscape:label="lines"
+     style="display:inline">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:none"
+       d="m 85,82.362183 20,0 0,-40 14,0"
+       id="path10448"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:none"
+       d="m 105,82.362183 0,29.999997 15,0"
+       id="path10450"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:none"
+       d="m 144,42.362183 16,0"
+       id="path10452"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:none"
+       d="m 145,112.36218 15,0"
+       id="path10454"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.99921262;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow2Mend)"
+       d="m 162,47.362183 16,0"
+       id="path10494"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 329.89645,64.674144 25,0 0,-25"
+       id="path10622"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 344.89645,39.674144 10,10 10,-10"
+       id="path10624"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:none"
+       d="m 285,242.36218 -5,0 0,-20"
+       id="path11089"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 660.18872,265.61218 10.25,0 0,-25"
+       id="path10622-6-5-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="m 660.43872,240.61218 10,10 10,-10"
+       id="path10624-6-2-1"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Matt\git\rtty_modem\matlab\ecc\path10624-6.png"
+       inkscape:export-xdpi="286.48621"
+       inkscape:export-ydpi="286.48621" />
+  </g>
+</svg>

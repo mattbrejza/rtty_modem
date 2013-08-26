@@ -1,0 +1,53 @@
+#!/bin/bash
+#PBS -S /bin/bash
+# Script to run four Matlab jobs in parallel.
+
+# set default resource requirements for job (8 processors on 1 node for 1
+# minute). These can be overridden on the qsub command line.
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=36:00:00
+
+# use Matlab module to set up the matlab environment
+module load matlab/2011a
+
+# Change to directory from which job was submitted.
+cd $PBS_O_WORKDIR
+
+
+SRC="lte_fer"
+RES="lte_fer/res1"
+
+## Run matlab commands in the script file main.m for a variety of SNRs and write the results into different text files
+
+cd $SRC
+mcc -vm main_ber.m *.m &
+cd ../
+
+
+mkdir $RES
+
+wait
+
+
+rm $SRC/*.log
+
+
+
+
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-8" "0.1" "0" "0.33333333"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-8" "0.1" "1" "0.5"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-8" "0.1" "2" "0.6"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-4" "0.1" "3" "0.7"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-4" "0.1" "5" "0.8"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-4" "0.1" "6" "0.9"  &
+
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-8" "0.1" "0" "0.33333333"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-8" "0.1" "1" "0.5"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-8" "0.1" "2" "0.6"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-4" "0.1" "3" "0.7"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-4" "0.1" "5" "0.8"  &
+./$SRC/run_main_ber.sh /home/local/software/rh53/matlab/2011a  "6144" "-4" "0.1" "6" "0.9"  &
+
+
+
+wait
