@@ -147,7 +147,10 @@ public class PredictionGrabber {
 	        
 
 	    }catch (Exception e){
-	    	Log.d("DEBUG", e.getMessage());
+	    	if (e != null){
+	    		if (e.getMessage() != null)
+	    			Log.d("DEBUG", e.getMessage());
+	    	}
 	    	return null;
 	    } finally {
 	        if (is != null) {
