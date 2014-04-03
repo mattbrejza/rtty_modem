@@ -16,7 +16,7 @@
         android:key="pref_map_path"
         android:title="@string/pref_map_path"
         android:summary="@string/pref_map_path_summ"
-        android:defaultValue="/sdcard/england.map" />
+        android:defaultValue="/mnt/sdcard/england.map" />
     
     <EditTextPreference
 		  android:key="pref_habitat_update_freq" 
