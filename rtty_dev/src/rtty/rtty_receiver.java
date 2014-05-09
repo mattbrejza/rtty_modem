@@ -13,9 +13,6 @@
 
 package rtty;
 import java.util.ArrayList;
-
-import ukhas.*;
-
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 

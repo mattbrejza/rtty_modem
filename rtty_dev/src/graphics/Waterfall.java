@@ -50,6 +50,13 @@ public class Waterfall {
 		_grad_max = g.length;	
 	}
 	
+	public BufferedImage UpdateLine(double[] fftin, double f1, double f2, int sample_rate)
+	{
+		
+		return UpdateLine( fftin,(int)(f1/sample_rate*512), (int)(f2/sample_rate*512));
+	
+	}
+	
 	public BufferedImage UpdateLine(double[] fftin, int f1, int f2)
 	{
 		if (fftin.length != 512)
