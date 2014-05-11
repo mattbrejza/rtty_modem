@@ -16,12 +16,12 @@ package rtty;
 //import java.awt.Color;
 
 
-public class rtty_decode {
+public class fsk_demodulator {
 	//MUST give sample rate of 8000
 	
 	//private static final boolean DEBUG = false;
 	
-	int _data_bits=7;
+	//int _data_bits=7;
 	double _f1;                  //low LO
 	double _f2;                  //high LO
 	private double _LO2_phase;   //high LO
@@ -80,7 +80,7 @@ public class rtty_decode {
    // private graph_baseband gbb;
 
 
-	public rtty_decode(double f1, double f2, int data_bits) {
+	public fsk_demodulator(double f1, double f2) {
 		
 		//if (DEBUG)
 		//	gbb = new graph_baseband();

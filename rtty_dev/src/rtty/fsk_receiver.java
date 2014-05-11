@@ -17,7 +17,7 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 
 
-public class rtty_receiver implements StringRxEvent {
+public class fsk_receiver implements StringRxEvent {
 	
 	public int FFT_half_len = 512; 
     private DoubleFFT_1D ft_obj = new DoubleFFT_1D(FFT_half_len*2);
@@ -25,7 +25,7 @@ public class rtty_receiver implements StringRxEvent {
     //int FFT_follow_half_len = 512;
     //private DoubleFFT_1D ft_follow = new DoubleFFT_1D(FFT_follow_half_len*2);
     
-    private rtty_decode decoder = new rtty_decode(1200,1800,7);
+    private fsk_demodulator decoder = new fsk_demodulator(1200,1800);
     
 
     ConfidenceCalculator cc = new ConfidenceCalculator(8000);
@@ -33,6 +33,7 @@ public class rtty_receiver implements StringRxEvent {
     private Telemetry_handler telem_hand_7 = new Telemetry_handler();
     private Telemetry_handler telem_hand_8 = new Telemetry_handler();
     private Telemetry_handler telem_hand_f = new Telemetry_handler();
+    private Binary_frame_handler telem_hand_bin = new Binary_frame_handler();
     
     private String last_sha = "";
     
@@ -42,9 +43,13 @@ public class rtty_receiver implements StringRxEvent {
     
     public int search_range_rtty = 14;
 
-    public enum State { INACTIVE, IDLE, FOUND_SIG, BAUD_KNOWN};
+    public enum Mode { BINARY, RTTY };
+    public enum Modulation { FSK, AFSK };
+    public enum State { INACTIVE, IDLE, FOUND_SIG, BAUD_KNOWN };
     
     public State current_state = State.INACTIVE;
+    public Mode current_mode = Mode.RTTY;
+    public Modulation current_modulation = Modulation.FSK;
     public int current_data_bits = 7;
     public int current_stop_bits = 1;
     public int current_baud = 300;
@@ -76,11 +81,12 @@ public class rtty_receiver implements StringRxEvent {
     //used for 'string received' event
     protected ArrayList<StringRxEvent> _listeners = new ArrayList<StringRxEvent>();
 
-	public rtty_receiver() {
+	public fsk_receiver() {
 		// TODO Auto-generated constructor stub
 		telem_hand_7.addStringRecievedListener(this);
 		telem_hand_8.addStringRecievedListener(this);
 		telem_hand_f.addStringRecievedListener(this);
+		telem_hand_bin.addStringRecievedListener(this);
 	}
 	
 	public void addStringRecievedListener(StringRxEvent listener)
@@ -96,11 +102,11 @@ public class rtty_receiver implements StringRxEvent {
 		}
 	}
 	
-	public double[] findRTTY(double[] samples)
+	public double[] find_fsk(double[] samples)
 	{
 		_samples = samples;
 		_fft_updated = false;
-		return findRTTY(false);
+		return find_fsk(false);
 	}
 	
 	//note: gives the square of the FFT
@@ -130,7 +136,7 @@ public class rtty_receiver implements StringRxEvent {
         return true;
 	}
 	
-	private double[] findRTTY(boolean update)
+	private double[] find_fsk(boolean update)
 	{
 		//returns array where [0] is f1 and [1] is f2
 
@@ -348,12 +354,12 @@ public class rtty_receiver implements StringRxEvent {
 		return out;
 	}
 
-	private void followRTTY(boolean initial_solution)
+	private void follow_fsk(boolean initial_solution)
 	{
 		//calls follow RTTY, then updates the demod by first making sure the shift is averaged.
 		//if initial solution, the update is applied without any averaging
 	
-		double[] new_pos = followRTTY_getpos( search_range_rtty);
+		double[] new_pos = follow_fsk_getpos( search_range_rtty);
 	
 		if (av_shift.getMA() == 0 || initial_solution)
 		{
@@ -383,7 +389,7 @@ public class rtty_receiver implements StringRxEvent {
 		}		
 	}
 	
-	private double[] followRTTY_getpos(int search_range)
+	private double[] follow_fsk_getpos(int search_range)
 	{
 		//search range is number of fft bins each side of old_Fx
 		
@@ -494,7 +500,7 @@ public class rtty_receiver implements StringRxEvent {
 		if (auto_rtty_finding && cc.fullSearchDue())
 		{
 			samples_since_fft = 0;
-			double[] loc = findRTTY(false);
+			double[] loc = find_fsk(false);
 			boolean up = cc.putFrequencies(loc[0]/8000, loc[1]/8000);
 			if (up){
 				decoder._f1 = cc.getFrequencies(0);
@@ -506,7 +512,7 @@ public class rtty_receiver implements StringRxEvent {
 		{
 			samples_since_fft = 0;
 			samples_since_afc = 0;
-			followRTTY(initialState != ConfidenceCalculator.State.SIG_DROPPED);
+			follow_fsk(initialState != ConfidenceCalculator.State.SIG_DROPPED);
 			
 			cc.AFCUpdate(decoder._f1,decoder._f2);
 		}
@@ -547,21 +553,41 @@ public class rtty_receiver implements StringRxEvent {
 		
 		//step 3 : demodulate the signal		
 		boolean[] bits = decoder.processBlock_2bits(samples,baud);
+		String str = "";	
 		
-		cc.putPowerLevels(decoder.getLastMaxPower(),decoder.getLastAveragePower());
-		
-		
-		//step 4 : convert a bitstream to telemetry		
-		String str = "";		
-		boolean valid7 = false,valid8 = false;  	
-		
-		if (current_state == State.IDLE)		//if data /stops are known then used fixed stops decoder too
+		if (current_mode == Mode.RTTY)
 		{
-			bit2char_fixed.DataBits(current_data_bits);
-			bit2char_fixed.StopBits(current_stop_bits);
-			str = bit2char_fixed.bits2chars(bits);
-			telem_hand_f.ExtractPacket(str);
-			if (current_data_bits ==7)
+			cc.putPowerLevels(decoder.getLastMaxPower(),decoder.getLastAveragePower());
+						
+			//step 4 : convert a bitstream to telemetry		
+				
+			boolean valid7 = false,valid8 = false;  	
+			
+			if (current_state == State.IDLE)		//if data /stops are known then used fixed stops decoder too
+			{
+				bit2char_fixed.DataBits(current_data_bits);
+				bit2char_fixed.StopBits(current_stop_bits);
+				str = bit2char_fixed.bits2chars(bits);
+				telem_hand_f.ExtractPacket(str);
+				if (current_data_bits ==7)
+				{
+					str = bit2char_8.bits2chars(bits);
+					valid8 = telem_hand_8.ExtractPacket(str);
+					str = bit2char_7.bits2chars(bits);
+					valid7 = telem_hand_7.ExtractPacket(str);
+				}
+				else
+				{
+					str = bit2char_7.bits2chars(bits);
+					valid7 = telem_hand_7.ExtractPacket(str);
+					str = bit2char_8.bits2chars(bits);
+					valid8 = telem_hand_8.ExtractPacket(str);
+				}
+				
+				if (cc.getState() == ConfidenceCalculator.State.SIG_DROPPED)
+					current_state = State.INACTIVE;
+			}
+			else if (current_data_bits ==7)			//if data / stops not known try 7nX and 8nX, returning the results of whatever setting was used last
 			{
 				str = bit2char_8.bits2chars(bits);
 				valid8 = telem_hand_8.ExtractPacket(str);
@@ -575,42 +601,41 @@ public class rtty_receiver implements StringRxEvent {
 				str = bit2char_8.bits2chars(bits);
 				valid8 = telem_hand_8.ExtractPacket(str);
 			}
+			//System.out.println(bit2char_7.Average_bit_period());
 			
-			if (cc.getState() == ConfidenceCalculator.State.SIG_DROPPED)
-				current_state = State.INACTIVE;
-		}
-		else if (current_data_bits ==7)			//if data / stops not known try 7nX and 8nX, returning the results of whatever setting was used last
-		{
-			str = bit2char_8.bits2chars(bits);
-			valid8 = telem_hand_8.ExtractPacket(str);
-			str = bit2char_7.bits2chars(bits);
-			valid7 = telem_hand_7.ExtractPacket(str);
+			//at this stage, if valid7/8 is high, then the databits info is known, and the fixed extractor can be used
+			if (valid7)
+			{
+				current_state = State.IDLE;
+				cc.gotDecode();
+				current_data_bits = 7;
+				current_stop_bits = (int) Math.round(bit2char_7.average_stop_bits());
+			}
+			else if (valid8)
+			{
+				current_state = State.IDLE;
+				cc.gotDecode();
+				current_data_bits = 8;
+				current_stop_bits = (int) Math.round(bit2char_8.average_stop_bits());
+			}
 		}
 		else
 		{
-			str = bit2char_7.bits2chars(bits);
-			valid7 = telem_hand_7.ExtractPacket(str);
-			str = bit2char_8.bits2chars(bits);
-			valid8 = telem_hand_8.ExtractPacket(str);
+			boolean valid_bin = false;
+			str = telem_hand_bin.bits2chars(bits);
+			valid_bin = telem_hand_bin.get_last_valid();
+			
+			if (current_modulation == Modulation.AFSK)
+			{
+				if (cc.getState() == ConfidenceCalculator.State.SIG_DROPPED)
+					current_state = State.INACTIVE;
+				if (valid_bin)
+				{
+					cc.gotDecode();
+					current_state = State.IDLE;
+				}
+			}
 		}
-		//System.out.println(bit2char_7.Average_bit_period());
-		
-		//at this stage, if valid7/8 is high, then the databits info is known, and the fixed extractor can be used
-		if (valid7)
-		{
-			current_state = State.IDLE;
-			cc.gotDecode();
-			current_data_bits = 7;
-			current_stop_bits = (int) Math.round(bit2char_7.average_stop_bits());
-		}
-		else if (valid8)
-		{
-			current_state = State.IDLE;
-			cc.gotDecode();
-			current_data_bits = 8;
-			current_stop_bits = (int) Math.round(bit2char_8.average_stop_bits());
-		}
-		
 		
 		return str;
 	}
@@ -665,6 +690,8 @@ public class rtty_receiver implements StringRxEvent {
 	//IG_LOST,SIG_JUST_FOUND,SIG_TRACKING,SIG_DROPPED};
 	public String statusToString()
 	{
+		if (current_modulation == Modulation.AFSK)
+			return "Tracking Signal";
 		switch (cc.state)
 		{
 			case SIG_LOST : 
@@ -677,6 +704,21 @@ public class rtty_receiver implements StringRxEvent {
 				return "Dropped Signal";
 			default : 
 				return "Inactive";
+		}
+	}
+	
+	public void setModulation(Modulation set)
+	{
+		current_modulation = set;
+		if (current_modulation == Modulation.AFSK)
+		{
+			auto_rtty_finding = false;
+			enable_afc = false;
+		}
+		else
+		{
+			auto_rtty_finding = true;
+			enable_afc = true;
 		}
 	}
 	
