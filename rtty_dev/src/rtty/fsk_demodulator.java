@@ -445,6 +445,12 @@ public class fsk_demodulator {
 		}
 		
 	}
+	
+	public void setFreq(double f1, double f2)
+	{
+		_f1 = f1/8000;
+		_f2 = f2/8000;
+	}
 
 	public double getLastMaxPower(){
 		return _lastMaxPower;

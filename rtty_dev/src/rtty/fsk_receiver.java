@@ -33,7 +33,8 @@ public class fsk_receiver implements StringRxEvent {
     private Telemetry_handler telem_hand_7 = new Telemetry_handler();
     private Telemetry_handler telem_hand_8 = new Telemetry_handler();
     private Telemetry_handler telem_hand_f = new Telemetry_handler();
-    private Binary_frame_handler telem_hand_bin = new Binary_frame_handler();
+    private Binary_frame_handler telem_hand_bin = 
+    		new Binary_frame_handler(new boolean[]{true,true,false,false,false,true,false,true,true,false,false});//{true,false,false,false,true,false,false,true,false,false,true,true});
     
     private String last_sha = "";
     
@@ -552,11 +553,12 @@ public class fsk_receiver implements StringRxEvent {
 		*/
 		
 		//step 3 : demodulate the signal		
-		boolean[] bits = decoder.processBlock_2bits(samples,baud);
+		
 		String str = "";	
 		
 		if (current_mode == Mode.RTTY)
 		{
+			boolean[] bits = decoder.processBlock_2bits(samples,baud);
 			cc.putPowerLevels(decoder.getLastMaxPower(),decoder.getLastAveragePower());
 						
 			//step 4 : convert a bitstream to telemetry		
@@ -621,6 +623,7 @@ public class fsk_receiver implements StringRxEvent {
 		}
 		else
 		{
+			double[] bits = decoder.processBlock_2bits_llr(samples,baud);
 			boolean valid_bin = false;
 			str = telem_hand_bin.bits2chars(bits);
 			valid_bin = telem_hand_bin.get_last_valid();
@@ -683,6 +686,11 @@ public class fsk_receiver implements StringRxEvent {
 		return decoder._f2;
 	}
 	
+	public void setFreq(double f1, double f2)
+	{
+		decoder.setFreq(f1, f2);
+	}
+	
 	public boolean get_fft_updated()
 	{
 		return _fft_updated;
@@ -720,6 +728,11 @@ public class fsk_receiver implements StringRxEvent {
 			auto_rtty_finding = true;
 			enable_afc = true;
 		}
+	}
+	
+	public void setMode(Mode set)
+	{
+		current_mode = set;
 	}
 	
 	public boolean paramsValid()
