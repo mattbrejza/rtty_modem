@@ -13,6 +13,7 @@
 
 package rtty;
 import java.util.ArrayList;
+
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 
@@ -34,7 +35,10 @@ public class fsk_receiver implements StringRxEvent {
     private Telemetry_handler telem_hand_8 = new Telemetry_handler();
     private Telemetry_handler telem_hand_f = new Telemetry_handler();
     private Binary_frame_handler telem_hand_bin = 
-    		new Binary_frame_handler(new boolean[]{true,true,false,false,false,true,false,true,true,false,false});//{true,false,false,false,true,false,false,true,false,false,true,true});
+    		new Binary_frame_handler(new boolean[]
+    				//{true, false,true, false,true, false,true, false,true, false,true, false});
+    				{true, false, false, true, true, false, true, false, false, true, false, true, false, false, true, false, true, true, true, false, false, true, true, true, false, false, false, true, false, true, true, false});
+    				//{true,true,false,false,false,true,false,true,true,false,false});//{true,false,false,false,true,false,false,true,false,false,true,true});
     
     private String last_sha = "";
     
@@ -102,6 +106,8 @@ public class fsk_receiver implements StringRxEvent {
 			_listeners.get(i).StringRx(str,checksum);
 		}
 	}
+	
+
 	
 	public double[] find_fsk(double[] samples)
 	{
@@ -643,6 +649,10 @@ public class fsk_receiver implements StringRxEvent {
 		return str;
 	}
 
+	public void StringRx(Byte[] str, boolean checksum)
+	{
+		
+	}
 	
 	public void StringRx(String str, boolean checksum)
 	{
@@ -739,6 +749,8 @@ public class fsk_receiver implements StringRxEvent {
 	{
 		return (current_state == State.IDLE);
 	}
+
+
 	
 	
 	

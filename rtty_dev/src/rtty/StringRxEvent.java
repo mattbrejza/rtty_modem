@@ -13,10 +13,10 @@
 
 package rtty;
 
-import ukhas.*;
 import java.util.EventListener;
 
 public interface StringRxEvent extends EventListener
 {
 	void StringRx(String strrx, boolean checksum);
+	//void StringRx(Byte[] strrx, boolean checksum);
 }
