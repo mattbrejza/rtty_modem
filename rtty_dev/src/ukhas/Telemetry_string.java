@@ -13,12 +13,26 @@
 
 package ukhas;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
+
+import org.msgpack.MessagePack;
+import org.msgpack.packer.Packer;
+import org.msgpack.template.Template;
+import org.msgpack.type.Value;
+import org.msgpack.unpacker.Unpacker;
+
+import static org.msgpack.template.Templates.tList;
+import static org.msgpack.template.Templates.tMap;
+import static org.msgpack.template.Templates.TString;
+import static org.msgpack.template.Templates.TInteger;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -50,6 +64,18 @@ public class Telemetry_string {
 		return "$$" + raw_string + "\n";
 	}
 	
+	
+	public Telemetry_string(byte[] telem, TelemetryConfig tc) {
+		parse_telem(telem, System.currentTimeMillis() / 1000L, tc);
+		checksum_valid = true;
+		
+		//get time created
+		Date time = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		String t = dateFormat.format(time);
+		t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+		doc_time_created = t;
+	}
 	public Telemetry_string(String telem, TelemetryConfig tc) {
 		parse_telem(telem, System.currentTimeMillis() / 1000L, tc);
 		checksum_valid = check_checksum(telem,0);
@@ -83,6 +109,79 @@ public class Telemetry_string {
 		String t = dateFormat.format(time);
 		t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
 		doc_time_created = t;
+	}
+	
+	private void parse_telem(byte[] str, long timerx, TelemetryConfig tc)
+	{
+		Template<Map<Integer, String>> mapTmpl = tMap(TInteger, TString);
+		
+		MessagePack msgpack = new MessagePack();
+		
+		ByteArrayInputStream in = new ByteArrayInputStream(str);
+        Unpacker unpacker = msgpack.createUnpacker(in);
+        
+        try {
+        	while(in.available()>0)   //TODO: handle multiple messages
+        	{
+        		Value v = unpacker.readValue();
+        		if (v.isMapValue())
+        		{
+        			raw_string = v.toString();
+        			
+        			boolean valid_lock = true;
+        			
+        			for (Value s : v.asMapValue().keySet()) 
+        			{
+        				Value item = v.asMapValue().get(s); 
+        				if (s.isIntegerValue()){
+        					switch (s.asIntegerValue().intValue())
+        					{
+        					case 0:        			//CALLSIGN	
+        						callsign = item.toString();
+        						break;
+        					case 2:					//TIME
+        						if (item.isIntegerValue())
+        						{        							
+        							Date time_in = new Date(item.asIntegerValue().getInt()*1000);
+        							setTime(time_in,timerx); 
+        						}
+        						break;        						
+        					case 1:					//PACKET COUNT
+        						if (item.isIntegerValue())
+        							packetID = item.asIntegerValue().getInt();
+        						break;        						
+        					case 3:					//POSITION
+        						
+        						break;
+        					case 4:					//SATS
+        						
+        						break;
+        					case 5:        						
+        						
+        						break;        						
+        					case 6:
+        						
+        						break;
+        					default:
+        						
+        						break;
+        					}
+        				}
+        			     
+        			}
+        			
+        			if (coords != null)
+        				coords.latlong_valid = valid_lock;
+        			
+        			break;
+        		}
+        	}
+			//Map<Integer, String> dstMap = unpacker.read(mapTmpl);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
 	private void parse_telem(String str, long timerx, TelemetryConfig tc)
@@ -126,55 +225,30 @@ public class Telemetry_string {
 		{
 			callsign = fields[0];
 			
-					
-			
-			//handle time			
-			SimpleDateFormat ft;
-			if (fields[2+offset].length() > 6)
-				ft = new SimpleDateFormat ("HH:mm:ss");
-			else
-				ft = new SimpleDateFormat ("HHmmss");
-			
-			try //this is all a bit horrible :(
+			try
 			{
-				
 				if (offset == 0)
 					packetID = Integer.parseInt(fields[1]);
-				
-				
-				
-				//get time rx @ 12am
-				Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-				Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-				ft.setTimeZone(TimeZone.getTimeZone("UTC"));
-				time = ft.parse(fields[2+offset]);		
-				cal2.setTime(time);
-				
-				cal.setTimeInMillis(timerx*1000);
-				cal.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
-				cal.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
-				cal.set(Calendar.SECOND, cal2.get(Calendar.SECOND));
-				
-				//long best_guess = cal2.getTimeInMillis();
-				
 						
-
-				if (cal.getTimeInMillis() < timerx*1000 - 1*60*60*1000)
-					cal.roll(Calendar.DAY_OF_YEAR, 1);
-				if (cal.getTimeInMillis() < timerx*1000 + 12*60*60*1000)
-					;
-				else					
-					cal.roll(Calendar.DAY_OF_YEAR, -1);
+				//handle time			
+				String format = "";
+				if (fields[2+offset].length() > 6)
+					format = "HH:mm:ss";
+				else
+					format = "HHmmss";				
+				SimpleDateFormat ft = new SimpleDateFormat (format);
+				ft.setTimeZone(TimeZone.getTimeZone("UTC"));
+				Date time_in = ft.parse(fields[2+offset]);	
 				
-				time = cal.getTime(); 
-				
+				setTime(time_in,timerx); 
+			
 				coords = new Gps_coordinate(fields[3+offset],fields[4+offset],fields[5+offset]);
 			}
 			catch (Exception e)
 			{
 				System.out.println("Error parsing - " + e.toString());
 			}
-			
+
 			
 			//now parse extra data
 			extraFields = new double[fields.length-1];
@@ -340,6 +414,46 @@ public class Telemetry_string {
 		else
 			return false;
 		
+	}
+	
+	private void setTime(Date time_in, long timerx)
+	{
+		
+		try //this is all a bit horrible :(
+		{
+			
+						
+			//get time rx @ 12am
+			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			Calendar cal2 = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+				
+			cal2.setTime(time_in);
+			
+			cal.setTimeInMillis(timerx*1000);
+			cal.set(Calendar.HOUR_OF_DAY, cal2.get(Calendar.HOUR_OF_DAY));
+			cal.set(Calendar.MINUTE, cal2.get(Calendar.MINUTE));
+			cal.set(Calendar.SECOND, cal2.get(Calendar.SECOND));
+			
+			//long best_guess = cal2.getTimeInMillis();
+			
+					
+
+			if (cal.getTimeInMillis() < timerx*1000 - 1*60*60*1000)
+				cal.roll(Calendar.DAY_OF_YEAR, 1);
+			if (cal.getTimeInMillis() < timerx*1000 + 12*60*60*1000)
+				;
+			else					
+				cal.roll(Calendar.DAY_OF_YEAR, -1);
+			
+			time = cal.getTime(); 
+			
+			
+		}
+		catch (Exception e)
+		{
+			System.out.println("Error parsing - " + e.toString());
+		}
 	}
 	
 	public boolean isZeroGPS(){

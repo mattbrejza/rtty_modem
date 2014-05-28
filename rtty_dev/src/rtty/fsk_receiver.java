@@ -106,6 +106,13 @@ public class fsk_receiver implements StringRxEvent {
 			_listeners.get(i).StringRx(str,checksum);
 		}
 	}
+	protected void fireStringReceived(byte[] str, boolean checksum, int length)
+	{
+		for (int i = 0; i < _listeners.size(); i++)
+		{
+			_listeners.get(i).StringRx(str,checksum, length);
+		}
+	}
 	
 
 	
@@ -649,9 +656,12 @@ public class fsk_receiver implements StringRxEvent {
 		return str;
 	}
 
-	public void StringRx(Byte[] str, boolean checksum)
+	public void StringRx(byte[] str, boolean checksum, int length)
 	{
-		
+		if (_listeners.size() > 0)
+		{
+			fireStringReceived(str, checksum, length);
+		}
 	}
 	
 	public void StringRx(String str, boolean checksum)

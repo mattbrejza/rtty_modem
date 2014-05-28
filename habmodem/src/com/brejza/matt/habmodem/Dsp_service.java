@@ -30,7 +30,7 @@ import org.mapsforge.core.GeoPoint;
 import com.brejza.matt.habmodem.PredictionGrabber.PredictionRxEvent;
 
 import rtty.StringRxEvent;
-import rtty.rtty_receiver;
+import rtty.fsk_receiver;
 import ukhas.AscentRate;
 import ukhas.Gps_coordinate;
 import ukhas.HabitatRxEvent;
@@ -82,7 +82,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	 // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
-    rtty_receiver rcv = new rtty_receiver();
+    fsk_receiver rcv = new fsk_receiver();
     private AudioRecord mRecorder;
     private AudioTrack mPlayer;
 	private int buffsize;
@@ -1272,6 +1272,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 		Intent i = new Intent(PREDICTION_NEW_DATA);
 		sendBroadcast(i);
+		
+	}
+
+	@Override
+	public void StringRx(byte[] strrx, boolean checksum, int length) {
+		// TODO Auto-generated method stub
 		
 	}
 	

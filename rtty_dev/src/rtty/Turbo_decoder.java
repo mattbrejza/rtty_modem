@@ -580,5 +580,39 @@ public class Turbo_decoder {
 	    return crc & 0xFFFF;
 	}
 	
+
+	public static byte hamming_decode84(byte input)
+	{
+		byte s = 0;
+		byte o = input;
+		
+		if (  (input&(1<<7))>0  ^  (input&(1<<2))>0  ^  (input&(1<<1))>0  ^  (input&(1<<0))>0  )
+			s |= (1<<3);
+		if (  (input&(1<<6))>0  ^  (input&(1<<3))>0  ^  (input&(1<<1))>0  ^  (input&(1<<0))>0  )
+			s |= (1<<2);
+		if (  (input&(1<<5))>0  ^  (input&(1<<3))>0  ^  (input&(1<<2))>0  ^  (input&(1<<0))>0  )
+			s |= (1<<1);
+		if (  (input&(1<<4))>0  ^  (input&(1<<3))>0  ^  (input&(1<<2))>0  ^  (input&(1<<1))>0  )
+			s |= (1<<0);
+		
+		return o;
+	}
+	
+	public static byte hamming_encode84(byte input)
+	{
+
+		byte o = (byte) (input & 0xF);
+		
+		if (    (input&(1<<3))>0  ^  (input&(1<<2))>0  ^  (input&(1<<1))>0  )
+			o |= (1<<4);
+		if (    (input&(1<<3))>0  ^  (input&(1<<2))>0  ^  (input&(1<<0))>0  )
+			o |= (1<<5);
+		if (    (input&(1<<3))>0  ^  (input&(1<<1))>0  ^  (input&(1<<0))>0  )
+			o |= (1<<6);
+		if (    (input&(1<<2))>0  ^  (input&(1<<1))>0  ^  (input&(1<<0))>0  )
+			o |= (1<<7);
+		
+		return o;
+	}
 	
 }

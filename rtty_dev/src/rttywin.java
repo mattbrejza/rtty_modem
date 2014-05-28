@@ -12,6 +12,7 @@
 
 
 import java.awt.EventQueue;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 
+
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -35,9 +38,12 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
+
+
 
 
 
@@ -45,14 +51,14 @@ import org.math.plot.*;
 
 import edu.emory.mathcs.jtransforms.fft.*;
 import graphics.Waterfall;
-
 import ukhas.Gps_coordinate;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
 //import rtty.Mappoint_interface;
 import rtty.StringRxEvent;
+import rtty.fsk_receiver;
 import ukhas.Telemetry_string;
-import rtty.rtty_receiver;
+
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -80,7 +86,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	SourceDataLine sourceDataLine;
 	  
 	  //rtty_decode decoder = new rtty_decode(1200,1800,7);
-	rtty_receiver rcv = new rtty_receiver();
+	fsk_receiver rcv = new fsk_receiver();
 	  
 	DoubleFFT_1D ft = new DoubleFFT_1D(512);
 	  
@@ -243,7 +249,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 				hi.updateChaseCar(new Listener(txtcall.getText(), new Gps_coordinate(txtLat.getText(), txtLong.getText(),"0"),true));
 				hi.addDataFetchTask("NANU",(System.currentTimeMillis() / 1000L)-(15*24*60*60),(System.currentTimeMillis() / 1000L),3000);
 			*/
-				rtty_receiver rcvv = new rtty_receiver();
+				fsk_receiver rcvv = new fsk_receiver();
 				int len = Integer.parseInt(txtLat.getText());
 				rcvv.processBlock(new double[len], 300);
 			}
@@ -524,5 +530,11 @@ public class rttywin extends JFrame implements StringRxEvent {
 		System.out.println(ts.getSentence() + "   " + checksum);
 		if (chkOnline.isSelected())
 			hi.upload_payload_telem(ts);
+	}
+
+	@Override
+	public void StringRx(byte[] strrx, boolean checksum, int length) {
+		// TODO Auto-generated method stub
+		
 	}
 }
