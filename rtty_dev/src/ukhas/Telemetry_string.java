@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.msgpack.MessagePack;
-import org.msgpack.packer.Packer;
+
 import org.msgpack.template.Template;
 import org.msgpack.type.Value;
 import org.msgpack.unpacker.Unpacker;
 
-import static org.msgpack.template.Templates.tList;
+
 import static org.msgpack.template.Templates.tMap;
 import static org.msgpack.template.Templates.TString;
 import static org.msgpack.template.Templates.TInteger;
@@ -54,6 +54,8 @@ public class Telemetry_string {
 	
 	public boolean checksum_valid;
 	
+	public Map<String,String> habitat_metadata = null;
+	
 	private double[] extraFields;
 	
 	public String doc_time_created;
@@ -61,7 +63,7 @@ public class Telemetry_string {
 	public String getSentence()
 	{
 		
-		return "$$" + raw_string + "\n";
+		return raw_string + "\n";
 	}
 	
 	
@@ -113,7 +115,6 @@ public class Telemetry_string {
 	
 	private void parse_telem(byte[] str, long timerx, TelemetryConfig tc)
 	{
-		Template<Map<Integer, String>> mapTmpl = tMap(TInteger, TString);
 		
 		MessagePack msgpack = new MessagePack();
 		
@@ -126,7 +127,7 @@ public class Telemetry_string {
         		Value v = unpacker.readValue();
         		if (v.isMapValue())
         		{
-        			raw_string = v.toString();
+        			//raw_string = v.toString();
         			
         			boolean valid_lock = true;
         			
@@ -138,20 +139,48 @@ public class Telemetry_string {
         					{
         					case 0:        			//CALLSIGN	
         						callsign = item.toString();
+        						if (callsign.startsWith("\""))        //TODO: this is horrible
+        							callsign = callsign.substring(1);
+        						if (callsign.endsWith("\""))
+        							callsign = callsign.substring(0, callsign.length() -1);
+        						callsign = callsign + "_b";
+        						raw_string = raw_string + callsign + ",";
         						break;
         					case 2:					//TIME
         						if (item.isIntegerValue())
         						{        							
         							Date time_in = new Date(item.asIntegerValue().getInt()*1000);
         							setTime(time_in,timerx); 
+        							SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        							raw_string = raw_string + dateFormat.format(time_in) + ",";
         						}
         						break;        						
         					case 1:					//PACKET COUNT
-        						if (item.isIntegerValue())
+        						if (item.isIntegerValue()){
         							packetID = item.asIntegerValue().getInt();
+        							raw_string = raw_string + packetID + ",";
+        						}
         						break;        						
         					case 3:					//POSITION
-        						
+        						if (item.isArrayValue())
+        						{
+        							if (item.asArrayValue().size() >= 2)
+        							{
+        								if (item.asArrayValue().get(0).isIntegerValue()
+        								 && item.asArrayValue().get(1).isIntegerValue())
+        								{
+        									coords = new Gps_coordinate(item.asArrayValue().get(0).asIntegerValue().intValue(),
+        											item.asArrayValue().get(1).asIntegerValue().intValue());
+        								}
+        								if (item.asArrayValue().size() >= 3){
+	        								if (item.asArrayValue().get(2).isIntegerValue())
+	           								{
+	        									coords.Set_altitude(item.asArrayValue().get(2).asIntegerValue().getInt());
+	           								}
+        								}
+        								raw_string = raw_string + coords.latitude + "," + coords.longitude + "," + coords.altitude + ",";
+        							}
+        						}
         						break;
         					case 4:					//SATS
         						
@@ -176,12 +205,89 @@ public class Telemetry_string {
         			break;
         		}
         	}
+        	
+        	if (raw_string.length() > 0)
+        	{
+        		raw_string = raw_string.substring(0,raw_string.length()-1) + "*";
+        		int crc = calculate_checksum(raw_string,0);
+        		raw_string = raw_string + String.format("%04x", crc);
+        	}
+        	
 			//Map<Integer, String> dstMap = unpacker.read(mapTmpl);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static byte[][] gen_telem_mask(byte[] input)
+	{
+		//generates an expected bit pattern and mask based on callsign and markers
+		
+		byte[][] output = new byte[2][input.length];
+		
+		if (input.length < 3)
+			return null;
+		
+		if ( (input[0] & 0xF0) == 0x80 &&
+			 (input[1] & 0xFF) == 0x00 &&
+			 (input[2] & 0xE0) == 0xA0    )
+		{
+			int calllen = input[2] & 0x1F;
+			
+			output[0][0] = input[0];
+			output[0][1] = input[1];
+			output[0][2] = input[2];
+			output[1][0] = (byte) 0xFF;
+			output[1][1] = (byte) 0xFF;
+			output[1][2] = (byte) 0xFF;
+			if (input.length > 4+calllen){
+				for (int i = 0; i < calllen + 1; i++)
+				{
+					output[0][i+3] = input[3+i];
+					output[1][i+3] = (byte) 0xFF;
+				}
+			}
+		}
+		
+		//i began to do something that would work for pretty much everything but settled on one that just does the callsign
+		/*
+				
+		boolean incall = false;
+		int infield_len = 0;
+		int infield_count = 0;
+		boolean inmap = false;
+		boolean map_val = false;
+		
+		
+		for (int i = 0; i < input.length; i++)
+		{
+			if (infield_count == 0)
+			{
+				if ((input[i] & 0xF0)== 0x80)  //map <16 elements
+				{
+					output[0][i] =  input[i];
+					output[1][i] = (byte) 0xFF;
+					inmap = true;
+				}
+				else if ((input[i] & 0xFF)== 0xde && input.length > i+2)  //map <65536 elements
+				{
+					output[0][i] =  input[i];
+					output[1][i] = (byte) 0xFF;
+					output[0][i+1] =  input[i];
+					output[1][i+1] = (byte) 0xFF;
+					output[0][i+2] =  input[i];
+					output[1][i+2] = (byte) 0xFF;
+					inmap = true;
+					i += 2;
+				}
+				else if ()
+			}
+		}
+		*/
+		return output;
+		
 	}
 	
 	private void parse_telem(String str, long timerx, TelemetryConfig tc)
@@ -368,7 +474,7 @@ public class Telemetry_string {
 		return out;
 	}
 	
-	public static boolean check_checksum(String in, int start)
+	public static int calculate_checksum(String in, int start)
 	{
 		int crc = 0xFFFF;
 		int i=0;
@@ -389,6 +495,13 @@ public class Telemetry_string {
 			}	
 			i++;
 		}
+		return crc & 0xFFFF;
+	}
+	
+	public static boolean check_checksum(String in, int start)
+	{
+		int i;
+		int crc = calculate_checksum(in,start);
 		
 		int ckloc = in.indexOf((int)'*',start);
 		if (ckloc < 0)

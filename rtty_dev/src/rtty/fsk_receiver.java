@@ -106,11 +106,11 @@ public class fsk_receiver implements StringRxEvent {
 			_listeners.get(i).StringRx(str,checksum);
 		}
 	}
-	protected void fireStringReceived(byte[] str, boolean checksum, int length)
+	protected void fireStringReceived(byte[] str, boolean checksum, int length, int flags)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
-			_listeners.get(i).StringRx(str,checksum, length);
+			_listeners.get(i).StringRx(str,checksum, length, flags);
 		}
 	}
 	
@@ -656,11 +656,11 @@ public class fsk_receiver implements StringRxEvent {
 		return str;
 	}
 
-	public void StringRx(byte[] str, boolean checksum, int length)
+	public void StringRx(byte[] str, boolean checksum, int length, int flags)
 	{
 		if (_listeners.size() > 0)
 		{
-			fireStringReceived(str, checksum, length);
+			fireStringReceived(str, checksum, length, flags);
 		}
 	}
 	
@@ -760,7 +760,10 @@ public class fsk_receiver implements StringRxEvent {
 		return (current_state == State.IDLE);
 	}
 
-
+	public void provide_binary_sync_helper(byte[] data, byte[] mask, String id, int len)
+	{
+		telem_hand_bin.provide_binary_sync_helper(data, mask, id, len);
+	}
 	
 	
 	

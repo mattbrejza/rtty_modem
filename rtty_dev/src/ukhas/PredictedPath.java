@@ -1,8 +1,5 @@
 package ukhas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PredictedPath {
 	public String vehicle;
 	public String time;

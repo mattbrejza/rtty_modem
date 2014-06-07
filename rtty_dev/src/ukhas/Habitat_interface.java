@@ -15,6 +15,8 @@ package ukhas;
 
 
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +26,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 
@@ -41,7 +44,8 @@ public class Habitat_interface {
 	private String _habitat_url = "habitat.habhub.org";
 	private String _habitat_db = "habitat";
 	private Listener _listener_info;
-	private String _listener_UUID="";
+	private String _listener_telem_UUID="";
+	private String _listener_info_UUID="";
 	
 	protected ArrayList<HabitatRxEvent> _listeners = new ArrayList<HabitatRxEvent>();
 	
@@ -632,8 +636,10 @@ public class Habitat_interface {
 			
 			if (_listener_info != null)
 			{
-				
+				update_listener_telem();
+				/*
 				Document doc = new Document ();
+				Document doc_info = new Document ();
 				
 				//date uploaded
 				Date time = new Date();
@@ -644,28 +650,41 @@ public class Habitat_interface {
 				
 				doc.put("type", "listener_telemetry");
 				doc.put("time_created", t);
-				doc.put("time_uploaded", t);				
+				doc.put("time_uploaded", t);
+				doc_info.put("type", "listener_information");
+				doc_info.put("time_created", t);
+				doc_info.put("time_uploaded", t);
 				
 				JSONObject client = new JSONObject();
+				JSONObject l_info = new JSONObject();
 				client.put("device", device);
 				client.put("device_software", device_software);
 				client.put("application", application);
 				client.put("application_version", application_version);
+				l_info.put("callsign", _listener_info.CallSign());
 				
 				JSONObject data = _listener_info.getJSONDataField();
 				data.put("client", client);
 						
 				doc.put("data", data);
 				
+				doc_info.put("data",l_info);
+				
 				String sha = _listener_info.toSha256();
+				String sha_info = _listener_info.toSha256();
 				
-				db.saveDocument(doc,sha);			
-				
+				db.saveDocument(doc,sha);	
 				CouchResponse cr = s.getLastResponse();
-				System.out.println(cr);
-				
+				System.out.println(cr);				
 				if (cr.isOk())
-					_listener_UUID = sha;				
+					_listener_telem_UUID = sha;		
+				
+				db.saveDocument(doc_info,sha_info);	
+				cr = s.getLastResponse();
+				System.out.println(cr);				
+				if (cr.isOk())
+					_listener_info_UUID = sha_info;	
+				*/
 			}			
 			return true;
 		}
@@ -690,8 +709,13 @@ public class Habitat_interface {
 			
 			if (_listener_info != null)
 			{
-				if (_listener_info.Data_changed())   //upload listeners location
+				if (_listener_info.data_changed_info())
+					update_listener_info();
+				
+				if (_listener_info.data_changed_telem())   //upload listeners location
 				{
+					update_listener_telem();
+					/*
 					Document doc = new Document ();
 					
 					//date uploaded
@@ -718,20 +742,15 @@ public class Habitat_interface {
 							
 					doc.put("data", data);
 					
-					/*
-					doc.put("type","listener_telemetry");
-					doc.put("time_uploaded",t);
-					doc.put("time_created", _listener_info.get_time_created());
-					doc.put("data", _listener_info.getJSONDataField());
-					*/
+					
 					String sha = _listener_info.toSha256(); 
 					
 					db.saveDocument(doc,sha);
 					CouchResponse cr = s.getLastResponse();
 					System.out.println(cr);
 					if (cr.isOk())
-						_listener_UUID = sha;
-					
+						_listener_telem_UUID = sha;
+					*/
 				}
 			}
 		
@@ -754,8 +773,12 @@ public class Habitat_interface {
 			data.put("_raw", str64);
 			receiver.put("time_created", input.doc_time_created);
 			receiver.put("time_uploaded",t);
-			if (_listener_UUID != "")
-				receiver.put("latest_telemtry",_listener_UUID);
+			if (input.habitat_metadata != null)
+				receiver.putAll(input.habitat_metadata);
+			if (_listener_telem_UUID != "")
+				receiver.put("latest_listener_telemtry",_listener_telem_UUID);
+			if (_listener_info_UUID != "")
+				receiver.put("latest_listener_information",_listener_info_UUID);
 			receivers.put(_listener_info.CallSign(),receiver);
 			
 		
@@ -858,7 +881,12 @@ public class Habitat_interface {
 				//System.out.println(cr.statusCode);
 				if (cr.isOk())
 					return true;
-				if (!cr.getErrorId().equals("conflict"))
+				if (cr.getErrorId() == null)
+				{
+					//throw error but continue
+					its += 9;
+				}
+				else if (!cr.getErrorId().equals("conflict"))
 				{
 					//throw error but continue
 					its += 9;
@@ -968,6 +996,92 @@ public class Habitat_interface {
 		  }
 	}
 	
+	private boolean update_listener_telem()
+	{
+		try
+		{
+			Document doc = new Document ();
+			Document doc_info = new Document ();
+			
+			//date uploaded
+			Date time = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			String t = dateFormat.format(time);
+			t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+			
+			
+			doc.put("type", "listener_telemetry");
+			doc.put("time_created", t);
+			doc.put("time_uploaded", t);
+			
+			
+			JSONObject client = new JSONObject();
+			JSONObject l_info = new JSONObject();
+			client.put("device", device);
+			client.put("device_software", device_software);
+			client.put("application", application);
+			client.put("application_version", application_version);
+
+			
+			JSONObject data = _listener_info.getJSONDataFieldTelem();
+			data.put("client", client);
+					
+			doc.put("data", data);
+			
+			doc_info.put("data",l_info);
+			
+			String sha = _listener_info.toSha256();
+
+			
+			db.saveDocument(doc,sha);	
+			CouchResponse cr = s.getLastResponse();
+			System.out.println(cr);				
+			if (cr.isOk())
+				_listener_telem_UUID = sha;		
+		
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean update_listener_info()
+	{
+		try
+		{
+
+			Document doc_info = new Document ();
+			
+			//date uploaded
+			Date time = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			String t = dateFormat.format(time);
+			t = t.substring(0, t.length()-2) + ":" + t.substring(t.length()-2, t.length());
+			
+
+			doc_info.put("type", "listener_information");
+			doc_info.put("time_created", t);
+			doc_info.put("time_uploaded", t);	
+			
+			doc_info.put("data",_listener_info.getJSONDataFieldInfo());
+			
+			String sha_info = toSha256(doc_info.toString());
+									
+			db.saveDocument(doc_info,sha_info);	
+			CouchResponse cr = s.getLastResponse();
+			System.out.println(cr);				
+			if (cr.isOk())
+				_listener_info_UUID = sha_info;	
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean newTelemConfigs()
 	{
 		return _newTelemConfigs;
@@ -999,5 +1113,37 @@ public class Habitat_interface {
 			stopTime = _stopTime;
 			count = _count;
 		}
+	}
+	
+	public static String toSha256(String str)
+	{
+
+		byte [] enc = Base64.encodeBase64(str.getBytes());
+		byte[] sha = null;
+		
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("SHA-256");
+			md.update(enc); 
+			sha = md.digest();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return bytesToHexStr(sha);
+	}
+	
+	//ref: http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+	public static String bytesToHexStr(byte[] bytes) {
+	    final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+	    char[] hexChars = new char[bytes.length * 2];
+	    int v;
+	    for ( int j = 0; j < bytes.length; j++ ) {
+	        v = bytes[j] & 0xFF;
+	        hexChars[j * 2] = hexArray[v >>> 4];
+	        hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+	    }
+	    return new String(hexChars);
 	}
 }

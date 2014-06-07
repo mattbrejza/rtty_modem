@@ -30,6 +30,15 @@ public class Gps_coordinate {
 		Set_decimal(lat, longi);
 	}
 	
+	public Gps_coordinate(int lat, int longi, int alt) {
+		Set_altitude(alt);
+		Set_decimal((double)lat*1e-7, (double)longi*1e-7);
+	}
+	
+	public Gps_coordinate(int lat, int longi) {
+		Set_decimal((double)lat*1e-7, (double)longi*1e-7);
+	}
+	
 	public Gps_coordinate(String lat, String longi, String alt)
 	{
 		Set_str(lat,longi);

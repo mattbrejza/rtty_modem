@@ -199,7 +199,7 @@ public class Turbo_encoder {
 	}
 
 	//As per TS 36.212 v10.0.0, Section 5.1.4.1.
-	private static int[] subBlockInterleaver1(boolean[] in, int colTcSb, int rowTcSb, int Nd)
+	public static int[] subBlockInterleaver1(boolean[] in, int colTcSb, int rowTcSb, int Nd)
 	{
 		if (colTcSb*rowTcSb != in.length + Nd)
 			throw new IllegalArgumentException("Check Input Array Lengths");

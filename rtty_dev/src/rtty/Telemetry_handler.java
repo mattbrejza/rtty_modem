@@ -19,8 +19,6 @@ package rtty;
 
 import java.util.ArrayList;
 
-import ukhas.*;
-
 public class Telemetry_handler {
 
 	private boolean in_str=false;

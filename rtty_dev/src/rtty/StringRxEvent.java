@@ -18,5 +18,5 @@ import java.util.EventListener;
 public interface StringRxEvent extends EventListener
 {
 	void StringRx(String strrx, boolean checksum);
-	void StringRx(byte[] strrx, boolean checksum, int length);
+	void StringRx(byte[] strrx, boolean checksum, int length, int flags);
 }

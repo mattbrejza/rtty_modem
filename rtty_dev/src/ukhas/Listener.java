@@ -17,14 +17,18 @@ public class Listener {
 	private float _speed = 0.0f;
 	private boolean _speedValid = false;
 	private Date _time_created;
-	private boolean _changed;
+	private boolean _changed_telem;
+	private boolean _changed_info;
 	private boolean _isChase = false;
+	private String _radio = "";
+	private String _antenna = "";
 	
 	public Listener(String callsign, boolean isChase) {
 		_callsign = callsign;
 		_coords = new Gps_coordinate();
 		_time_created = new Date();
-		_changed = true;
+		_changed_info = true;
+		_changed_telem = true;
 		_isChase = isChase;
 	}
 	
@@ -33,7 +37,8 @@ public class Listener {
 		_callsign = callsign;
 		_coords = coords;
 		_time_created = new Date();
-		_changed = true;
+		_changed_info = true;
+		_changed_telem = true;
 		_isChase  = isChase;
 	}
 	public Listener(String callsign, Gps_coordinate coords, float speed, boolean isChase) {
@@ -41,15 +46,16 @@ public class Listener {
 		_callsign = callsign;
 		_coords = coords;
 		_time_created = new Date();
-		_changed = true;
+		_changed_info = true;
+		_changed_telem = true;
 		_isChase  = isChase;
 		_speed = speed;
 		_speedValid = true;
 	}
 
-	public JSONObject getJSONDataField()
+	public JSONObject getJSONDataFieldTelem()
 	{
-		_changed = false;
+		_changed_telem = false;
 		
 		JSONObject data = new JSONObject();
 		try
@@ -75,21 +81,53 @@ public class Listener {
 		return data;
 	}
 	
+	public JSONObject getJSONDataFieldInfo()
+	{
+		_changed_info = false;
+		
+		JSONObject data = new JSONObject();
+		try
+		{
+			data.put("callsign", _callsign);
+			data.put("antenna", _antenna);
+			data.put("radio", _radio);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return data;
+	}
+	
 	public String CallSign()
 	{
 		return _callsign;
 	}
-	
-	public boolean Data_changed()
+	public String getRadio()
 	{
-		return _changed;
+		return _radio;
+	}
+	public String getAntenna()
+	{
+		return _antenna;
+	}
+	
+	public boolean data_changed_telem()
+	{
+		return _changed_telem;
+	}
+	
+	public boolean data_changed_info()
+	{
+		return _changed_info;
 	}
 	
 	public void SetCallSign(String callsign)
 	{
 		_time_created = new Date();
 		_callsign = callsign;
-		_changed = true;
+		_changed_telem = true;
+		_changed_info = true;
 	}
 	
 	public Gps_coordinate Coordinates()
@@ -101,7 +139,19 @@ public class Listener {
 	{
 		_time_created = new Date();
 		_coords = coords;
-		_changed = true;
+		_changed_telem = true;
+	}
+	
+	public void setRadio(String in)
+	{
+		_radio = in;
+		_changed_info = true;
+	}
+	
+	public void setAntenna(String in)
+	{
+		_antenna = in;
+		_changed_info = true;
 	}
 	
 	public String get_time_created()
