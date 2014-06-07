@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +37,9 @@ import ukhas.Gps_coordinate;
 import ukhas.HabitatRxEvent;
 import ukhas.Habitat_interface;
 import ukhas.Listener;
+
 import com.brejza.matt.habmodem.Payload;
+
 import ukhas.TelemetryConfig;
 import ukhas.Telemetry_string;
 import android.app.NotificationManager;
@@ -512,47 +515,47 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	
 	public boolean payloadExists(String callsign) {
-		return (mapPayloads.containsKey(callsign.toUpperCase()));
+		return (mapPayloads.containsKey(callsign.toUpperCase(Locale.US)));
 	}
 	public boolean activePayloadExists(String callsign) {
-		if (mapPayloads.containsKey(callsign.toUpperCase())){
-			return mapPayloads.get(callsign.toUpperCase()).isActivePayload();
+		if (mapPayloads.containsKey(callsign.toUpperCase(Locale.US))){
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).isActivePayload();
 		}
 		else
 			return false;
 	}
 	public TreeMap<Long, Telemetry_string> getPayloadData (String callsign){
 		if (payloadExists(callsign))
-			return mapPayloads.get(callsign.toUpperCase()).data;
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).data;
 		else
 			return null;
 	}
 	public List<GeoPoint> getPredictedPath (String callsign){
 		if (payloadExists(callsign))
-			return mapPayloads.get(callsign.toUpperCase()).predictedPath;
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).predictedPath;
 		else
 			return null;
 	}
 	public double getAscentRate(String callsign) {
 		if (payloadExists(callsign))
-			return mapPayloads.get(callsign.toUpperCase()).getAscentRate();
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).getAscentRate();
 		else
 			return 0;
 	}
 	public double getMaxAltitude(String callsign){
 		if (payloadExists(callsign))
-			return mapPayloads.get(callsign.toUpperCase()).getMaxAltitude();
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).getMaxAltitude();
 		else
 			return 0;
 	}
 	//public long getLastUpsddate(String callsign){
 	//	if (payloadExists(callsign))
-	//		return mapPayloads.get(callsign.toUpperCase()).getLastUpdated();
+	//		return mapPayloads.get(callsign.toUpperCase(Locale.US)).getLastUpdated();
 	//	else
 	//		return 0;
 	//}  //TODO: if already there, update infos
 /*	public void addActivePayload(String call){
-		String callu = call.toUpperCase();
+		String callu = call.toUpperCase(Locale.US);
 		if (!payloadExists(callu))
 			mapPayloads.put(callu,new Payload(call,true, 3));
 		else {
@@ -562,7 +565,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	} */
 	public void addActivePayload(String call, int lookBehind){
 		startUpdateTimer();
-		String callu = call.toUpperCase();
+		String callu = call.toUpperCase(Locale.US);
 		if (!payloadExists(callu)) {
 			
 			Payload p = new Payload(call,newColour(),true, lookBehind);
@@ -578,7 +581,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 	}
 	public void removeActivePayload(String call){ 
-		mapPayloads.get(call.toUpperCase()).clearUserData();
+		mapPayloads.get(call.toUpperCase(Locale.US)).clearUserData();
 	}
 	public double[] getFFT()
 	{
@@ -617,7 +620,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			
 		for (Map.Entry<String, String> entry : hab_con.payload_configs.entrySet())
 		{
-			String call = entry.getKey().toUpperCase();
+			String call = entry.getKey().toUpperCase(Locale.US);
 			if (payloadExists(call))
 			{   //update records
 				mapPayloads.get(call).setPayloadID(entry.getValue());
@@ -626,7 +629,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			}
 			else
 			{	//these payloads are not active
-				if (hab_con.flight_configs.containsKey(entry.getKey().toUpperCase()))
+				if (hab_con.flight_configs.containsKey(entry.getKey().toUpperCase(Locale.US)))
 					mapPayloads.put(call, new Payload(entry.getKey(),hab_con.payload_configs.get(call),hab_con.flight_configs.get(call)));
 				else
 					mapPayloads.put(call, new Payload(entry.getKey(),hab_con.payload_configs.get(call)));
@@ -641,7 +644,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	{
 		if (payloadExists(call))
 		{
-			return mapPayloads.get(call.toUpperCase()).telemetryConfig;
+			return mapPayloads.get(call.toUpperCase(Locale.US)).telemetryConfig;
 		}
 		else
 			return null;
@@ -872,14 +875,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 	}
 
-	public void StringRx(String str_, boolean checksum)
+	private void InsertString(Telemetry_string str, boolean checksum)
 	{
-		Telemetry_string str = new Telemetry_string(str_,null);
-		TelemetryConfig tc = getTelemetryConfig(str.callsign);
-		if (tc != null)
-			str = new Telemetry_string(str_,tc);
-		
-		String call = str.callsign.toUpperCase();
+		String call = str.callsign.toUpperCase(Locale.US);
 		if (call.equals(""))
 			return ;
 		if (!checksum && !mapPayloads.containsKey(call))
@@ -925,7 +923,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 				{		//first one, dont need to do anything special
 					//TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
 					//l.put(Long.valueOf(str.time.getTime()),str);
-					//listPayloadData.put(str.callsign.toUpperCase(),l);
+					//listPayloadData.put(str.callsign.toUpperCase(Locale.US),l);
 					mapPayloads.put(call,new Payload(str,newColour()));
 					startUpdateTimer();
 					updateActivePayloadsHabitat();
@@ -942,11 +940,35 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			//sendBroadcast(new Intent(TELEM_RX));
 		}
 	}
+	
+	@Override
+	public void StringRx(byte[] strrx, boolean checksum, int length, int flags) {
+		// TODO Auto-generated method stub
+		Telemetry_string str = new Telemetry_string(strrx,null);
+		str.habitat_metadata = new HashMap<String,String>();
+		str.habitat_metadata.put("receiver_flags", Integer.toHexString(flags));
+		//TelemetryConfig tc = getTelemetryConfig(str.callsign);
+		//if (tc != null)
+		//	str = new Telemetry_string(strrx,tc);
+		
+		InsertString(str, checksum);
+	}
+	
+	public void StringRx(String str_, boolean checksum)
+	{
+		Telemetry_string str = new Telemetry_string(str_,null);
+		TelemetryConfig tc = getTelemetryConfig(str.callsign);
+		if (tc != null)
+			str = new Telemetry_string(str_,tc);
+		
+		InsertString(str, checksum);
+		
+	}
 
 	@Override
 	public void HabitatRx(TreeMap<Long,Telemetry_string> data, boolean success, String callsign,
 			long startTime, long endTime, AscentRate as, double maxAltitude) {
-		String call = callsign.toUpperCase();
+		String call = callsign.toUpperCase(Locale.US);
 		if (mapPayloads.containsKey(call))
 			mapPayloads.get(call).setQueryOngoing(0);
 		if (success)
@@ -1017,7 +1039,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public void logEvent(String event,boolean broadcast)
 	{		
-		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");//dd/MM/yyyy
+		SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss",Locale.US);//dd/MM/yyyy
 
 	    String s = sdfDate.format(new Date()) + " - " + event;
 
@@ -1207,9 +1229,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	public Telemetry_string getMostRecent(String callsign)
 	{
-		if (mapPayloads.containsKey(callsign.toUpperCase()))
+		if (mapPayloads.containsKey(callsign.toUpperCase(Locale.US)))
 		{
-			return mapPayloads.get(callsign.toUpperCase()).getLastString();
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).getLastString();
 		}
 		else
 			return null;
@@ -1219,9 +1241,9 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	public TreeMap<Long,Telemetry_string> getAllData(String callsign)
 	{
-		if (mapPayloads.containsKey(callsign.toUpperCase()))
+		if (mapPayloads.containsKey(callsign.toUpperCase(Locale.US)))
 		{
-			return mapPayloads.get(callsign.toUpperCase()).data;
+			return mapPayloads.get(callsign.toUpperCase(Locale.US)).data;
 		}
 		else
 			return null;
@@ -1235,7 +1257,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	public int getPayloadColour(String call)
 	{
-		call = call.toUpperCase();
+		call = call.toUpperCase(Locale.US);
 		if (payloadExists(call))
 		{
 			int i = mapPayloads.get(call).colour;
@@ -1254,7 +1276,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			return;
 		
 		for (Map.Entry<String, List<GeoPoint>> entry : data.entrySet()) {
-		    String call = entry.getKey().toUpperCase();
+		    String call = entry.getKey().toUpperCase(Locale.US);
 		    List<GeoPoint> value = entry.getValue();
 		    
 		    if (payloadExists(call) && !call.equals(""))
@@ -1275,11 +1297,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 	}
 
-	@Override
-	public void StringRx(byte[] strrx, boolean checksum, int length) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	
 	
 

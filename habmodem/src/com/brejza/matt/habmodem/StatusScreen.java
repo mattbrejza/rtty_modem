@@ -18,7 +18,7 @@ import java.util.List;
 import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
-
+import rtty.fsk_receiver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -46,7 +46,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 
 
@@ -64,6 +64,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
 	ListView list;
 	TextView txtchars;
 	ImageView wfview;
+	Menu _menu;
 
 //	private GraphView graphView;
 //	private GraphViewSeries viewseries;
@@ -87,6 +88,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     Handler handler;
     Handler handler2;
     
+    
     int lastScrollLength = 0;
   
 
@@ -99,6 +101,11 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        _menu = menu;
+        if (mService != null){
+	   		if (mService.enableUploader)
+	        	_menu.findItem(R.id.toggle_online).setChecked(true);
+   		}
         return true;
     }
     
@@ -137,6 +144,16 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         	intent = new Intent(this,Preferences_activity.class);
         	startActivity(intent); 
             return true;}
+        else if (item.getItemId() == R.id.toggle_online){
+        	//CheckBox chk = (CheckBox) findViewById(R.id.toggle_online);
+        	if (mService.enableUploader){
+        		mService.enableUploader = false;
+        		item.setChecked(false);
+        	}else{
+        		mService.enableUploader = true;
+        		item.setChecked(true);
+        	}
+        	return true;}
     	
        
        return super.onOptionsItemSelected(item); 
@@ -237,8 +254,12 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
 	        Intent intent = new Intent(this, Dsp_service.class);
 	        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
    		}
+   		
+   		if (mService != null &&  _menu != null){
+	   		if (mService.enableUploader)
+	        	_menu.findItem(R.id.toggle_online).setChecked(true);
+   		}
         
-     
    		//string receiver
    		if (strrxReceiver == null) strrxReceiver = new StringRxReceiver();
    		IntentFilter intentFilter1 = new IntentFilter(Dsp_service.TELEM_RX);
@@ -437,6 +458,8 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
             mService = binder.getService();
             mBound = true;
             mService.rcv.enableFFT = true;
+            if (mService.enableUploader && _menu != null)
+            	_menu.findItem(R.id.toggle_online).setChecked(true);
             setBaudButton();
             updateListView();
             refreshButtons();
@@ -598,6 +621,29 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     	refreshButtons();
     }
     
+    public void toggleBinary(View view)
+    {
+    	
+    	if (mService.rcv.current_mode == fsk_receiver.Mode.BINARY)
+    		mService.rcv.setMode(fsk_receiver.Mode.RTTY);
+    	else
+    		mService.rcv.setMode(fsk_receiver.Mode.BINARY);
+    	
+    	refreshButtons();
+    }
+    
+    public void toggleAfsk(View view)
+    {
+    	if (mService.rcv.current_modulation == fsk_receiver.Modulation.AFSK)
+    		mService.rcv.setModulation(fsk_receiver.Modulation.FSK);
+    	else{
+    		mService.rcv.setModulation(fsk_receiver.Modulation.AFSK);
+    		mService.rcv.setFreq(500,750);
+    	}
+    	
+    	refreshButtons();
+    }
+    
     public void toggleRunning(View view)
     {
     	if (mService.getDecoderRunning()){
@@ -613,25 +659,38 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     
     private void refreshButtons()
     {
-    	ImageButton btnbell = (ImageButton) findViewById(R.id.btnBell);
+    	Button btnafsk = (Button) findViewById(R.id.btnAfsk);
     	ImageButton btnecho = (ImageButton) findViewById(R.id.btnEcho);
-    	ImageButton btnconn = (ImageButton) findViewById(R.id.btnConnected);
+    	Button btnbin = (Button) findViewById(R.id.btnBinary);
     	ImageButton btnplay = (ImageButton) findViewById(R.id.btnRunning);
-    	if (mService.enableBell)
-    		btnbell.setImageResource(R.drawable.ic_action_bell_on);
-    	else
-    		btnbell.setImageResource(R.drawable.ic_action_bell_off);
+    	MenuItem chk = (MenuItem) findViewById(R.id.toggle_online);
+    	//if (mService.enableBell)
+    	//	btnbell.setImageResource(R.drawable.ic_action_bell_on);
+    	//else
+    	//	btnbell.setImageResource(R.drawable.ic_action_bell_off);
 
     	if (mService.getEchoEnabled())
     		btnecho.setImageResource(R.drawable.ic_action_echo_on);
     	else
     		btnecho.setImageResource(R.drawable.ic_action_echo_off);
 
-    	if (mService.enableUploader)
-    		btnconn.setImageResource(R.drawable.ic_action_connected);
-    	else
-    		btnconn.setImageResource(R.drawable.ic_action_disconnected);
+    	//if (mService.enableUploader)
+    	//	btnconn.setImageResource(R.drawable.ic_action_connected);
+    	//else
+    	//	btnconn.setImageResource(R.drawable.ic_action_disconnected);
 
+    	
+
+    	if (mService.rcv.current_modulation == fsk_receiver.Modulation.AFSK)
+    		btnafsk.setText("FM");
+    	else
+    		btnafsk.setText("SSB");
+    	if (mService.rcv.current_mode == fsk_receiver.Mode.RTTY)
+    		btnbin.setText("RTTY");
+    	else
+    		btnbin.setText("BIN");
+
+    	
     	if (mService.getDecoderRunning())
     		btnplay.setImageResource(R.drawable.ic_action_play);
     	else

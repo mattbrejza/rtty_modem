@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
@@ -57,7 +58,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import group.pals.android.lib.ui.filechooser.FileChooserActivity;
 import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
 
@@ -83,6 +83,7 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	private Handler handler;
 
 	Button btnMapPath;
+	Menu _menu;
 	
 	protected int last_colour = 0x0;
 	//public ConcurrentHashMap<String,Integer> path_colours = new ConcurrentHashMap<String,Integer>();
@@ -219,6 +220,12 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        _menu = menu;
+        if (mService != null){
+	   		if (mService.enableUploader)
+	        	_menu.findItem(R.id.toggle_online).setChecked(true);
+   		}
+        
         return true;
     }
     
@@ -285,6 +292,16 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         	intent = new Intent(this,Preferences_activity.class);
         	startActivity(intent); 
             return true;}
+        else if (item.getItemId() == R.id.toggle_online){
+        	//CheckBox chk = (CheckBox) findViewById(R.id.toggle_online);
+        	if (mService.enableUploader){
+        		mService.enableUploader = false;
+        		item.setChecked(false);
+        	}else{
+        		mService.enableUploader = true;
+        		item.setChecked(true);
+        	}
+        	return true;}
         
         return super.onOptionsItemSelected(item);
     
@@ -295,7 +312,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    	public void onResume() {
    		super.onResume();
    		
-
+   		if (mService != null &&  _menu != null){
+	   		if (mService.enableUploader)
+	        	_menu.findItem(R.id.toggle_online).setChecked(true);
+   		}
 	   		
    		if (mapView.getMapFile() == null)
    			showMapChooser();
@@ -800,6 +820,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             LocalBinder binder = (LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+            if (mService.enableUploader && _menu != null)
+            	_menu.findItem(R.id.toggle_online).setChecked(true);
 
        		if (requestUpdate)
        			updateAll();
