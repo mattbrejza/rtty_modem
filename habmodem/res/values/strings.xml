@@ -10,7 +10,8 @@
 	<string name="settings_screen">Settings</string>
 	<string name="log_screen">Logs</string>
 	<string name="refresh_button">Refresh</string>
-	
+	<string name="graphs_button">Graphs</string>
+	<string name="online_button">Online</string>
 	
 	<!-- titles of windows and dialogs -->
 	
@@ -97,5 +98,7 @@
 	<string name="decoderdata">DATA</string>
 	<string name="decoderstops">STOPS</string>
 	<string name="decoderstatus">STATUS</string>
+	<string name="decoderafsk">MOD.</string>
+	<string name="decoderencoding">ENC.</string>
 	
 </resources>

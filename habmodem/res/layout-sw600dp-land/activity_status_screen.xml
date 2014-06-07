@@ -55,14 +55,14 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:text="@string/decoderalerts" />
+                            android:text="@string/decoderafsk" />
 
                         <TextView
                             android:id="@+id/textView3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="12dp"
-                            android:text="@string/decoderonline" />
+                            android:text="@string/decoderencoding" />
 
                         <TextView
                             android:id="@+id/textView4"
@@ -84,26 +84,26 @@
                             android:onClick="toggleEcho"
                             android:src="@drawable/ic_action_echo_off" />
 
-                        <ImageButton
-                            android:id="@+id/btnBell"
+                        <Button
+                            android:id="@+id/btnAfsk"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:onClick="toggleBell"
-                            android:src="@drawable/ic_action_bell_off" />
+                            android:onClick="toggleAfsk"
+                            android:src="@drawable/ic_action_bell_off"
+                            android:text="SSB" />
 
-                        <ImageButton
-                            android:id="@+id/btnConnected"
+                        <Button
+                            android:id="@+id/btnBinary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:onClick="toggleConnected"
-                            android:src="@drawable/ic_action_connected" />
+                            android:onClick="toggleBinary"
+                            android:src="@drawable/ic_action_connected"
+                            android:text="RTTY" />
 
                         <ImageButton
                             android:id="@+id/btnRunning"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
                             android:onClick="toggleRunning"
                             android:src="@drawable/ic_action_play" />
                     </TableRow>
