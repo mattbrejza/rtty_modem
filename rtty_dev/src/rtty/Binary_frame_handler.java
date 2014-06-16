@@ -191,75 +191,77 @@ public class Binary_frame_handler {
 			while(extractors.size() > 0)
 				extractors.remove(0);
 		}
-		
-		
-		//look for sync based on partial packets
-		int search_start = old_ptr;
-		for (int i = 0; i < bits.length; i++)
+		else
 		{
-			search_start++;
-			if (search_start >= _max_buff)
-				search_start = 0;
-			
-			for (Map.Entry<String, boolean[]> entry : data_sync_map.entrySet())
+			//look for sync based on partial packets
+			int search_start = old_ptr;
+			for (int i = 0; i < bits.length; i++)
 			{
-			    			
-				double cmp = compare_sync(search_start,entry.getValue(),mask_sync_map.get(entry.getKey()));
-
-				if (cmp > 0.75) //change
+				search_start++;
+				if (search_start >= _max_buff)
+					search_start = 0;
+				
+				for (Map.Entry<String, boolean[]> entry : data_sync_map.entrySet())
 				{
-					out_buff = out_buff + " <sync p>";
-					System.out.print("sync partial (" + cmp + ")  ");
-					
-					//calculate start address
-					int ptr_end_sync = search_start - d_len_sync_map.get(entry.getKey());
-					int ptr_post_sync = ptr_end_sync + 1;
-					if (ptr_end_sync < 0)
-						ptr_end_sync += _max_buff;
-					if (ptr_post_sync < 0)
-						ptr_post_sync += _max_buff;
-					
-					//check there isnt already an extractor with this start address
-					boolean exist = false;
-					for (int j = 0; j < extractors.size(); j++)
+				    			
+					double cmp = compare_sync(search_start,entry.getValue(),mask_sync_map.get(entry.getKey()));
+	
+					if (cmp > 0.75) //change
 					{
-						if (extractors.get(j)._ptr_post_sync == ptr_post_sync){ 
-							exist = true;
-							extractors.get(j).flags_set_got_packet_sync();
+						out_buff = out_buff + " <sync p>";
+						System.out.print("sync partial (" + cmp + ")  ");
+						
+						//calculate start address
+						int ptr_end_sync = search_start - d_len_sync_map.get(entry.getKey());
+						int ptr_post_sync = ptr_end_sync + 1;
+						if (ptr_end_sync < 0)
+							ptr_end_sync += _max_buff;
+						if (ptr_post_sync < 0)
+							ptr_post_sync += _max_buff;
+						
+						//check there isnt already an extractor with this start address
+						boolean exist = false;
+						for (int j = 0; j < extractors.size(); j++)
+						{
+							if (extractors.get(j)._ptr_post_sync == ptr_post_sync){ 
+								exist = true;
+								extractors.get(j).flags_set_got_packet_sync();
+							}
 						}
-					}
-					
-					//if new string detected, add to list
-					if (exist == false)
-					{
-						System.out.println("new");
-						Extractor e = null;
-						if (extractors.size() < max_extractors){
-							e = new Extractor(ptr_end_sync);
-							e.process(ptr_end_sync, rx_buff_ptr);
-							e.flags_set_got_packet_sync();
-							extractors.add(e);
-							primary_extractor = extractors.get(extractors.size()-1);
-							if (last_length > 0){
-								e = new Extractor(ptr_end_sync,last_length);
+						
+						//if new string detected, add to list
+						if (exist == false)
+						{
+							out_buff = out_buff + " <sync p>";
+							System.out.println("new");
+							Extractor e = null;
+							if (extractors.size() < max_extractors){
+								e = new Extractor(ptr_end_sync);
 								e.process(ptr_end_sync, rx_buff_ptr);
 								e.flags_set_got_packet_sync();
 								extractors.add(e);
+								primary_extractor = extractors.get(extractors.size()-1);
+								if (last_length > 0){
+									e = new Extractor(ptr_end_sync,last_length);
+									e.process(ptr_end_sync, rx_buff_ptr);
+									e.flags_set_got_packet_sync();
+									extractors.add(e);
+								}
 							}
+							else
+								System.out.println("Warning: Unable to create new extractor"); 
 						}
 						else
-							System.out.println("Warning: Unable to create new extractor"); 
-					}
-					else
-						System.out.println("not new");
+							System.out.println("not new");
+						
 					
-				
+					}
 				}
 			}
 		}
 		
-		
-		//look for sync sequence		
+		//look for sync sequence	
+		int search_start = old_ptr;
 		search_start = old_ptr;
 		for (int i = 0; i < bits.length; i++)
 		{
@@ -481,7 +483,9 @@ public class Binary_frame_handler {
 					{
 						flags_set_no_parity_needed();
 						System.out.println("checksum passed");
-						//return -2;
+						flags_set_parity_needed(0);
+						fireStringReceived(toByteArray(sys_bits), true,internal_interleaver_len,flags);
+						return -2;
 					}
 					else
 					{
