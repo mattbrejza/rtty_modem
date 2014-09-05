@@ -533,7 +533,7 @@ public class rttywin extends JFrame implements StringRxEvent {
 	}
 
 	@Override
-	public void StringRx(byte[] strrx, boolean checksum, int length, int flags) {
+	public void StringRx(byte[] strrx, boolean checksum, int length, int flags, int fixed) {
 		// TODO Auto-generated method stub
 		
 	}

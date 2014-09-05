@@ -42,12 +42,12 @@ public class Binary_frame_handler {
 	}
 	
 	
-	protected void fireStringReceived(byte[] str, boolean checksum, int length, int flags)
+	protected void fireStringReceived(byte[] str, boolean checksum, int length, int flags, int fixed)
 	{
 		last_length = length;
 		for (int i = 0; i < _listeners.size(); i++)
 		{
-			_listeners.get(i).StringRx(str,checksum, length, flags);
+			_listeners.get(i).StringRx(str,checksum, length, flags, fixed);
 		}
 	}
 	
@@ -159,7 +159,8 @@ public class Binary_frame_handler {
 
 		String out_buff = "";
 		
-
+		//TODO: check what happens if partial sync found and successful decode in same calling
+		_last_valid = false;
 		
 		int old_ptr = rx_buff_ptr;
 		
@@ -183,6 +184,7 @@ public class Binary_frame_handler {
 				extractors.remove(i);
 			if (r == -2){
 				remove_all = true;
+				_last_valid = true;
 				break;
 			}
 		}
@@ -484,7 +486,7 @@ public class Binary_frame_handler {
 						flags_set_no_parity_needed();
 						System.out.println("checksum passed");
 						flags_set_parity_needed(0);
-						fireStringReceived(toByteArray(sys_bits), true,internal_interleaver_len,flags);
+						fireStringReceived(toByteArray(sys_bits), true,internal_interleaver_len,flags,0);
 						return -2;
 					}
 					else
@@ -537,7 +539,7 @@ public class Binary_frame_handler {
 						System.out.println("turbo: checksum passed");
 						last_string = last_string + " <fixed: " + tdec.last_fixed + ">";
 						flags_set_parity_needed(parity_counter);
-						fireStringReceived(toByteArray(out), true,internal_interleaver_len,flags);
+						fireStringReceived(toByteArray(out), true,internal_interleaver_len,flags,tdec.last_fixed);
 						return -2;
 					}
 					else

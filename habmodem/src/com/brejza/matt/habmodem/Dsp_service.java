@@ -942,11 +942,12 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	}
 	
 	@Override
-	public void StringRx(byte[] strrx, boolean checksum, int length, int flags) {
+	public void StringRx(byte[] strrx, boolean checksum, int length, int flags, int fixed) {
 		// TODO Auto-generated method stub
 		Telemetry_string str = new Telemetry_string(strrx,null);
 		str.habitat_metadata = new HashMap<String,String>();
 		str.habitat_metadata.put("receiver_flags", Integer.toHexString(flags));
+		str.habitat_metadata.put("fec_fixed", Integer.toString(fixed));
 		//TelemetryConfig tc = getTelemetryConfig(str.callsign);
 		//if (tc != null)
 		//	str = new Telemetry_string(strrx,tc);

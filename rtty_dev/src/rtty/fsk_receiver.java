@@ -106,11 +106,11 @@ public class fsk_receiver implements StringRxEvent {
 			_listeners.get(i).StringRx(str,checksum);
 		}
 	}
-	protected void fireStringReceived(byte[] str, boolean checksum, int length, int flags)
+	protected void fireStringReceived(byte[] str, boolean checksum, int length, int flags, int fixed)
 	{
 		for (int i = 0; i < _listeners.size(); i++)
 		{
-			_listeners.get(i).StringRx(str,checksum, length, flags);
+			_listeners.get(i).StringRx(str,checksum, length, flags, fixed);
 		}
 	}
 	
@@ -641,8 +641,8 @@ public class fsk_receiver implements StringRxEvent {
 			str = telem_hand_bin.bits2chars(bits);
 			valid_bin = telem_hand_bin.get_last_valid();
 			
-			if (current_modulation == Modulation.AFSK)
-			{
+			//if (current_modulation == Modulation.AFSK)
+			//{
 				if (cc.getState() == ConfidenceCalculator.State.SIG_DROPPED)
 					current_state = State.INACTIVE;
 				if (valid_bin)
@@ -650,17 +650,17 @@ public class fsk_receiver implements StringRxEvent {
 					cc.gotDecode();
 					current_state = State.IDLE;
 				}
-			}
+			//}
 		}
 		
 		return str;
 	}
 
-	public void StringRx(byte[] str, boolean checksum, int length, int flags)
+	public void StringRx(byte[] str, boolean checksum, int length, int flags, int fixed)
 	{
 		if (_listeners.size() > 0)
 		{
-			fireStringReceived(str, checksum, length, flags);
+			fireStringReceived(str, checksum, length, flags, fixed);
 		}
 	}
 	
