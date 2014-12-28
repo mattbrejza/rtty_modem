@@ -40,10 +40,23 @@ import ukhas.Listener;
 
 import com.brejza.matt.habmodem.Payload;
 
+
+
+
+
+
+
+
+
+
+
+
 import ukhas.TelemetryConfig;
 import ukhas.Telemetry_string;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -68,6 +81,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Dsp_service extends Service implements StringRxEvent, HabitatRxEvent, PredictionRxEvent {
@@ -82,6 +96,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public final static String GPS_UPDATED = "com.brejza.matt.habmodem.GPS_UPDATED";
 	public final static String LOG_EVENT = "com.brejza.matt.habmodem.LOG_EVENT";
 	public final static String LOG_STR = "com.brejza.matt.habmodem.LOG_STR";
+	
+   
 	
 	 // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
@@ -98,6 +114,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private int last_colour = 0;
 	
 	Telemetry_string last_str;
+	
 	
 	boolean _enableChase = false;
 	boolean _enablePosition = false;
@@ -162,6 +179,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			serviceInactiveTimer = null;
 			logEvent("Stopping Inactivity Timer",false);			
 		}
+		
+		
+		final IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(BluetoothLeService.BT_TELEM);
+		registerReceiver(mGattUpdateReceiver, intentFilter);
 		
 		System.out.println("DEBUG : something bound");
 		
@@ -243,6 +265,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public void onDestroy()
 	{
+		unregisterReceiver(mGattUpdateReceiver);
+		
 		if (headsetReceiver != null) unregisterReceiver(headsetReceiver);
 		disableEcho();
 		if (mRecorder != null)
@@ -943,7 +967,6 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	
 	@Override
 	public void StringRx(byte[] strrx, boolean checksum, int length, int flags, int fixed) {
-		// TODO Auto-generated method stub
 		Telemetry_string str = new Telemetry_string(strrx,null);
 		str.habitat_metadata = new HashMap<String,String>();
 		str.habitat_metadata.put("receiver_flags", Integer.toHexString(flags));
@@ -1298,8 +1321,18 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		
 	}
 
-
 	
-	
-
+	private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+	     @Override
+	     public void onReceive(Context context, Intent intent) {
+	         final String action = intent.getAction();
+	         
+	         Log.i("dsp_service, bt reciever","SERVICE GOT TELEM: " + intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+	         
+	         String s = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+	         
+	         StringRx(s, true);//assume checksum is correct
+	         sendBroadcast(new Intent(TELEM_RX));
+	     }
+	 };
 }

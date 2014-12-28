@@ -38,6 +38,7 @@ import ukhas.Telemetry_string;
 
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -58,6 +59,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import group.pals.android.lib.ui.filechooser.FileChooserActivity;
 import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
 
@@ -234,8 +236,10 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     {
     	super.onStart();
     	  //   // Bind to LocalService
-        Intent intent = new Intent(this, Dsp_service.class);    
-        startService(intent);
+    	Intent intent = new Intent(this, Dsp_service.class);  
+    	Intent intentBt = new Intent(this, BluetoothLeService.class);  
+    	startService(intent);
+    	startService(intentBt);
     	requestUpdate = true;
     	System.out.println("DEBUG : STARTING ACTIVITY");
     }
@@ -272,6 +276,14 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         else if (item.getItemId() ==  R.id.refresh_button) {
         	mService.updateActivePayloadsHabitat();
         	return true; }
+        else if (item.getItemId() ==  R.id.btconnect_screen) {
+        	if (Build.VERSION.SDK_INT >= 18){
+	        	intent = new Intent(this, BtScreen.class);
+	        	startActivity(intent);
+        	}else{
+        		Toast.makeText(this, "BTLE not supported on this device".toString(), Toast.LENGTH_SHORT).show();
+        	}
+            return true;  }
         else if (item.getItemId() == R.id.graphs_button) {
         	if ( mService.getActivePayloadList().size() > 0)
         	{
@@ -315,8 +327,9 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
    		if (mService != null &&  _menu != null){
 	   		if (mService.enableUploader)
 	        	_menu.findItem(R.id.toggle_online).setChecked(true);
-   		}
 	   		
+   		}
+   		
    		if (mapView.getMapFile() == null)
    			showMapChooser();
    		else
@@ -866,13 +879,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
 	}
 	
 	@Override
-	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {
-		
-		mService.changeLocationSettings(enPos,enChase);
-		
+	public void onDialogPositiveClick(DialogFragment dialog, boolean enPos, boolean enChase) {		
+		mService.changeLocationSettings(enPos,enChase);		
 	}
-
-
-
 
 }

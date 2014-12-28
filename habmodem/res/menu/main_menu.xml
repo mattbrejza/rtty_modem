@@ -16,6 +16,10 @@
           android:icon="@drawable/ic_action_refresh"
           android:showAsAction="ifRoom"
           android:title="@string/refresh_button" />
+    <item android:id="@+id/btconnect_screen"
+          android:icon="@drawable/ic_action_refresh"
+          android:showAsAction="ifRoom"
+          android:title="@string/btconnect_button" />
     <item android:id="@+id/graphs_button"
           android:title="@string/graphs_button"/>
   <!--   <item android:id="@+id/fft_screen"

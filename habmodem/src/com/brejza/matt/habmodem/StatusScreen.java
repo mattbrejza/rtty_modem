@@ -13,12 +13,14 @@
 
 package com.brejza.matt.habmodem;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.brejza.matt.habmodem.Dsp_service;
 import com.brejza.matt.habmodem.Dsp_service.LocalBinder;
 
 import rtty.fsk_receiver;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -36,7 +38,9 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.usb.UsbManager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +50,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -130,6 +135,14 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         else if (item.getItemId() ==  R.id.refresh_button) {
         	mService.updateActivePayloadsHabitat();
         	return true; }
+        else if (item.getItemId() ==  R.id.btconnect_screen) {
+        	if (Build.VERSION.SDK_INT >= 18){
+	        	intent = new Intent(this, BtScreen.class);
+	        	startActivity(intent);
+        	}else{
+        		Toast.makeText(this, "BTLE not supported on this device".toString(), Toast.LENGTH_SHORT).show();
+        	}
+            return true;  }
         else if (item.getItemId() == R.id.graphs_button) {
         	if ( mService.getActivePayloadList().size() > 0)
         	{
@@ -634,6 +647,12 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     
     public void toggleAfsk(View view)
     {
+    	
+    	// Get UsbManager from Android.
+    	UsbManager manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+    	
+    	
     	if (mService.rcv.current_modulation == fsk_receiver.Modulation.AFSK)
     		mService.rcv.setModulation(fsk_receiver.Modulation.FSK);
     	else{
@@ -641,7 +660,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     		mService.rcv.setFreq(500,750);
     	}
     	
-    	refreshButtons();
+    	refreshButtons(); 
     }
     
     public void toggleRunning(View view)

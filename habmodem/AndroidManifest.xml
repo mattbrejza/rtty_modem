@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.brejza.matt.habmodem"
     android:versionCode="19"
@@ -5,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -14,6 +15,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+	
+	<uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
 
     <application
         android:allowClearUserData="true"
@@ -21,10 +26,11 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo" >
-        <service android:name=".Dsp_service" />
+        <service android:name="com.brejza.matt.habmodem.Dsp_service" />
+        <service android:name="com.brejza.matt.habmodem.BluetoothLeService" />
 
-         <activity
-            android:name=".StartActivity"
+        <activity
+            android:name="com.brejza.matt.habmodem.StartActivity"
             android:label="@string/title_activity_start" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,16 +38,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
-            android:name=".Map_Activity"
+            android:name="com.brejza.matt.habmodem.Map_Activity"
             android:hardwareAccelerated="false"
             android:label="@string/title_activity_map" >
-          <!--  <intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                   <category android:name="android.intent.category.LAUNCHER" /> 
-            </intent-filter> -->
+            </intent-filter>
+            
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            -->
+           
         </activity>
         <activity
             android:name="group.pals.android.lib.ui.filechooser.FileChooserActivity"
@@ -51,27 +64,33 @@
         <service android:name="group.pals.android.lib.ui.filechooser.services.LocalFileProvider" />
 
         <activity
-            android:name=".StatusScreen"
+            android:name="com.brejza.matt.habmodem.StatusScreen"
             android:label="@string/title_activity_status_screen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.brejza.matt.habmodem.Map_Activity" />
         </activity>
         <activity
-            android:name=".FFTActivity"
+            android:name="com.brejza.matt.habmodem.FFTActivity"
             android:label="removed" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.brejza.matt.habmodem.Map_Activity" />
         </activity>
         <activity
-            android:name=".Preferences_activity"
+            android:name="com.brejza.matt.habmodem.Preferences_activity"
             android:label="@string/title_activity_prefs" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.brejza.matt.habmodem.Map_Activity" />
         </activity>
-       
+        <activity
+            android:name="com.brejza.matt.habmodem.BtScreen"
+            android:label="@string/title_activity_bt_screen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.brejza.matt.habmodem.Map_Activity" />
+        </activity>
     </application>
 
 </manifest>

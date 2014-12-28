@@ -1,20 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">HAB Modem and Tracker</string>
-    
-        
+
     <!-- displayed in menu at top of screen -->
     <string name="status_screen">Decoder</string>
-	<string name="map_screen">Map</string>
-	<string name="menu_settings">Settings</string>
-	<string name="settings_screen">Settings</string>
-	<string name="log_screen">Logs</string>
-	<string name="refresh_button">Refresh</string>
-	<string name="graphs_button">Graphs</string>
-	<string name="online_button">Online</string>
-	
-	<!-- titles of windows and dialogs -->
-	
+    <string name="map_screen">Map</string>
+    <string name="menu_settings">Settings</string>
+    <string name="settings_screen">Settings</string>
+    <string name="log_screen">Logs</string>
+    <string name="refresh_button">Refresh</string>
+    <string name="graphs_button">Graphs</string>
+    <string name="online_button">Online</string>
+    <string name="btconnect_button">Connect</string>
+
+    <!-- titles of windows and dialogs -->
+
     <string name="dialog_logs_title">Recent Log Messages</string>
     <string name="title_activity_prefs">Settings</string>
     <string name="title_activity_status_screen">Decoder</string>
@@ -22,12 +23,9 @@
     <string name="title_activity_start">HAB Tracker</string>
     <string name="dialog_graphs_title">Graphs</string>
     <string name="location_dialog">My Location</string>
-    
 
-    
-    
-    <!--  contents of preference screen -->
-    
+    <!-- contents of preference screen -->
+
     <string name="pref_callsign">Callsign</string>
     <string name="pref_habitat_update_title">Habitat Update Period (minutes)</string>
     <string name="pref_habitat_update_summ">Enter time between querying server for new data</string>
@@ -49,8 +47,7 @@
     <string name="pref_advanced">Advanced Settings</string>
     <string name="pref_map_path">Path to Map File</string>
     <string name="pref_map_path_summ">Enter the path to the .map file</string>
-    
-    
+
     <!-- strings used to display data -->
     <string name="time">TIME</string>
     <string name="altitude">ALTITUDE</string>
@@ -58,20 +55,17 @@
     <string name="latitude">LATITUDE</string>
     <string name="longitude">LONGITUDE</string>
     <string name="ascent_rate">ASCENT RATE</string>
-    
-    
-    <!--  select payload dialog -->
+
+    <!-- select payload dialog -->
     <string name="add_button_description">Add Payload to be Tracked</string>
     <string name="dialog_add_payload_title">Select Payload</string>
     <string name="dialog_add_payload_body">Select or enter payload to be tracked</string>
-    
-    
-    
-    
-    <!--  generic -->
+
+    <!-- generic -->
     <string name="cancel">Cancel</string>
     <string name="accept">OK</string>
-    
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
     
     <!-- first run messages -->
     <string name="firstruntitle">WARNING</string>
@@ -81,24 +75,26 @@
     <string name="maphelpercontinue">Select Map File</string>
     <string name="maphelpernomap">Dont Use Maps</string>
     <string name="mapshelptitle">About Maps</string>
-    
-    
-    <!--  add dialog -->
+
+    <!-- add dialog -->
     <string name="payaddpayload">Payload</string>
-	<string name="payaddlookback">Look Back  </string>
-	<string name="payadddays">Days, </string>
-	<string name="payaddhours">Hours</string>
-	
-	<!-- decoder screen -->
-	<string name="decoderecho">ECHO</string>
-	<string name="decoderalerts">ALERTS</string>
+    <string name="payaddlookback">Look Back  </string>
+    <string name="payadddays">Days, </string>
+    <string name="payaddhours">Hours</string>
+
+    <!-- decoder screen -->
+    <string name="decoderecho">ECHO</string>
+    <string name="decoderalerts">ALERTS</string>
     <string name="decoderonline">ONLINE</string>
-	<string name="decoderactive">ACTIVE</string>
-	<string name="decoderbaud">BAUD</string>
-	<string name="decoderdata">DATA</string>
-	<string name="decoderstops">STOPS</string>
-	<string name="decoderstatus">STATUS</string>
-	<string name="decoderafsk">MOD.</string>
-	<string name="decoderencoding">ENC.</string>
-	
+    <string name="decoderactive">ACTIVE</string>
+    <string name="decoderbaud">BAUD</string>
+    <string name="decoderdata">DATA</string>
+    <string name="decoderstops">STOPS</string>
+    <string name="decoderstatus">STATUS</string>
+    <string name="decoderafsk">MOD.</string>
+    <string name="decoderencoding">ENC.</string>
+    <string name="title_activity_bt_screen">BtScreen</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>
