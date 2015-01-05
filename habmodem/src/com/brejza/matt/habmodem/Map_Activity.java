@@ -394,6 +394,11 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     @Override
     public void onPause(){
        	super.onPause();
+       	if (mBound){
+       		if (mService != null){
+       			mService.saveState();
+       		}       			
+       	}
        	if (isReg)
        	{
 	    	if (habirxReceiver != null) unregisterReceiver(habirxReceiver);

@@ -13,6 +13,12 @@
 
 package com.brejza.matt.habmodem;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,12 +57,18 @@ import com.brejza.matt.habmodem.Payload;
 
 
 
+
+
+
+
+
+
+
+
 import ukhas.TelemetryConfig;
 import ukhas.Telemetry_string;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -154,8 +166,16 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	PredictionGrabber pred_grab;
 	
 	private boolean listRxStrUpdated = false;
+	
+	private boolean dataReloaded = false;
+	//
+	//save this data on close
+	//
 	public List<String> listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
 	private ConcurrentHashMap<String, Payload> mapPayloads = new ConcurrentHashMap<String, Payload>();
+	//
+	//
+	//
 	
 	public Dsp_service() {
 		rcv.addStringRecievedListener(this);		
@@ -165,7 +185,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	public void onCreate()
 	{
 		super.onCreate();
-		System.out.println("Service started");
+		System.out.println("Service started");		
 	}
 
 	@Override
@@ -232,6 +252,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 			System.out.println("Cannot get version number - " + e.toString());
 		}
 		hab_con.application_version = vers;
+		
+		if (!dataReloaded){
+			dataReloaded = true;
+			loadState();
+		}
 
 		//System.out.println("Starting audio");
 		return mBinder;
@@ -1325,8 +1350,6 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
 	     @Override
 	     public void onReceive(Context context, Intent intent) {
-	         final String action = intent.getAction();
-	         
 	         Log.i("dsp_service, bt reciever","SERVICE GOT TELEM: " + intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
 	         
 	         String s = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
@@ -1335,4 +1358,74 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	         sendBroadcast(new Intent(TELEM_RX));
 	     }
 	 };
+	 
+	 public void saveState()
+	 {
+		 String filename1 = "payload_telem.dat";
+		 String filename2 = "payload_strings.dat";
+		 FileOutputStream outputStream;
+		try
+		{
+			outputStream = openFileOutput(filename1, Context.MODE_PRIVATE);
+			ObjectOutputStream out = new ObjectOutputStream(outputStream);
+			out.writeObject(mapPayloads);
+			out.close();
+			outputStream.close();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		try
+		{
+			outputStream = openFileOutput(filename2, Context.MODE_PRIVATE);
+			ObjectOutputStream out = new ObjectOutputStream(outputStream);
+			out.writeObject(listRxStr);
+			out.close();
+			outputStream.close();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	 }
+	 
+	 @SuppressWarnings("unchecked")
+	private void loadState()
+	 {
+		 String filename1 = "payload_telem.dat";
+		 String filename2 = "payload_strings.dat";
+		 
+		try
+		{
+			File file = new File(this.getFilesDir(), filename1);
+			if (System.currentTimeMillis() - file.lastModified() < (24*60*60*1000)){	//only load previous state if <1day old		
+				FileInputStream fileIn = openFileInput(filename1);
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				mapPayloads = (ConcurrentHashMap<String, Payload>) in.readObject();
+				in.close();
+				fileIn.close();
+				
+				fileIn = openFileInput(filename2);
+				in = new ObjectInputStream(fileIn);
+				listRxStr = (List<String>) in.readObject();			 
+				in.close();
+				fileIn.close();
+			}
+		}
+		//catch(IOException i)
+		//{
+		//	i.printStackTrace();
+		//	return;
+		//}catch(ClassNotFoundException c)
+		//{
+		//	c.printStackTrace();
+		//	return;
+		//}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			listRxStr = Collections.synchronizedList(new ArrayList<String>()); 
+			mapPayloads = new ConcurrentHashMap<String, Payload>();
+			return;
+		}
+			
+		
+	}
 }

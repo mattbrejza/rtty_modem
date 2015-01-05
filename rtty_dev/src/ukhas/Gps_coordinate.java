@@ -12,8 +12,10 @@
 
 package ukhas;
 
-public class Gps_coordinate {
+public class Gps_coordinate implements java.io.Serializable {
 
+	private static final long serialVersionUID = 0x5901fa8c0e38abb4L;
+	
 	public double latitude = 0;
 	public double longitude = 0;
 	public boolean latlong_valid = false;

@@ -3,7 +3,9 @@ package ukhas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TelemetryConfig {
+public class TelemetryConfig implements java.io.Serializable {
+	private static final long serialVersionUID = 0x5901fa8c0e38abb5L;
+	
 	public enum GPSFormat {NMEA,DECIMAL,INT, UNKNOWN};
 	public enum DataType {INT, FLOAT, STRING, IGNORE};
 	

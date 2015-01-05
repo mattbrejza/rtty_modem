@@ -46,7 +46,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -107,7 +109,9 @@ import android.widget.AdapterView.OnItemClickListener;
         final Button btnConenct = (Button) findViewById(R.id.btnScan);
         btnConenct.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            	if (mScanning == false)
+            	if (mConnected)
+            		mBtService.disconnect();
+            	else if (mScanning == false)
             		scanLeDevice(true);
             }
         });
@@ -534,15 +538,18 @@ import android.widget.AdapterView.OnItemClickListener;
 		if (mConnected){
 			tstat.setText(getString(R.string.connected) + " to " + mBtService.getMacConnected());
 			btnConenct.setText("Disconnect");
+			listviewDeviceList.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0.01f));
 		}
 		else if (mScanning)
 		{
 			tstat.setText("Scanning...");
+			listviewDeviceList.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0.2f));
 		}
 		else
 		{
 			btnConenct.setText("Scan");
 			tstat.setText(getString(R.string.disconnected));
+			listviewDeviceList.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0.2f));
 		}
      	     	
 	}

@@ -25,19 +25,19 @@ import java.util.TimeZone;
 
 import org.msgpack.MessagePack;
 
-import org.msgpack.template.Template;
 import org.msgpack.type.Value;
 import org.msgpack.unpacker.Unpacker;
 
 
-import static org.msgpack.template.Templates.tMap;
-import static org.msgpack.template.Templates.TString;
-import static org.msgpack.template.Templates.TInteger;
-
 import org.apache.commons.codec.binary.Base64;
 
 
-public class Telemetry_string {
+public class Telemetry_string implements java.io.Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 0x5901fa8c0e38abb1L;
 
 	public String callsign = "";
 	

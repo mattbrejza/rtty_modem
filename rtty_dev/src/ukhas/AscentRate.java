@@ -1,8 +1,8 @@
 package ukhas;
 
-public class AscentRate {
+public class AscentRate implements java.io.Serializable{
 
-	
+	private static final long serialVersionUID = 0x5901fa8c0e38abb3L;
 	long time1=0;
 	long time2=0;
 	double alt1=0;
