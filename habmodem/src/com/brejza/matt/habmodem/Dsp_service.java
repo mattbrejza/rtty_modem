@@ -65,6 +65,7 @@ import com.brejza.matt.habmodem.Payload;
 
 
 
+
 import ukhas.TelemetryConfig;
 import ukhas.Telemetry_string;
 import android.app.NotificationManager;
@@ -88,6 +89,7 @@ import android.media.MediaRecorder.AudioSource;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -126,6 +128,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	private int last_colour = 0;
 	
 	Telemetry_string last_str;
+	
+	private boolean enable_bt = false;
 	
 	
 	boolean _enableChase = false;
@@ -201,9 +205,11 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 		}
 		
 		
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(BluetoothLeService.BT_TELEM);
-		registerReceiver(mGattUpdateReceiver, intentFilter);
+		if (Build.VERSION.SDK_INT >= 18){
+			final IntentFilter intentFilter = new IntentFilter();
+			intentFilter.addAction(BluetoothLeService.BT_TELEM);
+			registerReceiver(mGattUpdateReceiver, intentFilter);
+		}
 		
 		System.out.println("DEBUG : something bound");
 		
@@ -290,7 +296,8 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	@Override
 	public void onDestroy()
 	{
-		unregisterReceiver(mGattUpdateReceiver);
+		if (Build.VERSION.SDK_INT >= 18)
+			unregisterReceiver(mGattUpdateReceiver);
 		
 		if (headsetReceiver != null) unregisterReceiver(headsetReceiver);
 		disableEcho();

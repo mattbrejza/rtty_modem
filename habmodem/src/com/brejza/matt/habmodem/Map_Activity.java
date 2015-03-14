@@ -236,10 +236,14 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     {
     	super.onStart();
     	  //   // Bind to LocalService
-    	Intent intent = new Intent(this, Dsp_service.class);  
-    	Intent intentBt = new Intent(this, BluetoothLeService.class);  
-    	startService(intent);
-    	startService(intentBt);
+    	Intent intent = new Intent(this, Dsp_service.class);      	
+    	startService(intent);    	
+    	
+    	if (Build.VERSION.SDK_INT >= 18){
+    		Intent intentBt = new Intent(this, BluetoothLeService.class); 
+    		startService(intentBt);
+    	}    		
+    	
     	requestUpdate = true;
     	System.out.println("DEBUG : STARTING ACTIVITY");
     }
