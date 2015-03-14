@@ -1352,10 +1352,19 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 	     public void onReceive(Context context, Intent intent) {
 	         Log.i("dsp_service, bt reciever","SERVICE GOT TELEM: " + intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
 	         
-	         String s = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 	         
-	         StringRx(s, true);//assume checksum is correct
-	         sendBroadcast(new Intent(TELEM_RX));
+	         String s = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+	         byte[] b = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);
+	         
+	         if (s != null){
+	        	 StringRx(s, true);//assume checksum is correct
+	        	 sendBroadcast(new Intent(TELEM_RX));
+	         }
+	         else if (b.length > 0){
+	        	 StringRx(b, true, b.length, 0,0);
+	        	 sendBroadcast(new Intent(TELEM_RX));
+	         }
+	         
 	     }
 	 };
 	 

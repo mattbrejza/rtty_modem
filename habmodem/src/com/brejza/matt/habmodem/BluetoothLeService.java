@@ -174,14 +174,24 @@ import java.util.UUID;
             	//if just got last packet
             	if ((data[0] & 0xF) == ((data[0] & 0xF0)>>4))
             	{
-            		//final StringBuilder stringBuilder = new StringBuilder(telem_input_buffer_ptr);
-            		String s = "";
-            		for (int i = 0; i < telem_input_buffer_ptr; i++)
-            			s = s + (char)telem_input_buffer[i];
-	                    //stringBuilder.append(String.format("%02X ", telem_input_buffer[i]));
-	                intent.putExtra(EXTRA_DATA, s);//new String(data) + "\n" + stringBuilder.toString());
-	                Log.i(TAG, "Broadcasting: " + s);
-	                sendBroadcast(intent);
+            		if ((telem_input_buffer[0] & 0xF0) == 0x80){ //msgpack
+            			byte[] s = new byte[telem_input_buffer_ptr];
+            			for (int i = 0; i < telem_input_buffer_ptr; i++)
+	            			s[i] = telem_input_buffer[i];
+            			Log.i(TAG, "Broadcasting Binary String");
+            			intent.putExtra(EXTRA_DATA, s);
+            			sendBroadcast(intent);
+            		}
+            		else
+            		{
+	            		String s = "";
+	            		for (int i = 0; i < telem_input_buffer_ptr; i++)
+	            			s = s + (char)telem_input_buffer[i];
+		                    //stringBuilder.append(String.format("%02X ", telem_input_buffer[i]));
+		                intent.putExtra(EXTRA_DATA, s);//new String(data) + "\n" + stringBuilder.toString());
+		                Log.i(TAG, "Broadcasting: " + s);
+		                sendBroadcast(intent);
+            		}
             	}
             	
             	telem_last_header = data[0];
