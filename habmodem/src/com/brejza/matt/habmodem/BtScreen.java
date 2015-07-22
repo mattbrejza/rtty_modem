@@ -141,6 +141,20 @@ import android.widget.AdapterView.OnItemClickListener;
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         _menu = menu;
+        
+        MenuItem item = menu.findItem(R.id.btconnect_screen);
+        item.setVisible(false);        
+        item = menu.findItem(R.id.toggle_online);
+        item.setVisible(false);   
+        item = menu.findItem(R.id.location_dialog);
+        item.setVisible(false);   
+        item = menu.findItem(R.id.refresh_button);
+        item.setVisible(false);   
+        item = menu.findItem(R.id.btconnect_screen);
+        item.setVisible(false);   
+        item = menu.findItem(R.id.graphs_button);
+        item.setVisible(false);   	
+        this.invalidateOptionsMenu();
         if (mService != null){
 	   		if (mService.enableUploader)
 	        	_menu.findItem(R.id.toggle_online).setChecked(true);

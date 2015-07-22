@@ -69,6 +69,12 @@
 		  android:summary="@string/pref_habitat_lines_summ"
 		  android:numeric="integer"
 		  android:defaultValue="3000"/>
+         
+         <CheckBoxPreference
+		  android:key="pref_test_enable" 
+		  android:title="@string/pref_test_enable_title"
+		  android:summary="@string/pref_test_enable_summ"
+		  android:defaultValue="false"/>
         
         
     </PreferenceScreen>

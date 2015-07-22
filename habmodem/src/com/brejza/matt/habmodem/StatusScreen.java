@@ -107,6 +107,12 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         _menu = menu;
+        Boolean s = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_test_enable", false);
+        if (s == false){
+	        MenuItem item = menu.findItem(R.id.btconnect_screen);
+	        item.setVisible(false);
+	        this.invalidateOptionsMenu();
+        }
         if (mService != null){
 	   		if (mService.enableUploader)
 	        	_menu.findItem(R.id.toggle_online).setChecked(true);
