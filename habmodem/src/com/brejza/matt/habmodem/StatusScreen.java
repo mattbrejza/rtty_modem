@@ -111,7 +111,7 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
         if (s == false){
 	        MenuItem item = menu.findItem(R.id.btconnect_screen);
 	        item.setVisible(false);
-	        this.invalidateOptionsMenu();
+	        //this.invalidateOptionsMenu();
         }
         if (mService != null){
 	   		if (mService.enableUploader)

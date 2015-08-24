@@ -227,7 +227,6 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
         if (s == false){
 	        MenuItem item = menu.findItem(R.id.btconnect_screen);
 	        item.setVisible(false);
-	        this.invalidateOptionsMenu();
         }
         if (mService != null){
 	   		if (mService.enableUploader)
