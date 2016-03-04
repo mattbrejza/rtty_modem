@@ -120,6 +120,8 @@ public class Telemetry_string implements java.io.Serializable {
 		
 		ByteArrayInputStream in = new ByteArrayInputStream(str);
         Unpacker unpacker = msgpack.createUnpacker(in);
+		
+		byte[] base64enc = Base64.encodeBase64(str);
         
         try {
         	while(in.available()>0)   //TODO: handle multiple messages
@@ -149,10 +151,15 @@ public class Telemetry_string implements java.io.Serializable {
         					case 2:					//TIME
         						if (item.isIntegerValue())
         						{        							
-        							Date time_in = new Date(item.asIntegerValue().getInt()*1000);
-        							setTime(time_in,timerx); 
-        							SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        							raw_string = raw_string + dateFormat.format(time_in) + ",";
+        							//Date time_in = new Date(item.asIntegerValue().getInt()*1000);
+        							//setTime(time_in,timerx); 
+        							//SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        							int time_in = item.asIntegerValue().getInt();
+									int hours = Math.floor(time_in/60*60);
+									time_in = time_in - (hours*60*60);
+									int mins = Math.floor(time_in/60);
+									int secs = time_in-mins*60;
+									raw_string = raw_string + String.format("%02d:%02d:%02d",hours,mins,secs) + ",";
         						}
         						break;        						
         					case 1:					//PACKET COUNT
@@ -208,7 +215,8 @@ public class Telemetry_string implements java.io.Serializable {
         	
         	if (raw_string.length() > 0)
         	{
-        		raw_string = raw_string.substring(0,raw_string.length()-1) + "*";
+				raw_string = raw_string + new String(base64enc) + "*";;
+        		//raw_string = raw_string.substring(0,raw_string.length()-1) + "*";
         		int crc = calculate_checksum(raw_string,0);
         		raw_string = raw_string + String.format("%04x", crc);
         	}
