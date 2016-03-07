@@ -155,9 +155,9 @@ public class Telemetry_string implements java.io.Serializable {
         							//setTime(time_in,timerx); 
         							//SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         							int time_in = item.asIntegerValue().getInt();
-									int hours = Math.floor(time_in/60*60);
+									int hours = (int)Math.floor(time_in/60*60);
 									time_in = time_in - (hours*60*60);
-									int mins = Math.floor(time_in/60);
+									int mins = (int)Math.floor(time_in/60);
 									int secs = time_in-mins*60;
 									raw_string = raw_string + String.format("%02d:%02d:%02d",hours,mins,secs) + ",";
         						}

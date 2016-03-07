@@ -599,7 +599,12 @@ public class StatusScreen extends Activity implements AddPayloadFragment.NoticeD
     	
     	if (currentBaud == 300)
     		mService.setBaud(50);
-    	else
+    	else if (currentBaud == 50)
+    		mService.setBaud(100);
+    	else if (currentBaud == 100)
+    		mService.setBaud(150);
+    	else //if (currentBaud == 150)
+
     		mService.setBaud(300);
     	
     	setBaudButton();

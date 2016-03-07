@@ -69,6 +69,16 @@ public class fsk_demodulator {
     private fir_filter fir_res3_50;
     private fir_filter fir_res4_50;
     
+    private fir_filter fir_res1_150; 
+    private fir_filter fir_res2_150; 
+    private fir_filter fir_res3_150; 
+    private fir_filter fir_res4_150; 
+    
+    private fir_filter fir_res1_100; 
+    private fir_filter fir_res2_100; 
+    private fir_filter fir_res3_100; 
+    private fir_filter fir_res4_100; 
+    
     private fir_filter fir_outi1;
     private fir_filter fir_outq1;
     private fir_filter fir_outi2;
