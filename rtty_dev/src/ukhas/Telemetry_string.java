@@ -17,14 +17,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
 import org.msgpack.MessagePack;
-
 import org.msgpack.type.Value;
 import org.msgpack.unpacker.Unpacker;
 
@@ -122,6 +123,8 @@ public class Telemetry_string implements java.io.Serializable {
         Unpacker unpacker = msgpack.createUnpacker(in);
 		
 		byte[] base64enc = Base64.encodeBase64(str);
+		
+		Map<Integer, String> telemmap = new HashMap<Integer, String>();
         
         try {
         	while(in.available()>0)   //TODO: handle multiple messages
@@ -145,8 +148,9 @@ public class Telemetry_string implements java.io.Serializable {
         							callsign = callsign.substring(1);
         						if (callsign.endsWith("\""))
         							callsign = callsign.substring(0, callsign.length() -1);
-        						callsign = callsign + "_b";
-        						raw_string = raw_string + callsign + ",";
+        						telemmap.put(new Integer(0), callsign);
+        						//callsign = callsign + "_b";
+        						//raw_string = raw_string + callsign + ",";
         						break;
         					case 2:					//TIME
         						if (item.isIntegerValue())
@@ -155,22 +159,36 @@ public class Telemetry_string implements java.io.Serializable {
         							//setTime(time_in,timerx); 
         							//SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         							int time_in = item.asIntegerValue().getInt();
-									int hours = (int)Math.floor(time_in/60*60);
+									int hours = (int)Math.floor(time_in/(60*60));
 									time_in = time_in - (hours*60*60);
 									int mins = (int)Math.floor(time_in/60);
 									int secs = time_in-mins*60;
-									raw_string = raw_string + String.format("%02d:%02d:%02d",hours,mins,secs) + ",";
+									String timestr = String.format("%02d:%02d:%02d",hours,mins,secs);									
+									
+									SimpleDateFormat ft = new SimpleDateFormat ("HH:mm:ss");
+									ft.setTimeZone(TimeZone.getTimeZone("UTC"));
+									Date time_;
+									try {
+										time_ = ft.parse(timestr);
+										setTime(time_,timerx); 
+									} catch (ParseException e) {
+										System.out.println("Error parsing - " + e.toString());
+									}	
+									//raw_string = raw_string + String.format("%02d:%02d:%02d",hours,mins,secs) + ",";
+									telemmap.put(new Integer(2), timestr);
         						}
         						break;        						
         					case 1:					//PACKET COUNT
         						if (item.isIntegerValue()){
         							packetID = item.asIntegerValue().getInt();
-        							raw_string = raw_string + packetID + ",";
+        							//raw_string = raw_string + packetID + ",";
+        							telemmap.put(new Integer(1), Integer.toString(packetID));
         						}
         						break;        						
         					case 3:					//POSITION
         						if (item.isArrayValue())
         						{
+        							String pos = "";
         							if (item.asArrayValue().size() >= 2)
         							{
         								if (item.asArrayValue().get(0).isIntegerValue()
@@ -178,28 +196,40 @@ public class Telemetry_string implements java.io.Serializable {
         								{
         									coords = new Gps_coordinate(item.asArrayValue().get(0).asIntegerValue().intValue(),
         											item.asArrayValue().get(1).asIntegerValue().intValue());
+        									pos = Integer.toString(item.asArrayValue().get(0).asIntegerValue().intValue()) + ","
+        											+ Integer.toString(item.asArrayValue().get(1).asIntegerValue().intValue());
         								}
         								if (item.asArrayValue().size() >= 3){
 	        								if (item.asArrayValue().get(2).isIntegerValue())
 	           								{
 	        									coords.Set_altitude(item.asArrayValue().get(2).asIntegerValue().getInt());
+	        									pos = pos + "," + Integer.toString(item.asArrayValue().get(2).asIntegerValue().intValue());
 	           								}
         								}
-        								raw_string = raw_string + coords.latitude + "," + coords.longitude + "," + coords.altitude + ",";
+        								//raw_string = raw_string + coords.latitude + "," + coords.longitude + "," + coords.altitude + ",";
         							}
+        							telemmap.put(new Integer(3), pos);
         						}
         						break;
-        					case 4:					//SATS
-        						
-        						break;
-        					case 5:        						
-        						
-        						break;        						
-        					case 6:
-        						
-        						break;
+        					//case 4:					//SATS
+        					//	
+        					//	break;
+        					//case 5:        						
+        					//	
+        					//	break;        						
+        					//case 6:
+        					//	
+        					//	break;
         					default:
-        						
+        						if (item.isIntegerValue()){        							
+        							//raw_string = raw_string + packetID + ",";
+        							telemmap.put(new Integer(s.asIntegerValue().intValue()),
+        									Integer.toString(item.asIntegerValue().getInt()));
+        						}
+        						else
+        						{
+        							//TODO: more here
+        						}
         						break;
         					}
         				}
@@ -213,12 +243,20 @@ public class Telemetry_string implements java.io.Serializable {
         		}
         	}
         	
-        	if (raw_string.length() > 0)
+        	//if (raw_string.length() > 0)
+        	if(telemmap.size()>0)
         	{
-				raw_string = raw_string + new String(base64enc) + "*";;
-        		//raw_string = raw_string.substring(0,raw_string.length()-1) + "*";
-        		int crc = calculate_checksum(raw_string,0);
-        		raw_string = raw_string + String.format("%04x", crc);
+        		for (int i = 0; i <128; i++){   //TODO: fix this
+        			if (telemmap.containsKey(i)){
+        				raw_string = raw_string + telemmap.get(i) + ',';
+        			}
+        		}
+        		if (raw_string.length() > 0){
+					raw_string = raw_string + new String(base64enc) + "*";;
+	        		//raw_string = raw_string.substring(0,raw_string.length()-1) + "*";
+	        		int crc = calculate_checksum(raw_string,0);
+	        		raw_string = raw_string + String.format("%04x", crc);
+        		}
         	}
         	
 			//Map<Integer, String> dstMap = unpacker.read(mapTmpl);
