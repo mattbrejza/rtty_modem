@@ -226,9 +226,21 @@ public class Telemetry_string implements java.io.Serializable {
         							telemmap.put(new Integer(s.asIntegerValue().intValue()),
         									Integer.toString(item.asIntegerValue().getInt()));
         						}
-        						else
-        						{
-        							//TODO: more here
+        						else if (item.isArrayValue()){
+        							String s_out = "";
+        							Integer first = 1;
+        							for (Value item2 : item.asArrayValue()){
+        								if (item2.isIntegerValue()){   
+        									if (first>0)
+        										s_out = s_out + Integer.toString(item2.asIntegerValue().getInt());
+        									else
+        										s_out = s_out + "," +  Integer.toString(item2.asIntegerValue().getInt());
+    										first = 0;
+                							
+                						}
+        							}
+        							if (first == 0)
+        								telemmap.put(new Integer(s.asIntegerValue().intValue()),s_out);        							        							
         						}
         						break;
         					}

@@ -1101,7 +1101,7 @@ public class Dsp_service extends Service implements StringRxEvent, HabitatRxEven
 
 		if (broadcast){
 			Intent i = new Intent(LOG_EVENT);		
-			i.putExtra(LOG_STR, log.offerAndReturn(s));
+			i.putExtra(LOG_STR, log.offerAndReturn(event));
 			sendBroadcast(i);	
 		}
 		else

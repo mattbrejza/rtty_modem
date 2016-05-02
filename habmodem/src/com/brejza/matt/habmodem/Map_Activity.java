@@ -822,6 +822,8 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
             		String str =  intent.getStringExtra(Dsp_service.LOG_STR);
 
             		TextView tv = (TextView)findViewById(R.id.txtLogStatus);
+            		if (str.length() > 85)
+            			str = str.substring(0, 85) + "...";
             		tv.setText(str);
             		
             		if (timerLogging != null)
