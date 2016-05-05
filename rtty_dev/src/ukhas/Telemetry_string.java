@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.msgpack.MessagePack;
+import org.msgpack.MessageTypeException;
 import org.msgpack.type.Value;
 import org.msgpack.unpacker.Unpacker;
 
@@ -232,11 +233,10 @@ public class Telemetry_string implements java.io.Serializable {
         							for (Value item2 : item.asArrayValue()){
         								if (item2.isIntegerValue()){   
         									if (first>0)
-        										s_out = s_out + Integer.toString(item2.asIntegerValue().getInt());
+        										s_out = s_out + item2.toString();
         									else
-        										s_out = s_out + "," +  Integer.toString(item2.asIntegerValue().getInt());
+        										s_out = s_out + "," +  item2.toString();
     										first = 0;
-                							
                 						}
         							}
         							if (first == 0)
@@ -276,6 +276,9 @@ public class Telemetry_string implements java.io.Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        catch (MessageTypeException e){
+        	e.printStackTrace();
+        }
 
 	}
 	
