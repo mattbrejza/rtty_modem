@@ -717,20 +717,22 @@ public class Map_Activity extends MapActivity implements AddPayloadFragment.Noti
     	@Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Dsp_service.TELEM_RX)) {
-            	String call = mService.getLastString().callsign;
-
-            	if (mService.getLastString().coords != null ){
-            		if (mService.getLastString().coords.latlong_valid)
-            			UpdateBalloonLocation(mService.getLastString().coords,call);
+            	if (mService.getLastString() != null){
+	            	String call = mService.getLastString().callsign;
+	
+	            	if (mService.getLastString().coords != null ){
+	            		if (mService.getLastString().coords.latlong_valid)
+	            			UpdateBalloonLocation(mService.getLastString().coords,call);
+	            	}
+	            	
+	            	if (mService.getLastString().checksum_valid && mService.getLastString().time != null){
+		            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
+						l.put(mService.getLastString().time.getTime(),mService.getLastString());
+						UpdateBalloonTrack(l,call, false, true);//, 0, System.currentTimeMillis() / 1000L );
+	            	}
+	            	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
+	            	fragment.updatePayload(mService.getLastString(),mService.getAscentRate(call),mService.getMaxAltitude(call));
             	}
-            	
-            	if (mService.getLastString().checksum_valid && mService.getLastString().time != null){
-	            	TreeMap<Long,Telemetry_string> l = new TreeMap<Long,Telemetry_string>(); 
-					l.put(mService.getLastString().time.getTime(),mService.getLastString());
-					UpdateBalloonTrack(l,call, false, true);//, 0, System.currentTimeMillis() / 1000L );
-            	}
-            	Balloon_data_fragment fragment = (Balloon_data_fragment) getFragmentManager().findFragmentById(R.id.balloon_data_holder);
-            	fragment.updatePayload(mService.getLastString(),mService.getAscentRate(call),mService.getMaxAltitude(call));
             }
         }
     }
